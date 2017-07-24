@@ -1,0 +1,21 @@
+{
+  "name": "shipwars",
+  "version": "0.1.0",
+  "description": "Pirate Ship Wars game over network using Socket.io",
+  "main": "app.js",
+  "private": true,
+  "scripts": {
+  },
+  "keywords": [
+    "pirate",
+    "ship",
+    "wars"
+  ],
+  "author": "Łukasz Mastela",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.3",
+    "npmlog": "^4.1.2",
+    "socket.io": "^2.0.3"
+  }
+}
