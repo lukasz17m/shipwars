@@ -9,6 +9,56 @@ html {
 }
 
 body {
+	display: flex;
+	justify-content: center;
+	align-items: center; 
 	height: 100%;
 	background-color: #263238;
+}
+
+#sea {
+	/*800x600 [4:3]*/
+	width: 800px;
+	height: 600px;
+	box-sizing: content-box;
+	position: relative;
+	border: 10px solid;
+	background-color: #182838;
+	background: linear-gradient(to top left, #123, #234);
+	overflow: hidden;
+}
+
+.ship {
+	width: 50px;
+	height: 25px;
+	position: absolute;
+	top: 50px;
+	left: 100px;
+	background-color: #741;
+	/*border-radius: 25% 50% 50% 25%;*/
+	transform: translate(-50%, -50%);
+}
+
+.ship::before {
+	content: '';
+	width: 25px;
+	height: 25px;
+	position: absolute;
+	top: 0;
+	left: -25px;
+	background-color: inherit;
+	border-radius: 50% 0 0 50%;
+
+}
+
+.ship::after {
+	content: '';
+	width: 25px;
+	height: 25px;
+	position: absolute;
+	top: 0;
+	right: -25px;
+	background-color: inherit;
+	border-radius: 0 50% 50% 0;
+
 }

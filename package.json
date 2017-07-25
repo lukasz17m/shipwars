@@ -1,6 +1,6 @@
 {
   "name": "shipwars",
-  "version": "0.1.0",
+  "version": "0.1.7",
   "description": "Pirate Ship Wars game over network using Socket.io",
   "main": "app.js",
   "private": true,

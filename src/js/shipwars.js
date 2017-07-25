@@ -1,4 +1,3 @@
-import Core from './shipwars/Core.js'
+import Game from './shipwars/Core'
 
-const core = new Core()
-core.a()
+new Game()

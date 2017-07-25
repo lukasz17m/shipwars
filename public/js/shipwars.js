@@ -3346,11 +3346,10 @@ module.exports = function(obj, fn){
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__shipwars_Core_js__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__shipwars_Core__ = __webpack_require__(22);
 
 
-const core = new __WEBPACK_IMPORTED_MODULE_0__shipwars_Core_js__["a" /* default */]()
-core.a()
+new __WEBPACK_IMPORTED_MODULE_0__shipwars_Core__["a" /* default */]()
 
 /***/ }),
 /* 22 */
@@ -3359,18 +3358,71 @@ core.a()
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_socket_io_client__ = __webpack_require__(23);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_socket_io_client___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_socket_io_client__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__UserInterface__ = __webpack_require__(47);
+
 
 
 class Core {
 
-	constructor() {
-		this.io = __WEBPACK_IMPORTED_MODULE_0_socket_io_client___default()()
-	}
+    constructor() {
 
-	a() {
-		alert('OKey')
-	}
+            // Set class fields and methods
+            this.socket = __WEBPACK_IMPORTED_MODULE_0_socket_io_client___default()()
+            this.ui = new __WEBPACK_IMPORTED_MODULE_1__UserInterface__["a" /* default */]
+            this.ships = {}
+            this.shipsCreated = []
 
+            // Init game
+            this.init()
+
+    }
+
+    init() {
+
+        let gamebox = document.createElement('div')
+        gamebox.id = 'sea'
+        document.body.appendChild(gamebox)
+
+        this.socket.on('frame', (data) => {
+
+            let ships = data.ships
+
+            for (let id in ships) {
+
+                if (this.shipsCreated.indexOf(id) < 0) {
+
+                    let ship = this.ships[id] = {}
+                    ship.node = document.createElement('div')
+                    ship.node.className = 'ship'
+                    ship.node.style.left = ships[id].x + 'px'
+                    ship.node.style.top = ships[id].y + 'px'
+                    gamebox.appendChild(ship.node)
+
+                    this.shipsCreated.push(id)
+
+                }
+
+            }
+
+            // Delete ships of disconnected users
+            this.shipsCreated = this.shipsCreated.filter((id) => {
+
+                if (! ships.hasOwnProperty(id)) {
+
+                    gamebox.removeChild(this.ships[id].node)
+                    delete this.ships[id]
+
+                    return false
+                }
+
+                return true
+
+            })
+
+            console.log(this.shipsCreated, this.ships)
+        })
+
+    }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Core;
 
@@ -6721,6 +6773,25 @@ Backoff.prototype.setJitter = function(jitter){
   this.jitter = jitter;
 };
 
+
+
+/***/ }),
+/* 47 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+class UserInterface {
+
+	constructor() {
+
+		
+
+	}
+
+	
+
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = UserInterface;
 
 
 /***/ })
