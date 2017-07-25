@@ -25,15 +25,6 @@ io.on('connection', (socket) => {
   }
   log.info('FRAME', frame)
 
-  let timer = 0
-  ;(function loop() {
-
-    socket.emit('frame', frame)
-
-    if (timer < 3) setTimeout(loop, 1000 / FPS)
-
-  })()
-
   // Disconnect
   socket.on('disconnect', () => {
     log.info('DISCONNECT', 'User disconnected. ID: %s', socket.id)
@@ -41,6 +32,15 @@ io.on('connection', (socket) => {
     log.info('FRAME', frame)
   })
 })
+
+let timer = 0
+;(function loop() {
+
+  io.emit('frame', frame)
+
+  if (timer < 3) setTimeout(loop, 1000 / FPS)
+
+})()
 
 http.listen(PORT, () => {
    log.info('OK', 'App listening on %i', PORT)

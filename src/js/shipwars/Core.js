@@ -6,7 +6,11 @@ export default class Core {
     constructor() {
 
             // Set class fields and methods
-            this.socket = io()
+
+            this.socket = io({
+                transports: ['websocket']
+            })
+
             this.ui = new UserInterface
             this.ships = {}
             this.shipsCreated = []
@@ -57,8 +61,7 @@ export default class Core {
                 return true
 
             })
-
-            console.log(this.shipsCreated, this.ships)
+            
         })
 
     }

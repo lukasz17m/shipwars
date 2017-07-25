@@ -3367,7 +3367,11 @@ class Core {
     constructor() {
 
             // Set class fields and methods
-            this.socket = __WEBPACK_IMPORTED_MODULE_0_socket_io_client___default()()
+
+            this.socket = __WEBPACK_IMPORTED_MODULE_0_socket_io_client___default()({
+                transports: ['websocket']
+            })
+
             this.ui = new __WEBPACK_IMPORTED_MODULE_1__UserInterface__["a" /* default */]
             this.ships = {}
             this.shipsCreated = []
@@ -3418,8 +3422,7 @@ class Core {
                 return true
 
             })
-
-            console.log(this.shipsCreated, this.ships)
+            
         })
 
     }
