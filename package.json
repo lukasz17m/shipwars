@@ -5,6 +5,12 @@
   "main": "app.js",
   "private": true,
   "scripts": {
+    "dev": "npm  run development",
+    "development": "webpack --progress --hide-modules --config webpack.config.js",
+    "watch": "webpack --watch --progress --hide-modules --config webpack.config.js",
+    "watch-poll": "npm run watch -- --watch-poll",
+    "prod": "npm run production",
+    "production": "webpack -p --progress --hide-modules --config webpack.config.js"
   },
   "keywords": [
     "pirate",
@@ -17,5 +23,8 @@
     "express": "^4.15.3",
     "npmlog": "^4.1.2",
     "socket.io": "^2.0.3"
+  },
+  "devDependencies": {
+    "webpack": "^3.3.0"
   }
 }

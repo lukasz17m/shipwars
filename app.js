@@ -15,8 +15,8 @@ app.use(express.static(path.join(__dirname, 'public')))
 io.on('connection', (socket) => {
   let timer = 0
   ;(function loop() {
-    socket.emit('frame', { loop: ++timer, time: Date.now() % 60000 })
-    if (timer < 100) setTimeout(loop, 1000 / FPS)
+    socket.emit('frame', { loop: ++timer, time: Date.now() })
+    if (timer < 60) setTimeout(loop, 1000 / FPS)
   })()
 })
 
