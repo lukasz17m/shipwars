@@ -7,9 +7,9 @@ export default class Core {
 
             // Set class fields and methods
 
-            this.socket = io({
-                transports: ['websocket']
-            })
+            // this.socket = io({
+            //     transports: ['websocket']
+            // })
 
             this.ui = new UserInterface
             this.ships = {}
@@ -26,7 +26,26 @@ export default class Core {
         gamebox.id = 'sea'
         document.body.appendChild(gamebox)
 
-        this.socket.on('frame', (data) => {
+        // Append start screen, check if user has keyboard
+        gamebox.appendChild(this.ui.startScreen)
+
+        let listeners = this.ui.keyDown(null, () => {
+            gamebox.removeChild(this.ui.startScreen)
+            this.ui.unset(listeners)
+        })
+        
+        console.log(this.ui.listeners)
+        console.log(this.ui.keyDown(37, (e) => { console.log('keyDown : Left') }))
+        this.ui.keyDown(38, (e) => { console.log('keyDown : Up') })
+        this.ui.keyDown(39, (e) => { console.log('keyDown : Right') })
+        this.ui.keyDown(40, (e) => { console.log('keyDown : Down') })
+
+        this.ui.keyUp(37, (e) => { console.log('keyUp : Left') })
+        this.ui.keyUp(38, (e) => { console.log('keyUp : Up') })
+        this.ui.keyUp(39, (e) => { console.log('keyUp : Right') })
+        this.ui.keyUp(40, (e) => { console.log('keyUp : Down') })
+
+        /*this.socket.on('frame', (data) => {
 
             let ships = data.ships
 
@@ -62,7 +81,7 @@ export default class Core {
 
             })
             
-        })
+        })*/
 
     }
 }

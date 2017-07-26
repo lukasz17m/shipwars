@@ -8,7 +8,7 @@ const http = require('http').Server(app);
 const io = sio(http);
 
 const PORT = 3000
-const FPS = 60
+const FPS = 10
 
 let frame = {
   ships: {},
@@ -19,10 +19,12 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 io.on('connection', (socket) => {
   log.info('CONNECT', 'User connected. ID: %s', socket.id)
+
   frame.ships[socket.id] = {
     x: Math.floor((Math.random() * 600) + 100),
     y: Math.floor((Math.random() * 400) + 100)
   }
+
   log.info('FRAME', frame)
 
   // Disconnect
