@@ -3358,7 +3358,9 @@ new __WEBPACK_IMPORTED_MODULE_0__shipwars_Core__["a" /* default */]()
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_socket_io_client__ = __webpack_require__(23);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_socket_io_client___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_socket_io_client__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__UserInterface__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Config__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__UserInterface__ = __webpack_require__(48);
+
 
 
 
@@ -3377,7 +3379,7 @@ class Core {
              * Contains UserInterface instance.
              * @type {module:UserInterface}
              */
-            this.ui = new __WEBPACK_IMPORTED_MODULE_1__UserInterface__["a" /* default */]
+            this.ui = new __WEBPACK_IMPORTED_MODULE_2__UserInterface__["a" /* default */]
 
             /**
              * Contains ships object, key is a player id (from Socket.io).
@@ -3415,6 +3417,8 @@ class Core {
             this.ui.gamebox.appendChild(this.ui.nicknameScreen)
             
         })
+
+        this.ui.keyDown(13, (e) => { this.join('Jack Sparrow').then((data) => { console.log(data) }) })
         
         this.ui.keyDown(37, (e) => { console.log('keyDown : Left') })
         this.ui.keyDown(38, (e) => { console.log('keyDown : Up') })
@@ -3475,6 +3479,30 @@ class Core {
         })
 
     }
+
+
+    //=============================================
+    // ] : Setters & Getters ::: Class methods : [
+    //=============================================
+
+    /**
+     * Join the queue.
+     * @param {!string} nickname - Player’s nickname.
+     * @returns {Promise}
+     */
+    join(nickname) {
+
+        return new Promise((resolve, reject) => {
+
+            resolve(__WEBPACK_IMPORTED_MODULE_1__Config__["a" /* default */].MAX_PLAYERS)
+
+        })        
+
+    }
+
+    //===================
+    // ] : Class methods
+    //===================
 
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Core;
@@ -6830,6 +6858,35 @@ Backoff.prototype.setJitter = function(jitter){
 
 /***/ }),
 /* 47 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/**
+ * @module
+ */
+class Config {
+
+    //=======================
+    // Setters & Getters : [
+    //=======================
+
+    /**
+     * @type {number}
+     */
+    static get MAX_PLAYERS() {
+        return 8
+    }
+
+    //=======================
+    // ] : Setters & Getters
+    //=======================
+
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = Config;
+
+
+/***/ }),
+/* 48 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

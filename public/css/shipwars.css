@@ -148,8 +148,9 @@ body {
 /* Ships */
 
 .ship {
-    width: 50px;
-    height: 25px;
+    font-size: 25px;
+    width: 2em;
+    height: 1em;
     position: absolute;
     top: 50px;
     left: 100px;
@@ -160,11 +161,11 @@ body {
 
 .ship::before {
     content: '';
-    width: 25px;
-    height: 25px;
+    width: 1em;
+    height: 1em;
     position: absolute;
     top: 0;
-    left: -25px;
+    left: -1em;
     background-color: inherit;
     border-radius: 50% 0 0 50%;
 
@@ -172,11 +173,11 @@ body {
 
 .ship::after {
     content: '';
-    width: 25px;
-    height: 25px;
+    width: 1em;
+    height: 1em;
     position: absolute;
     top: 0;
-    right: -25px;
+    right: -1em;
     background-color: inherit;
     border-radius: 0 50% 50% 0;
 

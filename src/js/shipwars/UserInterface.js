@@ -88,7 +88,7 @@ export default class UserInterface {
         header.innerText = 'Enter your name, pirate!'
         wrapper.appendChild(header)
 
-        let input = document.createElement('input')
+        let input = this.nameInput = document.createElement('input')
         input.placeholder = 'Type here'
         input.autofocus = 'autofocus'
         wrapper.appendChild(input)
@@ -102,6 +102,15 @@ export default class UserInterface {
     get nicknameScreen() {
         
         return this._nicknameScreen
+
+    }
+
+    /**
+     * @type {string}
+     */
+    get nickname() {
+        
+        return this.nameInput.value
 
     }
 

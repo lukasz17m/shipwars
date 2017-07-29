@@ -1,4 +1,5 @@
 import io from 'socket.io-client'
+import Config from './Config'
 import UserInterface from './UserInterface'
 
 /**
@@ -54,6 +55,8 @@ export default class Core {
             this.ui.gamebox.appendChild(this.ui.nicknameScreen)
             
         })
+
+        this.ui.keyDown(13, (e) => { this.join('Jack Sparrow').then((data) => { console.log(data) }) })
         
         this.ui.keyDown(37, (e) => { console.log('keyDown : Left') })
         this.ui.keyDown(38, (e) => { console.log('keyDown : Up') })
@@ -114,5 +117,29 @@ export default class Core {
         })
 
     }
+
+
+    //=============================================
+    // ] : Setters & Getters ::: Class methods : [
+    //=============================================
+
+    /**
+     * Join the queue.
+     * @param {!string} nickname - Player’s nickname.
+     * @returns {Promise}
+     */
+    join(nickname) {
+
+        return new Promise((resolve, reject) => {
+
+            resolve(Config.MAX_PLAYERS)
+
+        })        
+
+    }
+
+    //===================
+    // ] : Class methods
+    //===================
 
 }

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: global.jsdoc</title>
+    <title>JSDoc: Source: Config.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: global.jsdoc</h1>
+    <h1 class="page-title">Source: Config.js</h1>
 
     
 
@@ -26,31 +26,27 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>// =====================
-// Type definitions : [
-// =====================
-
-/**
- * This callback is triggered on specified user action.
- * @callback keyboardEventCallback
- * @param {KeyboardEvent} e - Contains KeyboardEvent instance.
+            <pre class="prettyprint source linenums"><code>/**
+ * @module
  */
+export default class Config {
 
-/**
- * Represents DOM Node object.
- * @typedef Node
- * type {object}
- */
+    //=======================
+    // Setters &amp; Getters : [
+    //=======================
 
-/**
- * Browser predefined object.
- * @typedef KeyboardEvent
- * type {object}
- */
+    /**
+     * @type {number}
+     */
+    static get MAX_PLAYERS() {
+        return 8
+    }
 
-//======================
-// ] : Type definitions
-//======================</code></pre>
+    //=======================
+    // ] : Setters &amp; Getters
+    //=======================
+
+}</code></pre>
         </article>
     </section>
 
