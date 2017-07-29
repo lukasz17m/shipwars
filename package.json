@@ -10,7 +10,8 @@
     "watch": "webpack --watch --progress --hide-modules --config webpack.config.js",
     "watch-poll": "npm run watch -- --watch-poll",
     "prod": "npm run production",
-    "production": "webpack -p --progress --hide-modules --config webpack.config.js"
+    "production": "webpack -p --progress --hide-modules --config webpack.config.js",
+    "jsdoc": "jsdoc src/js/shipwars"
   },
   "keywords": [
     "pirate",
@@ -25,6 +26,7 @@
     "socket.io": "^2.0.3"
   },
   "devDependencies": {
+    "jsdoc": "^3.5.3",
     "webpack": "^3.3.0"
   }
 }

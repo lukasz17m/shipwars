@@ -17,9 +17,26 @@ body {
     background-color: #263238;
 }
 
+/* Gamebox aka sea */
+
+#sea {
+    /*800x600 [4:3]*/
+    display: flex;
+    flex: none;
+    width: 800px;
+    height: 600px;
+    box-sizing: content-box;
+    position: relative;
+    border: 10px solid;
+    background-color: #182838;
+    background: linear-gradient(to top left, #123, #234);
+    overflow: hidden;
+}
+
 /* Start screen */
 
 .start-screen {
+    width: 100%;
     height: 100%;
     position: relative;
     background-color: rgba(0, 0, 0, .2)
@@ -46,18 +63,86 @@ body {
     }
 }
 
-/* Gamebox aka sea */
+/* Nickname screen */
 
-#sea {
-    /*800x600 [4:3]*/
-    width: 800px;
-    height: 600px;
-    box-sizing: content-box;
-    position: relative;
-    border: 10px solid;
-    background-color: #182838;
-    background: linear-gradient(to top left, #123, #234);
-    overflow: hidden;
+.nickname-screen {
+    height: 90%;
+    width: 90%;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #663300;
+    box-shadow: 0.5em 0.5em 0.5em;
+}
+
+.nickname-screen .wrapper {
+    padding: 5em;
+    background-color: #4e2700;
+}
+
+.nickname-screen h2 {
+    margin-bottom: 1em;
+    color: #fb8;
+    font-size: 2em;
+    text-shadow: 0.1em 0.1em 0.1em #000;
+}
+
+.nickname-screen input {
+    display: block;
+    margin: 0 auto 2em;
+    width: 70%;
+    outline: none;
+    border: none;
+    padding: 0.5em 1em;
+    font-size: 1.2em;
+    text-align: center;
+    box-shadow: 0.1em 0.1em 0.1em 0.1em;
+}
+
+.nickname-screen .play-button {
+    width: fit-content;
+    margin: 0 auto;
+    padding: .5em 2em;
+    justify-content: center;
+    background: #ffa;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0.1em 0.1em 0.1em #000;
+}
+
+.nickname-screen .play-button::before {
+    content: 'Play';
+    color: #880;
+    font-weight: bold;
+}
+
+.nickname-screen .play-button.loading::before {
+    content: '';
+    display: block;
+    width: 1em;
+    height: 1em;
+    border: 0.2em solid;
+    border-color: #880 #880 transparent transparent;
+    border-radius: 50%;
+    animation: spin .5s infinite linear;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(359deg);
+    }
+}
+
+.nickname-screen .play-button:hover {
+    transform: scale(1.1);
+}
+
+.nickname-screen .play-button:active {
+    transform: scale(1);
 }
 
 /* Ships */

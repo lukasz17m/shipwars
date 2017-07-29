@@ -1,0 +1,25 @@
+// =====================
+// Type definitions : [
+// =====================
+
+/**
+ * This callback is triggered on specified user action.
+ * @callback keyboardEventCallback
+ * @param {KeyboardEvent} e - Contains KeyboardEvent instance.
+ */
+
+/**
+ * Represents DOM Node object.
+ * @typedef Node
+ * type {object}
+ */
+
+/**
+ * Browser predefined object.
+ * @typedef KeyboardEvent
+ * type {object}
+ */
+
+//======================
+// ] : Type definitions
+//======================
