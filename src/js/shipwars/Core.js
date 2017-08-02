@@ -46,18 +46,34 @@ export default class Core {
         // Append start screen, check if user has keyboard
         this.ui.gamebox.appendChild(this.ui.startScreen)
 
-        let listeners = this.ui.keyDown(null, () => {
+        let anyListener = this.ui.keyDown(null, () => {
 
-            this.ui.unset(listeners)
+            // Remove the listener
+            this.ui.unset(anyListener)
 
+            // Remove the start screen
             this.ui.gamebox.removeChild(this.ui.startScreen)
 
-            this.ui.gamebox.appendChild(this.ui.nicknameScreen)
-            
+            // Show the login box
+            this.ui.gamebox.appendChild(this.ui.loginScreen)
+
+            // Listen for the input
+            this.ui.playButton.onclick = tryLogin.bind(this)
+
+            // Local function for the listener
+            function tryLogin() {
+
+                this.login(this.ui.nickname)
+                .then((data) => {
+                    this.ui.hideErrorMessage()
+                })
+                .catch((error) => {
+                    this.ui.showErrorMessage(error)
+                })
+
+            }
         })
 
-        this.ui.keyDown(13, (e) => { this.join('Jack Sparrow').then((data) => { console.log(data) }) })
-        
         this.ui.keyDown(37, (e) => { console.log('keyDown : Left') })
         this.ui.keyDown(38, (e) => { console.log('keyDown : Up') })
         this.ui.keyDown(39, (e) => { console.log('keyDown : Right') })
@@ -73,10 +89,6 @@ export default class Core {
     }
 
     start() {
-
-        this.socket = io({
-            transports: ['websocket']
-        })
 
         this.socket.on('frame', (data) => {
 
@@ -128,11 +140,37 @@ export default class Core {
      * @param {!string} nickname - Player’s nickname.
      * @returns {Promise}
      */
-    join(nickname) {
+    login(nickname) {
 
         return new Promise((resolve, reject) => {
 
-            resolve(Config.MAX_PLAYERS)
+            if (nickname.length < Config.NAME_MIN_CHARS) {
+                reject(`Your nickname is too short (min ${ Config.NAME_MIN_CHARS } char${ Config.NAME_MIN_CHARS > 1 ? 's' : '' })`)
+            } else if (nickname.length > Config.NAME_MAX_CHARS) {
+                reject(`Your nickname is too long (max ${ Config.NAME_MAX_CHARS } char${ Config.NAME_MAX_CHARS > 1 ? 's' : '' })`)
+            } else {
+
+                // Begin async...
+                this.ui.spinPlayButton()
+
+                /**
+                 * Contains Socket.io instance,
+                 * available only after successful login.
+                 */
+                this.socket = io({
+                    transports: ['websocket']
+                })
+
+                this.socket.emit('login', nickname, (data) => {
+                    console.log(data)
+
+                    // End async
+                    this.ui.spinPlayButton(false)
+
+                    resolve()
+                })
+
+            }
 
         })        
 

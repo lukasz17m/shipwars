@@ -1,14 +1,15 @@
 const express = require('express')
 const log = require('npmlog')
 const path = require('path')
-const sio = require('socket.io')
 
 const app = express()
-const http = require('http').Server(app);
-const io = sio(http);
+const http = require('http').Server(app)
+const io = require('socket.io')(http)
 
 const PORT = 3000
 const FPS = 10
+
+let queue = []
 
 let frame = {
   ships: {},
@@ -20,12 +21,17 @@ app.use(express.static(path.join(__dirname, 'public')))
 io.on('connection', (socket) => {
   log.info('CONNECT', 'User connected. ID: %s', socket.id)
 
-  frame.ships[socket.id] = {
+  /*frame.ships[socket.id] = {
     x: Math.floor((Math.random() * 600) + 100),
     y: Math.floor((Math.random() * 400) + 100)
   }
 
-  log.info('FRAME', frame)
+  log.info('FRAME', frame)*/
+
+  socket.on('login', (name, callback) => {
+    log.info('LOGIN', 'User %s logged in.', name)
+    callback('test')
+  })
 
   // Disconnect
   socket.on('disconnect', () => {

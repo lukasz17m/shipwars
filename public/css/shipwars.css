@@ -90,7 +90,7 @@ body {
 
 .nickname-screen input {
     display: block;
-    margin: 0 auto 2em;
+    margin: 0 auto 1em;
     width: 70%;
     outline: none;
     border: none;
@@ -98,6 +98,18 @@ body {
     font-size: 1.2em;
     text-align: center;
     box-shadow: 0.1em 0.1em 0.1em 0.1em;
+}
+
+.nickname-screen .error-message {
+    display: none;
+    margin-bottom: 1em;
+    color: #f00;
+    text-align: center;
+    text-shadow: 0.1em 0.1em 0.1em #000;
+}
+
+.nickname-screen .error-message.visible {
+    display: block;
 }
 
 .nickname-screen .play-button {
@@ -115,6 +127,10 @@ body {
     content: 'Play';
     color: #880;
     font-weight: bold;
+}
+
+.nickname-screen .play-button.loading {
+    pointer-events: none;
 }
 
 .nickname-screen .play-button.loading::before {

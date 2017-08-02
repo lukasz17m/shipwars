@@ -1,5 +1,5 @@
 /**
- * @module UserInterface
+ * @module
  */
 export default class UserInterface {
 
@@ -32,7 +32,9 @@ export default class UserInterface {
 
         this.startScreen = document.createElement('div')
 
-        this.nicknameScreen = document.createElement('div')
+        this.loginScreen = document.createElement('div')
+
+        this.asidePanel = document.createElement('aside')
 
     }
 
@@ -75,33 +77,45 @@ export default class UserInterface {
     /**
      * @type {Node}
      */
-    set nicknameScreen(node) {
+    set loginScreen(node) {
         
-        this._nicknameScreen = node
-        this.nicknameScreen.className = 'nickname-screen'
+        this._loginScreen = node
+        this.loginScreen.className = 'nickname-screen'
 
         let wrapper = document.createElement('div')
         wrapper.className = 'wrapper'
-        this.nicknameScreen.appendChild(wrapper)
+        this.loginScreen.appendChild(wrapper)
 
         let header = document.createElement('h2')
         header.innerText = 'Enter your name, pirate!'
         wrapper.appendChild(header)
 
-        let input = this.nameInput = document.createElement('input')
-        input.placeholder = 'Type here'
+        let input = this._nameInput = document.createElement('input')
         input.autofocus = 'autofocus'
         wrapper.appendChild(input)
 
-        let button = document.createElement('div')
+        let message = this._errorMessage = document.createElement('div')
+        message.className = 'error-message'
+        wrapper.appendChild(message)
+
+        let button = this._playButton = document.createElement('div')
         button.className = 'play-button'
         wrapper.appendChild(button)
 
     }
 
-    get nicknameScreen() {
+    get loginScreen() {
         
-        return this._nicknameScreen
+        return this._loginScreen
+
+    }
+
+    /**
+     * @type {Node}
+     */
+    get playButton() {
+        
+        return this._playButton
 
     }
 
@@ -110,7 +124,43 @@ export default class UserInterface {
      */
     get nickname() {
         
-        return this.nameInput.value
+        return this._nameInput.value.trim()
+
+    }
+
+    /**
+     * @type {Node}
+     */
+    set asidePanel(node) {
+        
+        this._asidePanel = node
+        this.asidePanel.className = 'aside-panel'
+
+        let wrapper = document.createElement('div')
+        wrapper.className = 'wrapper'
+        this.asidePanel.appendChild(wrapper)
+
+        let header = document.createElement('h2')
+        header.innerText = 'Enter your name, pirate!'
+        wrapper.appendChild(header)
+
+        let input = this._nameInput = document.createElement('input')
+        input.autofocus = 'autofocus'
+        wrapper.appendChild(input)
+
+        let message = this._errorMessage = document.createElement('div')
+        message.className = 'error-message'
+        wrapper.appendChild(message)
+
+        let button = this._playButton = document.createElement('div')
+        button.className = 'play-button'
+        wrapper.appendChild(button)
+
+    }
+
+    get asidePanel() {
+        
+        return this._asidePanel
 
     }
 
@@ -119,17 +169,16 @@ export default class UserInterface {
     //=============================================
 
     /**
-     * Adds listener for key down,
-     * won’t trigger more than once if key is being held down.
+     * Adds a listener for key down,
+     * won’t trigger more than once if the key is being held down.
      * @param {?number} - keyCode Set to null if you want to listen for any key.
      * @param {!keyboardEventCallback} callback - Function to execute.
-     * @returns {array} Returns array of added listeners’ id.
+     * @returns {array} Returns an array of added listeners’ id.
      */
     keyDown(keyCode, callback) {
 
         let code, fired
 
-        // Adds event listener
         let down = ++this.listeners.count
 
         this.listeners[down] = {
@@ -177,14 +226,13 @@ export default class UserInterface {
     }
 
     /**
-     * Adds listener for key up.
+     * Adds a listener for key up.
      * @param {?number} keyCode - Set to null if you want to listen for any key.
      * @param {!keyboardEventCallback} callback - Function to execute.
      * @returns {number} Returns added listener’s id.
      */
     keyUp(keyCode, callback) {
 
-        // Adds event listener
         let up = ++this.listeners.count
 
         this.listeners[up] = {
@@ -209,7 +257,7 @@ export default class UserInterface {
 
     /**
      * Unsets existing listener.
-     * @param {!(number|numbers[])} id - Id or array of ids of listeners you want to remove.
+     * @param {!(number|numbers[])} id - Id or an array of ids of the listeners you want to remove.
      * @return {boolean} Returns true on success.
      */
     unset(id) {
@@ -231,6 +279,41 @@ export default class UserInterface {
         }
 
         return true
+
+    }
+
+    /**
+     * Changes play button to infinity radial progress.
+     * @param {?boolean} spin - If set to false loader disappears.
+     */
+    spinPlayButton(spin = true) {
+
+        if (spin) {
+            this._playButton.classList.add('loading')
+        } else {
+            this._playButton.classList.remove('loading')
+        }
+
+    }
+
+    /**
+     * Hides login error message.
+     */
+    hideErrorMessage() {
+
+        this._errorMessage.classList.remove('visible')
+        this._errorMessage.innerText = ''
+
+    }
+
+    /**
+     * Shows login error message.
+     * @param {!string} message - Text to display.
+     */
+    showErrorMessage(message) {
+
+        this._errorMessage.classList.add('visible')
+        this._errorMessage.innerText = message
 
     }
 
