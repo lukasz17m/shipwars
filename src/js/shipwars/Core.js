@@ -65,24 +65,35 @@ export default class Core {
 
                 this.login(this.ui.nickname)
                 .then((data) => {
+
                     this.ui.hideErrorMessage()
+
+                    // Remove the login box
+                    this.ui.gamebox.removeChild(this.ui.loginScreen)
+
+                    //Append aside panel
+                    this.ui.gamebox.appendChild(this.ui.asidePanel)
+                    
                 })
-                .catch((error) => {
-                    this.ui.showErrorMessage(error)
-                })
+                .catch((error) => this.ui.showErrorMessage(error))
 
             }
         })
 
-        this.ui.keyDown(37, (e) => { console.log('keyDown : Left') })
-        this.ui.keyDown(38, (e) => { console.log('keyDown : Up') })
-        this.ui.keyDown(39, (e) => { console.log('keyDown : Right') })
-        this.ui.keyDown(40, (e) => { console.log('keyDown : Down') })
+        this.ui.keyDown(81, () => this.ui.message = 'Player Jack Sparrow joined')
+        this.ui.keyDown(87, () => this.ui.message = 'Player dd joined')
+        this.ui.keyDown(69, () => this.ui.message = 'Player XXXXXXXXXXXXXXXX joined')
 
-        this.ui.keyUp(37, (e) => { console.log('keyUp : Left') })
-        this.ui.keyUp(38, (e) => { console.log('keyUp : Up') })
-        this.ui.keyUp(39, (e) => { console.log('keyUp : Right') })
-        this.ui.keyUp(40, (e) => { console.log('keyUp : Down') })
+
+        this.ui.keyDown(37, (e) => console.log('keyDown : Left'))
+        this.ui.keyDown(38, (e) => console.log('keyDown : Up'))
+        this.ui.keyDown(39, (e) => console.log('keyDown : Right'))
+        this.ui.keyDown(40, (e) => console.log('keyDown : Down'))
+
+        this.ui.keyUp(37, (e) => console.log('keyUp : Left'))
+        this.ui.keyUp(38, (e) => console.log('keyUp : Up'))
+        this.ui.keyUp(39, (e) => console.log('keyUp : Right'))
+        this.ui.keyUp(40, (e) => console.log('keyUp : Down'))
 
         
 
@@ -145,9 +156,13 @@ export default class Core {
         return new Promise((resolve, reject) => {
 
             if (nickname.length < Config.NAME_MIN_CHARS) {
+
                 reject(`Your nickname is too short (min ${ Config.NAME_MIN_CHARS } char${ Config.NAME_MIN_CHARS > 1 ? 's' : '' })`)
+
             } else if (nickname.length > Config.NAME_MAX_CHARS) {
+
                 reject(`Your nickname is too long (max ${ Config.NAME_MAX_CHARS } char${ Config.NAME_MAX_CHARS > 1 ? 's' : '' })`)
+
             } else {
 
                 // Begin async...
@@ -162,12 +177,16 @@ export default class Core {
                 })
 
                 this.socket.emit('login', nickname, (data) => {
-                    console.log(data)
 
                     // End async
                     this.ui.spinPlayButton(false)
 
+                    if (! data) {
+                        reject('This nickname is taken')
+                    }
+
                     resolve()
+
                 })
 
             }

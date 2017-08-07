@@ -30,7 +30,6 @@ body {
     border: 10px solid;
     background-color: #182838;
     background: linear-gradient(to top left, #123, #234);
-    overflow: hidden;
 }
 
 /* Start screen */
@@ -73,7 +72,7 @@ body {
     justify-content: center;
     align-items: center;
     background-color: #663300;
-    box-shadow: 0.5em 0.5em 0.5em;
+    box-shadow: .5em .5em .5em;
 }
 
 .nickname-screen .wrapper {
@@ -85,7 +84,7 @@ body {
     margin-bottom: 1em;
     color: #fb8;
     font-size: 2em;
-    text-shadow: 0.1em 0.1em 0.1em #000;
+    text-shadow: .1em .1em .1em #000;
 }
 
 .nickname-screen input {
@@ -94,10 +93,10 @@ body {
     width: 70%;
     outline: none;
     border: none;
-    padding: 0.5em 1em;
+    padding: .5em 1em;
     font-size: 1.2em;
     text-align: center;
-    box-shadow: 0.1em 0.1em 0.1em 0.1em;
+    box-shadow: .1em .1em .1em .1em;
 }
 
 .nickname-screen .error-message {
@@ -105,7 +104,7 @@ body {
     margin-bottom: 1em;
     color: #f00;
     text-align: center;
-    text-shadow: 0.1em 0.1em 0.1em #000;
+    text-shadow: .1em .1em .1em #000;
 }
 
 .nickname-screen .error-message.visible {
@@ -120,13 +119,22 @@ body {
     background: #ffa;
     align-items: center;
     cursor: pointer;
-    box-shadow: 0.1em 0.1em 0.1em #000;
+    box-shadow: .1em .1em .1em #000;
 }
 
 .nickname-screen .play-button::before {
     content: 'Play';
     color: #880;
     font-weight: bold;
+}
+
+.nickname-screen .play-button:hover {
+    transform: scale(1.1);
+    box-shadow: .3em .3em .3em #000;
+}
+
+.nickname-screen .play-button:active {
+    transform: scale(1);
 }
 
 .nickname-screen .play-button.loading {
@@ -138,7 +146,7 @@ body {
     display: block;
     width: 1em;
     height: 1em;
-    border: 0.2em solid;
+    border: .2em solid;
     border-color: #880 #880 transparent transparent;
     border-radius: 50%;
     animation: spin .5s infinite linear;
@@ -153,12 +161,87 @@ body {
     }
 }
 
-.nickname-screen .play-button:hover {
-    transform: scale(1.1);
+/* Aside Panel */
+
+.aside-panel {
+    width: 200px;
+    height: 600px;
+    position: absolute;
+    top: 0;
+    right: -210px;
+    border: 10px solid #741;
+    border-left: none;
+    background-color: #a74;
 }
 
-.nickname-screen .play-button:active {
-    transform: scale(1);
+.aside-panel div {
+    height: 100px
+}
+
+/* Info */
+div.info {
+    height: 40px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fed;
+}
+
+div.info ul {
+    padding-left: 2px;
+    font-size: 12px;
+    white-space: nowrap;
+    list-style-type: none;
+    overflow: hidden;
+}
+
+div.info li {
+    height: 20px;
+    line-height: 20px;
+}
+
+div.info li.fade {
+    color: #765;
+}
+
+/* Ranking */
+div.ranking {
+    height: 100px;
+    background-color: #905100;
+}
+
+/* Queue */
+div.queue {
+    height: 100px;
+    background-color: #321478;
+}
+
+/* Buttons */
+div.btn {
+    height: 30px;
+    background-color: #898548;
+}
+
+/* Speedometer */
+div.speed {
+    height: 40px;
+    background-color: #320059;
+}
+
+/* Compass */
+div.compass {
+    height: 160px;
+    background-color: #487418;
+}
+
+/* Hitpoints */
+div.hp {
+    height: 40px;
+    background-color: #021501;
+}
+
+/* Firepower */
+div.fp {
+    height: 40px;
+    background-color: #415874;
 }
 
 /* Ships */

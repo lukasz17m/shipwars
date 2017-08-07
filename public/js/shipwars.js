@@ -3351,6 +3351,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 new __WEBPACK_IMPORTED_MODULE_0__shipwars_Core__["a" /* default */]()
 
+window.onkeydown = e => console.log(`keyCode: ${ e.keyCode }`)
+
 /***/ }),
 /* 22 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -3359,6 +3361,7 @@ new __WEBPACK_IMPORTED_MODULE_0__shipwars_Core__["a" /* default */]()
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_socket_io_client__ = __webpack_require__(23);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_socket_io_client___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_socket_io_client__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Config__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Config___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__Config__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__UserInterface__ = __webpack_require__(48);
 
 
@@ -3427,24 +3430,35 @@ class Core {
 
                 this.login(this.ui.nickname)
                 .then((data) => {
+
                     this.ui.hideErrorMessage()
+
+                    // Remove the login box
+                    this.ui.gamebox.removeChild(this.ui.loginScreen)
+
+                    //Append aside panel
+                    this.ui.gamebox.appendChild(this.ui.asidePanel)
+                    
                 })
-                .catch((error) => {
-                    this.ui.showErrorMessage(error)
-                })
+                .catch((error) => this.ui.showErrorMessage(error))
 
             }
         })
 
-        this.ui.keyDown(37, (e) => { console.log('keyDown : Left') })
-        this.ui.keyDown(38, (e) => { console.log('keyDown : Up') })
-        this.ui.keyDown(39, (e) => { console.log('keyDown : Right') })
-        this.ui.keyDown(40, (e) => { console.log('keyDown : Down') })
+        this.ui.keyDown(81, () => this.ui.message = 'Player Jack Sparrow joined')
+        this.ui.keyDown(87, () => this.ui.message = 'Player dd joined')
+        this.ui.keyDown(69, () => this.ui.message = 'Player XXXXXXXXXXXXXXXX joined')
 
-        this.ui.keyUp(37, (e) => { console.log('keyUp : Left') })
-        this.ui.keyUp(38, (e) => { console.log('keyUp : Up') })
-        this.ui.keyUp(39, (e) => { console.log('keyUp : Right') })
-        this.ui.keyUp(40, (e) => { console.log('keyUp : Down') })
+
+        this.ui.keyDown(37, (e) => console.log('keyDown : Left'))
+        this.ui.keyDown(38, (e) => console.log('keyDown : Up'))
+        this.ui.keyDown(39, (e) => console.log('keyDown : Right'))
+        this.ui.keyDown(40, (e) => console.log('keyDown : Down'))
+
+        this.ui.keyUp(37, (e) => console.log('keyUp : Left'))
+        this.ui.keyUp(38, (e) => console.log('keyUp : Up'))
+        this.ui.keyUp(39, (e) => console.log('keyUp : Right'))
+        this.ui.keyUp(40, (e) => console.log('keyUp : Down'))
 
         
 
@@ -3506,10 +3520,14 @@ class Core {
 
         return new Promise((resolve, reject) => {
 
-            if (nickname.length < __WEBPACK_IMPORTED_MODULE_1__Config__["a" /* default */].NAME_MIN_CHARS) {
-                reject(`Your nickname is too short (min ${ __WEBPACK_IMPORTED_MODULE_1__Config__["a" /* default */].NAME_MIN_CHARS } char${ __WEBPACK_IMPORTED_MODULE_1__Config__["a" /* default */].NAME_MIN_CHARS > 1 ? 's' : '' })`)
-            } else if (nickname.length > __WEBPACK_IMPORTED_MODULE_1__Config__["a" /* default */].NAME_MAX_CHARS) {
-                reject(`Your nickname is too long (max ${ __WEBPACK_IMPORTED_MODULE_1__Config__["a" /* default */].NAME_MAX_CHARS } char${ __WEBPACK_IMPORTED_MODULE_1__Config__["a" /* default */].NAME_MAX_CHARS > 1 ? 's' : '' })`)
+            if (nickname.length < __WEBPACK_IMPORTED_MODULE_1__Config___default.a.NAME_MIN_CHARS) {
+
+                reject(`Your nickname is too short (min ${ __WEBPACK_IMPORTED_MODULE_1__Config___default.a.NAME_MIN_CHARS } char${ __WEBPACK_IMPORTED_MODULE_1__Config___default.a.NAME_MIN_CHARS > 1 ? 's' : '' })`)
+
+            } else if (nickname.length > __WEBPACK_IMPORTED_MODULE_1__Config___default.a.NAME_MAX_CHARS) {
+
+                reject(`Your nickname is too long (max ${ __WEBPACK_IMPORTED_MODULE_1__Config___default.a.NAME_MAX_CHARS } char${ __WEBPACK_IMPORTED_MODULE_1__Config___default.a.NAME_MAX_CHARS > 1 ? 's' : '' })`)
+
             } else {
 
                 // Begin async...
@@ -3524,12 +3542,16 @@ class Core {
                 })
 
                 this.socket.emit('login', nickname, (data) => {
-                    console.log(data)
 
                     // End async
                     this.ui.spinPlayButton(false)
 
+                    if (! data) {
+                        reject('This nickname is taken')
+                    }
+
                     resolve()
+
                 })
 
             }
@@ -6896,16 +6918,15 @@ Backoff.prototype.setJitter = function(jitter){
 
 /***/ }),
 /* 47 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
 /**
  * @module
  */
-class Config {
+module.exports = class Config {
 
     //=======================
-    // Setters & Getters : [
+    // Static getters : [
     //=======================
 
     /**
@@ -6923,12 +6944,10 @@ class Config {
     }
 
     //=======================
-    // ] : Setters & Getters
+    // ] : Static getters
     //=======================
 
 }
-/* harmony export (immutable) */ __webpack_exports__["a"] = Config;
-
 
 /***/ }),
 /* 48 */
@@ -6955,6 +6974,8 @@ class UserInterface {
         this.listeners = {
             count: 0 // Doesn’t show number of listeners!
         }
+
+        this.messages = []
 
         this.init()
 
@@ -7073,31 +7094,96 @@ class UserInterface {
         this._asidePanel = node
         this.asidePanel.className = 'aside-panel'
 
-        let wrapper = document.createElement('div')
-        wrapper.className = 'wrapper'
-        this.asidePanel.appendChild(wrapper)
+        // Info
+        let panelInfo = this._panelInfo = document.createElement('div')
+        panelInfo.className = 'info'
+        this.asidePanel.appendChild(panelInfo)
 
-        let header = document.createElement('h2')
-        header.innerText = 'Enter your name, pirate!'
-        wrapper.appendChild(header)
+        // Ranking
+        let panelRanking = document.createElement('div')
+        panelRanking.className = 'ranking'
+        this.asidePanel.appendChild(panelRanking)
 
-        let input = this._nameInput = document.createElement('input')
-        input.autofocus = 'autofocus'
-        wrapper.appendChild(input)
+        // Queue
+        let panelQueue = document.createElement('div')
+        panelQueue.className = 'queue'
+        this.asidePanel.appendChild(panelQueue)
 
-        let message = this._errorMessage = document.createElement('div')
-        message.className = 'error-message'
-        wrapper.appendChild(message)
+        // Join / Leave Button
+        let panelJoinLeaveBtn = document.createElement('div')
+        panelJoinLeaveBtn.className = 'btn'
+        this.asidePanel.appendChild(panelJoinLeaveBtn)
 
-        let button = this._playButton = document.createElement('div')
-        button.className = 'play-button'
-        wrapper.appendChild(button)
+        // Help button
+        let panelHelpBtn = document.createElement('div')
+        panelHelpBtn.className = 'btn'
+        this.asidePanel.appendChild(panelHelpBtn)
+
+        // Speedometer
+        let panelSpeed = document.createElement('div')
+        panelSpeed.className = 'speed'
+        this.asidePanel.appendChild(panelSpeed)
+
+        // Compass
+        let panelCompass = document.createElement('div')
+        panelCompass.className = 'compass'
+        this.asidePanel.appendChild(panelCompass)
+
+        // Hit points
+        let panelHP = document.createElement('div')
+        panelHP.className = 'hp'
+        this.asidePanel.appendChild(panelHP)
+
+        // Firepower
+        let panelFirepower = document.createElement('div')
+        panelFirepower.className = 'fp'
+        this.asidePanel.appendChild(panelFirepower)
 
     }
 
     get asidePanel() {
-        
+
         return this._asidePanel
+
+    }
+
+    /**
+     * @type {string}
+     */
+    set message(message) {
+
+        if (this.messages.length < 2) {
+
+            this.messages.push(message)
+
+        } else {
+
+            this.messages.shift()
+            this.messages.push(message)
+
+        }
+
+        let list = document.createElement('ul')
+
+        this.messages.forEach((message, index) => {
+
+            let item = document.createElement('li')
+
+            if (this.messages.length == 2 && index == 0) {
+            
+                item.className = 'fade'
+
+            }
+
+            item.title = message
+            item.innerText = message
+
+            list.appendChild(item)
+
+        })
+
+        this._panelInfo.innerHTML = ''
+        this._panelInfo.appendChild(list)
 
     }
 
@@ -7194,7 +7280,7 @@ class UserInterface {
 
     /**
      * Unsets existing listener.
-     * @param {!(number|numbers[])} id - Id or an array of ids of the listeners you want to remove.
+     * @param {!(number|number[])} id - Id or an array of ids of the listeners you want to remove.
      * @return {boolean} Returns true on success.
      */
     unset(id) {
@@ -7221,14 +7307,18 @@ class UserInterface {
 
     /**
      * Changes play button to infinity radial progress.
-     * @param {?boolean} spin - If set to false loader disappears.
+     * @param {boolean=} spin - If set to false loader disappears.
      */
     spinPlayButton(spin = true) {
 
         if (spin) {
+
             this._playButton.classList.add('loading')
+
         } else {
+
             this._playButton.classList.remove('loading')
+
         }
 
     }

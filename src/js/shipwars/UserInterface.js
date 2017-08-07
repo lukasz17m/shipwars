@@ -19,6 +19,8 @@ export default class UserInterface {
             count: 0 // Doesn’t show number of listeners!
         }
 
+        this.messages = []
+
         this.init()
 
     }
@@ -136,31 +138,96 @@ export default class UserInterface {
         this._asidePanel = node
         this.asidePanel.className = 'aside-panel'
 
-        let wrapper = document.createElement('div')
-        wrapper.className = 'wrapper'
-        this.asidePanel.appendChild(wrapper)
+        // Info
+        let panelInfo = this._panelInfo = document.createElement('div')
+        panelInfo.className = 'info'
+        this.asidePanel.appendChild(panelInfo)
 
-        let header = document.createElement('h2')
-        header.innerText = 'Enter your name, pirate!'
-        wrapper.appendChild(header)
+        // Ranking
+        let panelRanking = document.createElement('div')
+        panelRanking.className = 'ranking'
+        this.asidePanel.appendChild(panelRanking)
 
-        let input = this._nameInput = document.createElement('input')
-        input.autofocus = 'autofocus'
-        wrapper.appendChild(input)
+        // Queue
+        let panelQueue = document.createElement('div')
+        panelQueue.className = 'queue'
+        this.asidePanel.appendChild(panelQueue)
 
-        let message = this._errorMessage = document.createElement('div')
-        message.className = 'error-message'
-        wrapper.appendChild(message)
+        // Join / Leave Button
+        let panelJoinLeaveBtn = document.createElement('div')
+        panelJoinLeaveBtn.className = 'btn'
+        this.asidePanel.appendChild(panelJoinLeaveBtn)
 
-        let button = this._playButton = document.createElement('div')
-        button.className = 'play-button'
-        wrapper.appendChild(button)
+        // Help button
+        let panelHelpBtn = document.createElement('div')
+        panelHelpBtn.className = 'btn'
+        this.asidePanel.appendChild(panelHelpBtn)
+
+        // Speedometer
+        let panelSpeed = document.createElement('div')
+        panelSpeed.className = 'speed'
+        this.asidePanel.appendChild(panelSpeed)
+
+        // Compass
+        let panelCompass = document.createElement('div')
+        panelCompass.className = 'compass'
+        this.asidePanel.appendChild(panelCompass)
+
+        // Hit points
+        let panelHP = document.createElement('div')
+        panelHP.className = 'hp'
+        this.asidePanel.appendChild(panelHP)
+
+        // Firepower
+        let panelFirepower = document.createElement('div')
+        panelFirepower.className = 'fp'
+        this.asidePanel.appendChild(panelFirepower)
 
     }
 
     get asidePanel() {
-        
+
         return this._asidePanel
+
+    }
+
+    /**
+     * @type {string}
+     */
+    set message(message) {
+
+        if (this.messages.length < 2) {
+
+            this.messages.push(message)
+
+        } else {
+
+            this.messages.shift()
+            this.messages.push(message)
+
+        }
+
+        let list = document.createElement('ul')
+
+        this.messages.forEach((message, index) => {
+
+            let item = document.createElement('li')
+
+            if (this.messages.length == 2 && index == 0) {
+            
+                item.className = 'fade'
+
+            }
+
+            item.title = message
+            item.innerText = message
+
+            list.appendChild(item)
+
+        })
+
+        this._panelInfo.innerHTML = ''
+        this._panelInfo.appendChild(list)
 
     }
 
@@ -257,7 +324,7 @@ export default class UserInterface {
 
     /**
      * Unsets existing listener.
-     * @param {!(number|numbers[])} id - Id or an array of ids of the listeners you want to remove.
+     * @param {!(number|number[])} id - Id or an array of ids of the listeners you want to remove.
      * @return {boolean} Returns true on success.
      */
     unset(id) {
@@ -284,14 +351,18 @@ export default class UserInterface {
 
     /**
      * Changes play button to infinity radial progress.
-     * @param {?boolean} spin - If set to false loader disappears.
+     * @param {boolean=} spin - If set to false loader disappears.
      */
     spinPlayButton(spin = true) {
 
         if (spin) {
+
             this._playButton.classList.add('loading')
+
         } else {
+
             this._playButton.classList.remove('loading')
+
         }
 
     }

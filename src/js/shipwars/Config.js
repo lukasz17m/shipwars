@@ -1,10 +1,10 @@
 /**
  * @module
  */
-export default class Config {
+module.exports = class Config {
 
     //=======================
-    // Setters & Getters : [
+    // Static getters : [
     //=======================
 
     /**
@@ -22,7 +22,7 @@ export default class Config {
     }
 
     //=======================
-    // ] : Setters & Getters
+    // ] : Static getters
     //=======================
 
 }
