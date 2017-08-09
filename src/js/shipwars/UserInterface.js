@@ -1,3 +1,5 @@
+import getContrast from './utils/getContrast'
+
 /**
  * @module
  */
@@ -144,23 +146,33 @@ export default class UserInterface {
         this.asidePanel.appendChild(panelInfo)
 
         // Ranking
-        let panelRanking = document.createElement('div')
-        panelRanking.className = 'ranking'
+        let panelRanking = this._panelRanking = document.createElement('div')
+        panelRanking.className = 'ranking scrollable'
         this.asidePanel.appendChild(panelRanking)
 
         // Queue
-        let panelQueue = document.createElement('div')
-        panelQueue.className = 'queue'
+        let panelQueue = this._panelQueue = document.createElement('div')
+        panelQueue.className = 'queue scrollable'
         this.asidePanel.appendChild(panelQueue)
 
         // Join / Leave Button
         let panelJoinLeaveBtn = document.createElement('div')
         panelJoinLeaveBtn.className = 'btn'
+
+        let joinLeaveButton = this._joinLeaveButton = document.createElement('div')
+        joinLeaveButton.innerText = 'Join'
+
+        panelJoinLeaveBtn.appendChild(joinLeaveButton)
         this.asidePanel.appendChild(panelJoinLeaveBtn)
 
         // Help button
         let panelHelpBtn = document.createElement('div')
         panelHelpBtn.className = 'btn'
+
+        let helpButton = this._helpButton = document.createElement('div')
+        helpButton.innerText = 'Help'
+        
+        panelHelpBtn.appendChild(helpButton)
         this.asidePanel.appendChild(panelHelpBtn)
 
         // Speedometer
@@ -219,8 +231,7 @@ export default class UserInterface {
 
             }
 
-            item.title = message
-            item.innerText = message
+            item.title = item.innerText = message
 
             list.appendChild(item)
 
@@ -228,6 +239,86 @@ export default class UserInterface {
 
         this._panelInfo.innerHTML = ''
         this._panelInfo.appendChild(list)
+
+    }
+
+    /**
+     * @type {array}
+     */
+    set ranking(ranking) {
+
+        let list = document.createElement('ul')
+
+        ranking.forEach((player) => {
+
+            let item = document.createElement('li')
+
+            item.style.color = getContrast(player.color)
+            item.style.backgroundColor = player.color
+
+            let name = document.createElement('div')
+            name.className = 'name'
+            name.title = name.innerText = player.name
+
+            let score = document.createElement('div')
+            score.className = 'score'
+            score.innerText = player.score
+
+            item.appendChild(name)
+            item.appendChild(score)
+            
+            list.appendChild(item)
+
+        })
+
+        this._panelRanking.innerHTML = ''
+        this._panelRanking.appendChild(list)
+
+    }
+
+    /**
+     * @type {array}
+     */
+    set queue(queue) {
+
+        let list = document.createElement('ul')
+
+        queue.forEach((queued, index) => {
+
+            let item = document.createElement('li')
+
+            if (index % 2 == 0) {
+            
+                item.className = 'fade'
+
+            }
+
+            item.title = item.innerText = queued
+
+            list.appendChild(item)
+
+        })
+
+        this._panelQueue.innerHTML = ''
+        this._panelQueue.appendChild(list)
+
+    }
+
+    /**
+     * @type {Node}
+     */
+    get joinLeaveButton() {
+
+        return this._joinLeaveButton
+
+    }
+
+    /**
+     * @type {Node}
+     */
+    get helpButton() {
+
+        return this._helpButton
 
     }
 

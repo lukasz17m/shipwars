@@ -3436,19 +3436,20 @@ class Core {
                     // Remove the login box
                     this.ui.gamebox.removeChild(this.ui.loginScreen)
 
-                    //Append aside panel
+                    // Append aside panel
                     this.ui.gamebox.appendChild(this.ui.asidePanel)
-                    
+
+                    // Listen for the server emits
+                    this.listen()
+
+                    // Listen for the user interface interaction
+                    this.userInterfaceListen()
+
                 })
                 .catch((error) => this.ui.showErrorMessage(error))
 
             }
         })
-
-        this.ui.keyDown(81, () => this.ui.message = 'Player Jack Sparrow joined')
-        this.ui.keyDown(87, () => this.ui.message = 'Player dd joined')
-        this.ui.keyDown(69, () => this.ui.message = 'Player XXXXXXXXXXXXXXXX joined')
-
 
         this.ui.keyDown(37, (e) => console.log('keyDown : Left'))
         this.ui.keyDown(38, (e) => console.log('keyDown : Up'))
@@ -3460,10 +3461,9 @@ class Core {
         this.ui.keyUp(39, (e) => console.log('keyUp : Right'))
         this.ui.keyUp(40, (e) => console.log('keyUp : Down'))
 
-        
-
     }
 
+    // temp
     start() {
 
         this.socket.on('frame', (data) => {
@@ -3557,6 +3557,109 @@ class Core {
             }
 
         })        
+
+    }
+
+    /**
+     * Inits Socket.io listeners.
+     */
+    listen() {
+
+        // Messagebox
+        this.socket.on('info', (message) => this.ui.message = message)
+
+        // Ranking
+        this.socket.on('ranking', (list) => {
+
+            let ranking = []
+
+            let members = list.filter((foo, index) => {
+
+                if (index % 2 == 0) {
+
+                    return true
+                
+                }
+
+                return false
+
+            })
+
+            this.socket.emit('getColors', members, (colors) => {
+            
+                let i = 0
+
+                for (let j = 0; j < list.length; j += 2) {
+
+                    ranking.push({ name: list[j], score: list[j + 1], color: colors[i++] })
+
+                }
+
+                this.ui.ranking = ranking
+
+            })
+
+        })
+
+        // Queue
+        this.socket.on('queue', (queue) => this.ui.queue = queue)
+
+        // Frame
+        this.socket.on('frame', (data) => {
+
+            let ships = data.ships
+
+            for (let id in ships) {
+
+                if (this.shipsCreated.indexOf(id) < 0) {
+
+                    let ship = this.ships[id] = {}
+                    ship.node = document.createElement('div')
+                    ship.node.className = 'ship'
+                    ship.node.style.left = ships[id].x + 'px'
+                    ship.node.style.top = ships[id].y + 'px'
+                    this.ui.gamebox.appendChild(ship.node)
+
+                    this.shipsCreated.push(id)
+
+                }
+
+            }
+
+            // Delete ships of disconnected users
+            this.shipsCreated = this.shipsCreated.filter((id) => {
+
+                if (! ships.hasOwnProperty(id)) {
+
+                    this.ui.gamebox.removeChild(this.ships[id].node)
+                    delete this.ships[id]
+
+                    return false
+                }
+
+                return true
+
+            })
+            
+        })
+    }
+
+    /**
+     * Inits UI listeners.
+     */
+    userInterfaceListen() {
+
+        // Join / Leave button
+        this.ui.joinLeaveButton.onclick = () => {
+            console.log('Join / Leave')
+
+            this.socket.emit('join')
+        }
+
+        // Help button
+        this.ui.helpButton.onclick = () => {
+            console.log('Help')
+        }
 
     }
 
@@ -6954,6 +7057,9 @@ module.exports = class Config {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_getContrast__ = __webpack_require__(49);
+
+
 /**
  * @module
  */
@@ -7100,23 +7206,33 @@ class UserInterface {
         this.asidePanel.appendChild(panelInfo)
 
         // Ranking
-        let panelRanking = document.createElement('div')
-        panelRanking.className = 'ranking'
+        let panelRanking = this._panelRanking = document.createElement('div')
+        panelRanking.className = 'ranking scrollable'
         this.asidePanel.appendChild(panelRanking)
 
         // Queue
-        let panelQueue = document.createElement('div')
-        panelQueue.className = 'queue'
+        let panelQueue = this._panelQueue = document.createElement('div')
+        panelQueue.className = 'queue scrollable'
         this.asidePanel.appendChild(panelQueue)
 
         // Join / Leave Button
         let panelJoinLeaveBtn = document.createElement('div')
         panelJoinLeaveBtn.className = 'btn'
+
+        let joinLeaveButton = this._joinLeaveButton = document.createElement('div')
+        joinLeaveButton.innerText = 'Join'
+
+        panelJoinLeaveBtn.appendChild(joinLeaveButton)
         this.asidePanel.appendChild(panelJoinLeaveBtn)
 
         // Help button
         let panelHelpBtn = document.createElement('div')
         panelHelpBtn.className = 'btn'
+
+        let helpButton = this._helpButton = document.createElement('div')
+        helpButton.innerText = 'Help'
+        
+        panelHelpBtn.appendChild(helpButton)
         this.asidePanel.appendChild(panelHelpBtn)
 
         // Speedometer
@@ -7175,8 +7291,7 @@ class UserInterface {
 
             }
 
-            item.title = message
-            item.innerText = message
+            item.title = item.innerText = message
 
             list.appendChild(item)
 
@@ -7184,6 +7299,86 @@ class UserInterface {
 
         this._panelInfo.innerHTML = ''
         this._panelInfo.appendChild(list)
+
+    }
+
+    /**
+     * @type {array}
+     */
+    set ranking(ranking) {
+
+        let list = document.createElement('ul')
+
+        ranking.forEach((player) => {
+
+            let item = document.createElement('li')
+
+            item.style.color = Object(__WEBPACK_IMPORTED_MODULE_0__utils_getContrast__["a" /* default */])(player.color)
+            item.style.backgroundColor = player.color
+
+            let name = document.createElement('div')
+            name.className = 'name'
+            name.title = name.innerText = player.name
+
+            let score = document.createElement('div')
+            score.className = 'score'
+            score.innerText = player.score
+
+            item.appendChild(name)
+            item.appendChild(score)
+            
+            list.appendChild(item)
+
+        })
+
+        this._panelRanking.innerHTML = ''
+        this._panelRanking.appendChild(list)
+
+    }
+
+    /**
+     * @type {array}
+     */
+    set queue(queue) {
+
+        let list = document.createElement('ul')
+
+        queue.forEach((queued, index) => {
+
+            let item = document.createElement('li')
+
+            if (index % 2 == 0) {
+            
+                item.className = 'fade'
+
+            }
+
+            item.title = item.innerText = queued
+
+            list.appendChild(item)
+
+        })
+
+        this._panelQueue.innerHTML = ''
+        this._panelQueue.appendChild(list)
+
+    }
+
+    /**
+     * @type {Node}
+     */
+    get joinLeaveButton() {
+
+        return this._joinLeaveButton
+
+    }
+
+    /**
+     * @type {Node}
+     */
+    get helpButton() {
+
+        return this._helpButton
 
     }
 
@@ -7351,6 +7546,29 @@ class UserInterface {
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = UserInterface;
 
+
+/***/ }),
+/* 49 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/**
+ * Calculates contrast color (YIQ).
+ * @param {!string} color - Hex value.
+ * @returns {string} Black or white hex value.
+ */
+function getContrast(color) {
+
+    let r = parseInt(color.substr(1, 2), 16),
+        g = parseInt(color.substr(3, 2), 16),
+        b = parseInt(color.substr(5, 2), 16),
+        yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000
+
+    return (yiq >= 128) ? '#000' : '#fff';
+
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (getContrast);
 
 /***/ })
 /******/ ]);

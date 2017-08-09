@@ -71,19 +71,20 @@ export default class Core {
                     // Remove the login box
                     this.ui.gamebox.removeChild(this.ui.loginScreen)
 
-                    //Append aside panel
+                    // Append aside panel
                     this.ui.gamebox.appendChild(this.ui.asidePanel)
-                    
+
+                    // Listen for the server emits
+                    this.listen()
+
+                    // Listen for the user interface interaction
+                    this.userInterfaceListen()
+
                 })
                 .catch((error) => this.ui.showErrorMessage(error))
 
             }
         })
-
-        this.ui.keyDown(81, () => this.ui.message = 'Player Jack Sparrow joined')
-        this.ui.keyDown(87, () => this.ui.message = 'Player dd joined')
-        this.ui.keyDown(69, () => this.ui.message = 'Player XXXXXXXXXXXXXXXX joined')
-
 
         this.ui.keyDown(37, (e) => console.log('keyDown : Left'))
         this.ui.keyDown(38, (e) => console.log('keyDown : Up'))
@@ -95,10 +96,9 @@ export default class Core {
         this.ui.keyUp(39, (e) => console.log('keyUp : Right'))
         this.ui.keyUp(40, (e) => console.log('keyUp : Down'))
 
-        
-
     }
 
+    // temp
     start() {
 
         this.socket.on('frame', (data) => {
@@ -192,6 +192,109 @@ export default class Core {
             }
 
         })        
+
+    }
+
+    /**
+     * Inits Socket.io listeners.
+     */
+    listen() {
+
+        // Messagebox
+        this.socket.on('info', (message) => this.ui.message = message)
+
+        // Ranking
+        this.socket.on('ranking', (list) => {
+
+            let ranking = []
+
+            let members = list.filter((foo, index) => {
+
+                if (index % 2 == 0) {
+
+                    return true
+                
+                }
+
+                return false
+
+            })
+
+            this.socket.emit('getColors', members, (colors) => {
+            
+                let i = 0
+
+                for (let j = 0; j < list.length; j += 2) {
+
+                    ranking.push({ name: list[j], score: list[j + 1], color: colors[i++] })
+
+                }
+
+                this.ui.ranking = ranking
+
+            })
+
+        })
+
+        // Queue
+        this.socket.on('queue', (queue) => this.ui.queue = queue)
+
+        // Frame
+        this.socket.on('frame', (data) => {
+
+            let ships = data.ships
+
+            for (let id in ships) {
+
+                if (this.shipsCreated.indexOf(id) < 0) {
+
+                    let ship = this.ships[id] = {}
+                    ship.node = document.createElement('div')
+                    ship.node.className = 'ship'
+                    ship.node.style.left = ships[id].x + 'px'
+                    ship.node.style.top = ships[id].y + 'px'
+                    this.ui.gamebox.appendChild(ship.node)
+
+                    this.shipsCreated.push(id)
+
+                }
+
+            }
+
+            // Delete ships of disconnected users
+            this.shipsCreated = this.shipsCreated.filter((id) => {
+
+                if (! ships.hasOwnProperty(id)) {
+
+                    this.ui.gamebox.removeChild(this.ships[id].node)
+                    delete this.ships[id]
+
+                    return false
+                }
+
+                return true
+
+            })
+            
+        })
+    }
+
+    /**
+     * Inits UI listeners.
+     */
+    userInterfaceListen() {
+
+        // Join / Leave button
+        this.ui.joinLeaveButton.onclick = () => {
+            console.log('Join / Leave')
+
+            this.socket.emit('join')
+        }
+
+        // Help button
+        this.ui.helpButton.onclick = () => {
+            console.log('Help')
+        }
 
     }
 

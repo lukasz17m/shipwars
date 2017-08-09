@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: Config.js</title>
+    <title>JSDoc: Source: utils/getContrast.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: Config.js</h1>
+    <h1 class="page-title">Source: utils/getContrast.js</h1>
 
     
 
@@ -27,33 +27,22 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * @module
+ * Calculates contrast color (YIQ).
+ * @param {!string} color - Hex value.
+ * @returns {string} Black or white hex value.
  */
-module.exports = class Config {
+function getContrast(color) {
 
-    //=======================
-    // Static getters : [
-    //=======================
+    let r = parseInt(color.substr(1, 2), 16),
+        g = parseInt(color.substr(3, 2), 16),
+        b = parseInt(color.substr(5, 2), 16),
+        yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000
 
-    /**
-     * @type {number}
-     */
-    static get NAME_MIN_CHARS() {
-        return 2
-    }
+    return (yiq >= 128) ? '#000' : '#fff';
 
-    /**
-     * @type {number}
-     */
-    static get NAME_MAX_CHARS() {
-        return 16
-    }
+}
 
-    //=======================
-    // ] : Static getters
-    //=======================
-
-}</code></pre>
+export default getContrast</code></pre>
         </article>
     </section>
 

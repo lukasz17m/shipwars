@@ -172,6 +172,7 @@ body {
     border: 10px solid #741;
     border-left: none;
     background-color: #a74;
+    user-select: none;
 }
 
 .aside-panel div {
@@ -179,13 +180,13 @@ body {
 }
 
 /* Info */
-div.info {
+.aside-panel .info {
     height: 40px;
     background-color: rgba(0, 0, 0, 0.7);
     color: #fed;
 }
 
-div.info ul {
+.aside-panel .info ul {
     padding-left: 2px;
     font-size: 12px;
     white-space: nowrap;
@@ -193,53 +194,150 @@ div.info ul {
     overflow: hidden;
 }
 
-div.info li {
+.aside-panel .info li {
     height: 20px;
     line-height: 20px;
 }
 
-div.info li.fade {
+.aside-panel .info li.fade {
     color: #765;
 }
 
+/* Scrollable */
+.aside-panel .scrollable ul {
+    position: relative;
+    top: -20px;
+    max-height: 80px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    list-style-type: none;
+}
+
+.aside-panel .scrollable li {
+    height: 20px;
+    line-height: 20px;
+    padding-left: 2px;
+    font-size: 12px;
+}
+
 /* Ranking */
-div.ranking {
+.aside-panel .ranking {
     height: 100px;
-    background-color: #905100;
+    padding-top: 20px;
+}
+
+.aside-panel .ranking::before {
+    content: 'RANKING';
+    position: relative;
+    top: -20px;
+    display: block;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    color: #a74;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    background-color: #741;
+}
+
+.aside-panel .ranking li div {
+    display: inline-block;
+    height: 20px;
+    float: left;
+    overflow: hidden;
+}
+
+.aside-panel .ranking .name {
+    width: calc(100% - 2em);
+}
+
+.aside-panel .ranking .score {
+    width: 2em;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.2)
 }
 
 /* Queue */
-div.queue {
+.aside-panel .queue {
     height: 100px;
-    background-color: #321478;
+    padding-top: 20px;
+}
+
+.aside-panel .queue::before {
+    content: 'QUEUE';
+    position: relative;
+    top: -20px;
+    display: block;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    color: #a74;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    background-color: #741;
+}
+
+.aside-panel .queue li {
+    color: #fc9;
+}
+
+.aside-panel .queue li.fade {
+    background-color: rgba(0, 0, 0, 0.2)
 }
 
 /* Buttons */
-div.btn {
+.aside-panel .btn {
     height: 30px;
-    background-color: #898548;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #741;
+}
+
+.aside-panel .btn div {
+    width: fit-content;
+    padding: 0 2em;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    color: #880;
+    font-weight: bold;
+    background-color: #ffa;
+    cursor: pointer;
+    box-shadow: 0.1em 0.1em 0.1em #000;
+}
+
+.aside-panel .btn div:hover {
+    transform: scale(1.1);
+    box-shadow: .3em .3em .3em #000;
+}
+
+.aside-panel .btn div:active {
+    transform: scale(1);
 }
 
 /* Speedometer */
-div.speed {
+.aside-panel .speed {
     height: 40px;
     background-color: #320059;
 }
 
 /* Compass */
-div.compass {
+.aside-panel .compass {
     height: 160px;
     background-color: #487418;
 }
 
 /* Hitpoints */
-div.hp {
+.aside-panel .hp {
     height: 40px;
     background-color: #021501;
 }
 
 /* Firepower */
-div.fp {
+.aside-panel .fp {
     height: 40px;
     background-color: #415874;
 }
