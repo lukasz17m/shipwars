@@ -3396,6 +3396,12 @@ class Core {
              */
             this.shipsCreated = []
 
+            /**
+             * Indicates if user is currently in game.
+             * @type {string[]}
+             */
+            this.inGame = false
+
             // Init game
             this.init()
 
@@ -3616,6 +3622,7 @@ class Core {
                     let ship = this.ships[id] = {}
                     ship.node = document.createElement('div')
                     ship.node.className = 'ship'
+                    ship.node.style.backgroundColor = ships[id].color
                     ship.node.style.left = ships[id].x + 'px'
                     ship.node.style.top = ships[id].y + 'px'
                     this.ui.gamebox.appendChild(ship.node)
@@ -3642,6 +3649,9 @@ class Core {
             })
             
         })
+
+        // temp
+        this.socket.on('onlytoid', (data) => console.log(data))
     }
 
     /**
@@ -3653,7 +3663,36 @@ class Core {
         this.ui.joinLeaveButton.onclick = () => {
             console.log('Join / Leave')
 
-            this.socket.emit('join')
+            if (this.inGame) {
+
+                this.socket.emit('leave', (response) => {
+
+                    if (response == 2) {
+
+                        this.inGame = false
+
+                        this.ui.updateJoinLeaveButton(response)
+
+                    }
+
+                })
+
+            } else {
+
+                this.socket.emit('join', (response) => {
+
+                    if (response == 1) {
+
+                        this.inGame = true
+
+                        this.ui.updateJoinLeaveButton(response)
+
+                    }
+
+                })
+
+            }
+            
         }
 
         // Help button
@@ -7036,14 +7075,27 @@ module.exports = class Config {
      * @type {number}
      */
     static get NAME_MIN_CHARS() {
+
         return 2
+
     }
 
     /**
      * @type {number}
      */
     static get NAME_MAX_CHARS() {
+
         return 16
+
+    }
+
+    /**
+     * @type {number}
+     */
+    static get MAX_PLAYERS() {
+
+        return 4
+
     }
 
     //=======================
@@ -7311,6 +7363,8 @@ class UserInterface {
 
         ranking.forEach((player) => {
 
+            console.log(player)
+
             let item = document.createElement('li')
 
             item.style.color = Object(__WEBPACK_IMPORTED_MODULE_0__utils_getContrast__["a" /* default */])(player.color)
@@ -7536,6 +7590,32 @@ class UserInterface {
 
         this._errorMessage.classList.add('visible')
         this._errorMessage.innerText = message
+
+    }
+
+    /**
+     * Updates join / leave button.
+     * @param {!string} message - Text to display.
+     */
+    updateJoinLeaveButton(state) {
+
+        switch (state) {
+
+            case 1:
+
+                this._joinLeaveButton.innerText = 'Leave'
+
+                break
+
+            case 2:
+
+                this._joinLeaveButton.innerText = 'Join'
+
+                break
+
+            default:
+
+        }
 
     }
 

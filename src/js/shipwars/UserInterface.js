@@ -251,6 +251,8 @@ export default class UserInterface {
 
         ranking.forEach((player) => {
 
+            console.log(player)
+
             let item = document.createElement('li')
 
             item.style.color = getContrast(player.color)
@@ -476,6 +478,32 @@ export default class UserInterface {
 
         this._errorMessage.classList.add('visible')
         this._errorMessage.innerText = message
+
+    }
+
+    /**
+     * Updates join / leave button.
+     * @param {!string} message - Text to display.
+     */
+    updateJoinLeaveButton(state) {
+
+        switch (state) {
+
+            case 1:
+
+                this._joinLeaveButton.innerText = 'Leave'
+
+                break
+
+            case 2:
+
+                this._joinLeaveButton.innerText = 'Join'
+
+                break
+
+            default:
+
+        }
 
     }
 

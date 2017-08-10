@@ -31,6 +31,12 @@ export default class Core {
              */
             this.shipsCreated = []
 
+            /**
+             * Indicates if user is currently in game.
+             * @type {string[]}
+             */
+            this.inGame = false
+
             // Init game
             this.init()
 
@@ -251,6 +257,7 @@ export default class Core {
                     let ship = this.ships[id] = {}
                     ship.node = document.createElement('div')
                     ship.node.className = 'ship'
+                    ship.node.style.backgroundColor = ships[id].color
                     ship.node.style.left = ships[id].x + 'px'
                     ship.node.style.top = ships[id].y + 'px'
                     this.ui.gamebox.appendChild(ship.node)
@@ -277,6 +284,9 @@ export default class Core {
             })
             
         })
+
+        // temp
+        this.socket.on('onlytoid', (data) => console.log(data))
     }
 
     /**
@@ -288,7 +298,36 @@ export default class Core {
         this.ui.joinLeaveButton.onclick = () => {
             console.log('Join / Leave')
 
-            this.socket.emit('join')
+            if (this.inGame) {
+
+                this.socket.emit('leave', (response) => {
+
+                    if (response == 2) {
+
+                        this.inGame = false
+
+                        this.ui.updateJoinLeaveButton(response)
+
+                    }
+
+                })
+
+            } else {
+
+                this.socket.emit('join', (response) => {
+
+                    if (response == 1) {
+
+                        this.inGame = true
+
+                        this.ui.updateJoinLeaveButton(response)
+
+                    }
+
+                })
+
+            }
+            
         }
 
         // Help button
