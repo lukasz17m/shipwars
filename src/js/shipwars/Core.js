@@ -285,8 +285,8 @@ export default class Core {
             
         })
 
-        // temp
-        this.socket.on('onlytoid', (data) => console.log(data))
+        // Update button state
+        this.socket.on('private-state', (data) => this.ui.updateJoinLeaveButton(data))
     }
 
     /**
@@ -296,17 +296,18 @@ export default class Core {
 
         // Join / Leave button
         this.ui.joinLeaveButton.onclick = () => {
+            // temp
             console.log('Join / Leave')
 
             if (this.inGame) {
 
-                this.socket.emit('leave', (response) => {
+                this.socket.emit('leave', (state) => {
 
-                    if (response == 2) {
+                    if (state == 2) {
 
                         this.inGame = false
 
-                        this.ui.updateJoinLeaveButton(response)
+                        this.ui.updateJoinLeaveButton(state)
 
                     }
 
@@ -314,13 +315,13 @@ export default class Core {
 
             } else {
 
-                this.socket.emit('join', (response) => {
+                this.socket.emit('join', (state) => {
 
-                    if (response == 1) {
+                    if (state == 1) {
 
                         this.inGame = true
 
-                        this.ui.updateJoinLeaveButton(response)
+                        this.ui.updateJoinLeaveButton(state)
 
                     }
 

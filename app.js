@@ -17,6 +17,9 @@ const MAX_PLAYERS = 4
 
 let queue = []
 
+let countingDown = false
+let timeoutId = 0
+
 let colors = ['#865f1d', '#3a2d18', '#473b2f', '#6d3d22']
 
 let frame = {
@@ -69,8 +72,6 @@ io.on('connection', (socket) => {
     callback(true)
     // Send info message to all users
     io.emit('info', `${ name } connected`)
-    // Send new queue to all users
-    io.emit('queue', queue.map((queued) => { return queued.name }))
     // Send ranking only to new user
     getRanking(socket)
     // Update queue
@@ -119,8 +120,6 @@ io.on('connection', (socket) => {
     })
     // Send info message to all users
     io.emit('info', `${ frame.ships[socket.id].name } is playing`)
-    // Send new queue to all users
-    io.emit('queue', queue.map((queued) => { return queued.name }))
     // Update queue
     updateQueue()
     // Changes user’s join button to leave button
@@ -133,11 +132,9 @@ io.on('connection', (socket) => {
     queue.push({ id: socket.id, name: frame.ships[socket.id].name })
     // See this func below
     playerLeave(socket.id)
-    // Send new queue to all users
-    io.emit('queue', queue.map((queued) => { return queued.name }))
     // Update queue
     updateQueue()
-    // Changes user’s join button to leave button
+    // Changes user’s leave button to join button
     callback(2)
   })
 
@@ -161,8 +158,8 @@ io.on('connection', (socket) => {
     }
     // Send info message to all users
     io.emit('info', `${ name } disconnected`)
-    // Send new queue to all users
-    io.emit('queue', queue.map((queued) => { return queued.name }))
+    // Update queue
+    updateQueue()
   })
 
   // temp
@@ -230,7 +227,50 @@ function getNumberInQueue(id) {
 }
 
 function updateQueue() {
+  // Send new queue to all users
+  io.emit('queue', queue.map((queued) => { return queued.name }))
+  // Loop the queue
   queue.forEach((queued, index) => {
-    io.to(queued.id).emit('onlytoid', 'Your are #' + index)
+    // If everyone in queue can join
+    if (queue.length + Object.keys(frame.ships) <= CONFIG.MAX_PLAYERS) {
+      log.info('CASE', 'One : %s', queued.name)
+      // Change button state to 'join'
+      io.to(queued.id).emit('private-state', 2)
+    } else if (Object.keys(frame.ships) < CONFIG.MAX_PLAYERS && index == 0) { // If not everyone can join, 
+      log.info('CASE', 'Two : %s', queued.name)
+      io.to(queued.id).emit('private-state', 3)                               // give first in the queue X seconds
+      // Check the flag                                                       // then move him to the end of the line
+      if (!countingDown) {
+        countdown(CONFIG.QUEUE_TIMELIMIT)
+      } else {
+        clearTimeout(timeoutId)
+        countingDown = false
+      }
+    } else if (Object.keys(frame.ships) + index >= CONFIG.MAX_PLAYERS) { // Not your turn :)
+      log.info('CASE', 'Three : %s', queued.name)
+      io.to(queued.id).emit('private-state', 0)
+    } else { // Ok, go ahead
+      log.info('CASE', 'Four : %s', queued.name)
+      io.to(queued.id).emit('private-state', 2)
+    }
   })
+}
+
+function countdown(counter) {
+  // Change the flag
+  countingDown = true
+  // End
+  if (counter == 0) {
+    // Change the flag
+    countingDown = false
+    // The first will be last
+    queue.push(queue.shift())
+    // Updating...
+    updateQueue()
+    return false
+  }
+  // If user has time yet
+  if (counter > 0) {
+    timeoutId = setTimeout(countdown.bind(null, --counter), 1000)
+  }
 }

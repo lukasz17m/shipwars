@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 21);
+/******/ 	return __webpack_require__(__webpack_require__.s = 22);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -100,7 +100,7 @@ module.exports = g;
  * Expose `debug()` as the module.
  */
 
-exports = module.exports = __webpack_require__(26);
+exports = module.exports = __webpack_require__(27);
 exports.log = log;
 exports.formatArgs = formatArgs;
 exports.save = save;
@@ -280,7 +280,7 @@ function localstorage() {
   } catch (e) {}
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26)))
 
 /***/ }),
 /* 2 */
@@ -459,15 +459,15 @@ Emitter.prototype.hasListeners = function(event){
  * Module dependencies.
  */
 
-var keys = __webpack_require__(34);
+var keys = __webpack_require__(35);
 var hasBinary = __webpack_require__(10);
-var sliceBuffer = __webpack_require__(35);
-var after = __webpack_require__(36);
-var utf8 = __webpack_require__(37);
+var sliceBuffer = __webpack_require__(36);
+var after = __webpack_require__(37);
+var utf8 = __webpack_require__(38);
 
 var base64encoder;
 if (global && global.ArrayBuffer) {
-  base64encoder = __webpack_require__(39);
+  base64encoder = __webpack_require__(40);
 }
 
 /**
@@ -525,7 +525,7 @@ var err = { type: 'error', data: 'parser error' };
  * Create a blob api even for blob builder when vendor prefixes exist
  */
 
-var Blob = __webpack_require__(40);
+var Blob = __webpack_require__(41);
 
 /**
  * Encodes a packet.
@@ -1131,7 +1131,7 @@ module.exports = function(a, b){
 var debug = __webpack_require__(1)('socket.io-parser');
 var Emitter = __webpack_require__(2);
 var hasBin = __webpack_require__(10);
-var binary = __webpack_require__(28);
+var binary = __webpack_require__(29);
 var isBuf = __webpack_require__(12);
 
 /**
@@ -1531,7 +1531,7 @@ function error() {
 
 /* WEBPACK VAR INJECTION */(function(global) {// browser shim for xmlhttprequest module
 
-var hasCORS = __webpack_require__(32);
+var hasCORS = __webpack_require__(33);
 
 module.exports = function (opts) {
   var xdomain = opts.xdomain;
@@ -1886,7 +1886,7 @@ function isBuf(obj) {
  * Module dependencies.
  */
 
-var eio = __webpack_require__(29);
+var eio = __webpack_require__(30);
 var Socket = __webpack_require__(18);
 var Emitter = __webpack_require__(2);
 var parser = __webpack_require__(6);
@@ -1894,7 +1894,7 @@ var on = __webpack_require__(19);
 var bind = __webpack_require__(20);
 var debug = __webpack_require__(1)('socket.io-client:manager');
 var indexOf = __webpack_require__(17);
-var Backoff = __webpack_require__(46);
+var Backoff = __webpack_require__(47);
 
 /**
  * IE6+ hasOwnProperty
@@ -2465,9 +2465,9 @@ Manager.prototype.onreconnect = function () {
  */
 
 var XMLHttpRequest = __webpack_require__(7);
-var XHR = __webpack_require__(33);
-var JSONP = __webpack_require__(41);
-var websocket = __webpack_require__(42);
+var XHR = __webpack_require__(34);
+var JSONP = __webpack_require__(42);
+var websocket = __webpack_require__(43);
 
 /**
  * Export transports.
@@ -2868,7 +2868,7 @@ module.exports = function(arr, obj){
 
 var parser = __webpack_require__(6);
 var Emitter = __webpack_require__(2);
-var toArray = __webpack_require__(45);
+var toArray = __webpack_require__(46);
 var on = __webpack_require__(19);
 var bind = __webpack_require__(20);
 var debug = __webpack_require__(1)('socket.io-client:socket');
@@ -3342,11 +3342,66 @@ module.exports = function(obj, fn){
 
 /***/ }),
 /* 21 */
+/***/ (function(module, exports) {
+
+/**
+ * @module
+ */
+module.exports = class Config {
+
+    //=======================
+    // Static getters : [
+    //=======================
+
+    /**
+     * @type {number}
+     */
+    static get NAME_MIN_CHARS() {
+
+        return 2
+
+    }
+
+    /**
+     * @type {number}
+     */
+    static get NAME_MAX_CHARS() {
+
+        return 16
+
+    }
+
+    /**
+     * @type {number}
+     */
+    static get MAX_PLAYERS() {
+
+        return 4
+
+    }
+
+    /**
+     * @type {number}
+     */
+    static get QUEUE_TIMELIMIT() {
+
+        return 10
+
+    }
+
+    //=======================
+    // ] : Static getters
+    //=======================
+
+}
+
+/***/ }),
+/* 22 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__shipwars_Core__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__shipwars_Core__ = __webpack_require__(23);
 
 
 new __WEBPACK_IMPORTED_MODULE_0__shipwars_Core__["a" /* default */]()
@@ -3354,13 +3409,13 @@ new __WEBPACK_IMPORTED_MODULE_0__shipwars_Core__["a" /* default */]()
 window.onkeydown = e => console.log(`keyCode: ${ e.keyCode }`)
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_socket_io_client__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_socket_io_client__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_socket_io_client___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_socket_io_client__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Config__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Config__ = __webpack_require__(21);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Config___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__Config__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__UserInterface__ = __webpack_require__(48);
 
@@ -3650,8 +3705,8 @@ class Core {
             
         })
 
-        // temp
-        this.socket.on('onlytoid', (data) => console.log(data))
+        // Update button state
+        this.socket.on('private-state', (data) => this.ui.updateJoinLeaveButton(data))
     }
 
     /**
@@ -3661,17 +3716,18 @@ class Core {
 
         // Join / Leave button
         this.ui.joinLeaveButton.onclick = () => {
+            // temp
             console.log('Join / Leave')
 
             if (this.inGame) {
 
-                this.socket.emit('leave', (response) => {
+                this.socket.emit('leave', (state) => {
 
-                    if (response == 2) {
+                    if (state == 2) {
 
                         this.inGame = false
 
-                        this.ui.updateJoinLeaveButton(response)
+                        this.ui.updateJoinLeaveButton(state)
 
                     }
 
@@ -3679,13 +3735,13 @@ class Core {
 
             } else {
 
-                this.socket.emit('join', (response) => {
+                this.socket.emit('join', (state) => {
 
-                    if (response == 1) {
+                    if (state == 1) {
 
                         this.inGame = true
 
-                        this.ui.updateJoinLeaveButton(response)
+                        this.ui.updateJoinLeaveButton(state)
 
                     }
 
@@ -3711,7 +3767,7 @@ class Core {
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -3719,7 +3775,7 @@ class Core {
  * Module dependencies.
  */
 
-var url = __webpack_require__(24);
+var url = __webpack_require__(25);
 var parser = __webpack_require__(6);
 var Manager = __webpack_require__(13);
 var debug = __webpack_require__(1)('socket.io-client');
@@ -3811,7 +3867,7 @@ exports.Socket = __webpack_require__(18);
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {
@@ -3893,7 +3949,7 @@ function url (uri, loc) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -4083,7 +4139,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -4099,7 +4155,7 @@ exports.coerce = coerce;
 exports.disable = disable;
 exports.enable = enable;
 exports.enabled = enabled;
-exports.humanize = __webpack_require__(27);
+exports.humanize = __webpack_require__(28);
 
 /**
  * The currently active debug mode names, and names to skip.
@@ -4291,7 +4347,7 @@ function coerce(val) {
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports) {
 
 /**
@@ -4449,7 +4505,7 @@ function plural(ms, n, name) {
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/*global Blob,File*/
@@ -4597,19 +4653,19 @@ exports.removeBlobs = function(data, callback) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-module.exports = __webpack_require__(30);
-
-
-/***/ }),
 /* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
 module.exports = __webpack_require__(31);
+
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+module.exports = __webpack_require__(32);
 
 /**
  * Exports parser
@@ -4621,7 +4677,7 @@ module.exports.parser = __webpack_require__(3);
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -4634,7 +4690,7 @@ var debug = __webpack_require__(1)('engine.io-client:socket');
 var index = __webpack_require__(17);
 var parser = __webpack_require__(3);
 var parseuri = __webpack_require__(9);
-var parsejson = __webpack_require__(44);
+var parsejson = __webpack_require__(45);
 var parseqs = __webpack_require__(4);
 
 /**
@@ -5372,7 +5428,7 @@ Socket.prototype.filterUpgrades = function (upgrades) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports) {
 
 
@@ -5395,7 +5451,7 @@ try {
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -5815,7 +5871,7 @@ function unloadHandler () {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports) {
 
 
@@ -5840,7 +5896,7 @@ module.exports = Object.keys || function keys (obj){
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports) {
 
 /**
@@ -5875,7 +5931,7 @@ module.exports = function(arraybuffer, start, end) {
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports) {
 
 module.exports = after
@@ -5909,7 +5965,7 @@ function noop() {}
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module, global) {var __WEBPACK_AMD_DEFINE_RESULT__;/*! https://mths.be/utf8js v2.1.2 by @mathias */
@@ -6167,10 +6223,10 @@ function noop() {}
 
 }(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(38)(module), __webpack_require__(0)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(39)(module), __webpack_require__(0)))
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -6198,7 +6254,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports) {
 
 /*
@@ -6271,7 +6327,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -6374,7 +6430,7 @@ module.exports = (function() {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {
@@ -6612,7 +6668,7 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -6629,7 +6685,7 @@ var BrowserWebSocket = global.WebSocket || global.MozWebSocket;
 var NodeWebSocket;
 if (typeof window === 'undefined') {
   try {
-    NodeWebSocket = __webpack_require__(43);
+    NodeWebSocket = __webpack_require__(44);
   } catch (e) { }
 }
 
@@ -6905,13 +6961,13 @@ WS.prototype.check = function () {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -6949,7 +7005,7 @@ module.exports = function parsejson(data) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports) {
 
 module.exports = toArray
@@ -6968,7 +7024,7 @@ function toArray(list, index) {
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports) {
 
 
@@ -7059,57 +7115,14 @@ Backoff.prototype.setJitter = function(jitter){
 
 
 /***/ }),
-/* 47 */
-/***/ (function(module, exports) {
-
-/**
- * @module
- */
-module.exports = class Config {
-
-    //=======================
-    // Static getters : [
-    //=======================
-
-    /**
-     * @type {number}
-     */
-    static get NAME_MIN_CHARS() {
-
-        return 2
-
-    }
-
-    /**
-     * @type {number}
-     */
-    static get NAME_MAX_CHARS() {
-
-        return 16
-
-    }
-
-    /**
-     * @type {number}
-     */
-    static get MAX_PLAYERS() {
-
-        return 4
-
-    }
-
-    //=======================
-    // ] : Static getters
-    //=======================
-
-}
-
-/***/ }),
 /* 48 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_getContrast__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Config__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Config___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Config__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_getContrast__ = __webpack_require__(49);
+
 
 
 /**
@@ -7133,7 +7146,23 @@ class UserInterface {
             count: 0 // Doesn’t show number of listeners!
         }
 
+        /**
+         * Array containing messages for infobox.
+         * @type {string[]}
+         */
         this.messages = []
+
+        /**
+         * This variable determines if time counter is working.
+         * @type {boolean}
+         */
+        this.countingDown = false
+
+        /**
+         * This variable contains timeout’s id. Required to stop countdown.
+         * @type {number}
+         */
+        this.timeoutId = 0
 
         this.init()
 
@@ -7367,7 +7396,7 @@ class UserInterface {
 
             let item = document.createElement('li')
 
-            item.style.color = Object(__WEBPACK_IMPORTED_MODULE_0__utils_getContrast__["a" /* default */])(player.color)
+            item.style.color = Object(__WEBPACK_IMPORTED_MODULE_1__utils_getContrast__["a" /* default */])(player.color)
             item.style.backgroundColor = player.color
 
             let name = document.createElement('div')
@@ -7601,15 +7630,63 @@ class UserInterface {
 
         switch (state) {
 
+            case 0:
+
+                this._joinLeaveButton.classList.add('disabled')
+                this._joinLeaveButton.innerText = 'Join'
+
+                break
+
             case 1:
 
+                clearTimeout(this.timeoutId)
+                this._joinLeaveButton.classList.remove('disabled')
                 this._joinLeaveButton.innerText = 'Leave'
 
                 break
 
             case 2:
 
+                this._joinLeaveButton.classList.remove('disabled')
                 this._joinLeaveButton.innerText = 'Join'
+
+                break
+
+            case 3:
+
+                this._joinLeaveButton.classList.remove('disabled')
+
+                function countdown(counter) {
+
+                    if (counter == 0) {
+
+                        this.countingDown = false
+
+                        this.updateJoinLeaveButton(0)
+
+                        return false
+
+                    }
+
+                    this.countingDown = true
+
+                    this._joinLeaveButton.innerText = `Join (${ counter })`
+
+                    if (counter > 0) {
+
+                        this.timeoutId = setTimeout(countdown.bind(this, --counter), 1000)
+
+                    }
+
+                }
+
+                if (this.countingDown) {
+
+                    clearTimeout(this.timeoutId)
+
+                }
+
+                countdown.call(this, __WEBPACK_IMPORTED_MODULE_0__Config___default.a.QUEUE_TIMELIMIT)
 
                 break
 

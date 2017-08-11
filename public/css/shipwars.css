@@ -318,6 +318,12 @@ body {
     transform: scale(1);
 }
 
+.aside-panel .btn div.disabled {
+    background-color: #777;
+    color: #444;
+    pointer-events: none;
+}
+
 /* Speedometer */
 .aside-panel .speed {
     height: 40px;

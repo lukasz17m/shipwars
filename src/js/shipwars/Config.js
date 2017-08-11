@@ -34,6 +34,15 @@ module.exports = class Config {
 
     }
 
+    /**
+     * @type {number}
+     */
+    static get QUEUE_TIMELIMIT() {
+
+        return 10
+
+    }
+
     //=======================
     // ] : Static getters
     //=======================

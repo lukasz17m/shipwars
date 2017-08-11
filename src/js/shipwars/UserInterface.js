@@ -1,3 +1,4 @@
+import Config from './Config'
 import getContrast from './utils/getContrast'
 
 /**
@@ -21,7 +22,23 @@ export default class UserInterface {
             count: 0 // Doesn’t show number of listeners!
         }
 
+        /**
+         * Array containing messages for infobox.
+         * @type {string[]}
+         */
         this.messages = []
+
+        /**
+         * This variable determines if time counter is working.
+         * @type {boolean}
+         */
+        this.countingDown = false
+
+        /**
+         * This variable contains timeout’s id. Required to stop countdown.
+         * @type {number}
+         */
+        this.timeoutId = 0
 
         this.init()
 
@@ -489,15 +506,63 @@ export default class UserInterface {
 
         switch (state) {
 
+            case 0:
+
+                this._joinLeaveButton.classList.add('disabled')
+                this._joinLeaveButton.innerText = 'Join'
+
+                break
+
             case 1:
 
+                clearTimeout(this.timeoutId)
+                this._joinLeaveButton.classList.remove('disabled')
                 this._joinLeaveButton.innerText = 'Leave'
 
                 break
 
             case 2:
 
+                this._joinLeaveButton.classList.remove('disabled')
                 this._joinLeaveButton.innerText = 'Join'
+
+                break
+
+            case 3:
+
+                this._joinLeaveButton.classList.remove('disabled')
+
+                function countdown(counter) {
+
+                    if (counter == 0) {
+
+                        this.countingDown = false
+
+                        this.updateJoinLeaveButton(0)
+
+                        return false
+
+                    }
+
+                    this.countingDown = true
+
+                    this._joinLeaveButton.innerText = `Join (${ counter })`
+
+                    if (counter > 0) {
+
+                        this.timeoutId = setTimeout(countdown.bind(this, --counter), 1000)
+
+                    }
+
+                }
+
+                if (this.countingDown) {
+
+                    clearTimeout(this.timeoutId)
+
+                }
+
+                countdown.call(this, Config.QUEUE_TIMELIMIT)
 
                 break
 
