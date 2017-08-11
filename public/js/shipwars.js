@@ -3380,15 +3380,6 @@ module.exports = class Config {
 
     }
 
-    /**
-     * @type {number}
-     */
-    static get QUEUE_TIMELIMIT() {
-
-        return 10
-
-    }
-
     //=======================
     // ] : Static getters
     //=======================
@@ -3573,7 +3564,7 @@ class Core {
     //=============================================
 
     /**
-     * Join the queue.
+     * Join spectators.
      * @param {!string} nickname - Player’s nickname.
      * @returns {Promise}
      */
@@ -3662,8 +3653,8 @@ class Core {
 
         })
 
-        // Queue
-        this.socket.on('queue', (queue) => this.ui.queue = queue)
+        // Spectators
+        this.socket.on('spectators', (spectators) => this.ui.spectators = spectators)
 
         // Frame
         this.socket.on('frame', (data) => {
@@ -3706,7 +3697,7 @@ class Core {
         })
 
         // Update button state
-        this.socket.on('private-state', (data) => this.ui.updateJoinLeaveButton(data))
+        this.socket.on('private-state', (state) => this.ui.updateJoinLeaveButton(state))
     }
 
     /**
@@ -3721,27 +3712,19 @@ class Core {
 
             if (this.inGame) {
 
-                this.socket.emit('leave', (state) => {
+                this.socket.emit('leave')
 
-                    if (state == 2) {
-
-                        this.inGame = false
-
-                        this.ui.updateJoinLeaveButton(state)
-
-                    }
-
-                })
+                this.inGame = false
 
             } else {
 
-                this.socket.emit('join', (state) => {
+                this.socket.emit('join', (success) => {
 
-                    if (state == 1) {
+                    if (success) {
+
+                        this.ui.updateJoinLeaveButton(2)
 
                         this.inGame = true
-
-                        this.ui.updateJoinLeaveButton(state)
 
                     }
 
@@ -7152,18 +7135,6 @@ class UserInterface {
          */
         this.messages = []
 
-        /**
-         * This variable determines if time counter is working.
-         * @type {boolean}
-         */
-        this.countingDown = false
-
-        /**
-         * This variable contains timeout’s id. Required to stop countdown.
-         * @type {number}
-         */
-        this.timeoutId = 0
-
         this.init()
 
     }
@@ -7291,10 +7262,10 @@ class UserInterface {
         panelRanking.className = 'ranking scrollable'
         this.asidePanel.appendChild(panelRanking)
 
-        // Queue
-        let panelQueue = this._panelQueue = document.createElement('div')
-        panelQueue.className = 'queue scrollable'
-        this.asidePanel.appendChild(panelQueue)
+        // Spectators
+        let panelSpectators = this._panelSpectators = document.createElement('div')
+        panelSpectators.className = 'spectators scrollable'
+        this.asidePanel.appendChild(panelSpectators)
 
         // Join / Leave Button
         let panelJoinLeaveBtn = document.createElement('div')
@@ -7392,8 +7363,6 @@ class UserInterface {
 
         ranking.forEach((player) => {
 
-            console.log(player)
-
             let item = document.createElement('li')
 
             item.style.color = Object(__WEBPACK_IMPORTED_MODULE_1__utils_getContrast__["a" /* default */])(player.color)
@@ -7422,11 +7391,11 @@ class UserInterface {
     /**
      * @type {array}
      */
-    set queue(queue) {
+    set spectators(spectators) {
 
         let list = document.createElement('ul')
 
-        queue.forEach((queued, index) => {
+        spectators.forEach((spectator, index) => {
 
             let item = document.createElement('li')
 
@@ -7436,14 +7405,14 @@ class UserInterface {
 
             }
 
-            item.title = item.innerText = queued
+            item.title = item.innerText = spectator
 
             list.appendChild(item)
 
         })
 
-        this._panelQueue.innerHTML = ''
-        this._panelQueue.appendChild(list)
+        this._panelSpectators.innerHTML = ''
+        this._panelSpectators.appendChild(list)
 
     }
 
@@ -7639,54 +7608,15 @@ class UserInterface {
 
             case 1:
 
-                clearTimeout(this.timeoutId)
                 this._joinLeaveButton.classList.remove('disabled')
-                this._joinLeaveButton.innerText = 'Leave'
+                this._joinLeaveButton.innerText = 'Join'
 
                 break
 
             case 2:
 
                 this._joinLeaveButton.classList.remove('disabled')
-                this._joinLeaveButton.innerText = 'Join'
-
-                break
-
-            case 3:
-
-                this._joinLeaveButton.classList.remove('disabled')
-
-                function countdown(counter) {
-
-                    if (counter == 0) {
-
-                        this.countingDown = false
-
-                        this.updateJoinLeaveButton(0)
-
-                        return false
-
-                    }
-
-                    this.countingDown = true
-
-                    this._joinLeaveButton.innerText = `Join (${ counter })`
-
-                    if (counter > 0) {
-
-                        this.timeoutId = setTimeout(countdown.bind(this, --counter), 1000)
-
-                    }
-
-                }
-
-                if (this.countingDown) {
-
-                    clearTimeout(this.timeoutId)
-
-                }
-
-                countdown.call(this, __WEBPACK_IMPORTED_MODULE_0__Config___default.a.QUEUE_TIMELIMIT)
+                this._joinLeaveButton.innerText = 'Leave'
 
                 break
 

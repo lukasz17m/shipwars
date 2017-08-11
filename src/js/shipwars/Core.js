@@ -153,7 +153,7 @@ export default class Core {
     //=============================================
 
     /**
-     * Join the queue.
+     * Join spectators.
      * @param {!string} nickname - Player’s nickname.
      * @returns {Promise}
      */
@@ -242,8 +242,8 @@ export default class Core {
 
         })
 
-        // Queue
-        this.socket.on('queue', (queue) => this.ui.queue = queue)
+        // Spectators
+        this.socket.on('spectators', (spectators) => this.ui.spectators = spectators)
 
         // Frame
         this.socket.on('frame', (data) => {
@@ -286,7 +286,7 @@ export default class Core {
         })
 
         // Update button state
-        this.socket.on('private-state', (data) => this.ui.updateJoinLeaveButton(data))
+        this.socket.on('private-state', (state) => this.ui.updateJoinLeaveButton(state))
     }
 
     /**
@@ -301,27 +301,19 @@ export default class Core {
 
             if (this.inGame) {
 
-                this.socket.emit('leave', (state) => {
+                this.socket.emit('leave')
 
-                    if (state == 2) {
-
-                        this.inGame = false
-
-                        this.ui.updateJoinLeaveButton(state)
-
-                    }
-
-                })
+                this.inGame = false
 
             } else {
 
-                this.socket.emit('join', (state) => {
+                this.socket.emit('join', (success) => {
 
-                    if (state == 1) {
+                    if (success) {
+
+                        this.ui.updateJoinLeaveButton(2)
 
                         this.inGame = true
-
-                        this.ui.updateJoinLeaveButton(state)
 
                     }
 

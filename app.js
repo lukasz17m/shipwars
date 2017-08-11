@@ -13,12 +13,8 @@ const client = redis.createClient()
 const CONFIG = require('./src/js/shipwars/Config.js')
 const PORT = 3000
 const FPS = 1
-const MAX_PLAYERS = 4
 
-let queue = []
-
-let countingDown = false
-let timeoutId = 0
+let spectators = []
 
 let colors = ['#865f1d', '#3a2d18', '#473b2f', '#6d3d22']
 
@@ -53,8 +49,8 @@ io.on('connection', (socket) => {
     // Check nickname length on the backend    
     if (name.length < CONFIG.NAME_MIN_CHARS || name.length > CONFIG.NAME_MAX_CHARS) return abort()
     // Check if nickname is taken
-    for (let i = 0; i < queue.length; i++) {
-      if (queue[i].name == name) return abort()
+    for (let i = 0; i < spectators.length; i++) {
+      if (spectators[i].name == name) return abort()
     }
     for (let player in frame.ships) {
       if (frame.ships[player].name == name) return abort()
@@ -67,15 +63,15 @@ io.on('connection', (socket) => {
     }
     // Login user
     log.info('LOGIN', 'User %s logged in.', name)
-    // Join the queue
-    queue.push({ id: socket.id, name })
+    // Join spectators
+    spectators.push({ id: socket.id, name })
     callback(true)
     // Send info message to all users
     io.emit('info', `${ name } connected`)
     // Send ranking only to new user
     getRanking(socket)
-    // Update queue
-    updateQueue()
+    // Update spectators
+    updatespectators()
   })
 
   // Gets ['player1', 'player2'] returns ['#4008a4', '#95fc45']
@@ -90,17 +86,12 @@ io.on('connection', (socket) => {
   socket.on('join', (callback) => {
     // Checks if there’s slot available for another player
     if (Object.keys(frame.ships).length == CONFIG.MAX_PLAYERS) {
-      callback(0)
-      return false
-    }
-    // Checks if user stands in line
-    if (Object.keys(frame.ships).length + getNumberInQueue(socket.id) > CONFIG.MAX_PLAYERS) {
-      callback(0)
+      callback(false)
       return false
     }
     // Adds player to frame
     frame.ships[socket.id] = {
-      name: queue[Object.keys(queue).find((key) => { return queue[key].id == socket.id })].name,
+      name: spectators[Object.keys(spectators).find((key) => { return spectators[key].id == socket.id })].name,
       color: drawColor(),
       x: Math.floor((Math.random() * 600) + 100),
       y: Math.floor((Math.random() * 400) + 100)
@@ -111,31 +102,29 @@ io.on('connection', (socket) => {
       log.info('REDIS:ZADD', response)
       getRanking()
     })
-    // Get new queue
-    queue = queue.filter((queued) => {
-      if (queued.id == socket.id) {
+    // Update spectators
+    spectators = spectators.filter((spectator) => {
+      if (spectator.id == socket.id) {
         return false
       }
       return true
     })
     // Send info message to all users
     io.emit('info', `${ frame.ships[socket.id].name } is playing`)
-    // Update queue
-    updateQueue()
-    // Changes user’s join button to leave button
-    callback(1)
+    // Update spectators
+    updatespectators()
+    // Success
+    callback(true)
   })
 
   // Leave the game
-  socket.on('leave', (callback) => {
-    // Join the queue
-    queue.push({ id: socket.id, name: frame.ships[socket.id].name })
+  socket.on('leave', () => {
+    // Join spectators
+    spectators.push({ id: socket.id, name: frame.ships[socket.id].name })
     // See this func below
     playerLeave(socket.id)
-    // Update queue
-    updateQueue()
-    // Changes user’s leave button to join button
-    callback(2)
+    // Update spectators
+    updatespectators()
   })
 
   // Disconnect
@@ -143,14 +132,14 @@ io.on('connection', (socket) => {
     log.info('DISCONNECT', 'User disconnected. ID: %s', socket.id)
     // Init name variable
     let name = null
-    // Remove player from game or queue
+    // Remove player from game or spectators
     if (frame.ships.hasOwnProperty(socket.id)) {
       name = frame.ships[socket.id].name
       playerLeave(socket.id)
     } else {
-      queue = queue.filter((queued) => {
-        if (queued.id == socket.id) {
-          name = queued.name
+      spectators = spectators.filter((spectator) => {
+        if (spectator.id == socket.id) {
+          name = spectator.name
           return false
         }
         return true
@@ -158,8 +147,8 @@ io.on('connection', (socket) => {
     }
     // Send info message to all users
     io.emit('info', `${ name } disconnected`)
-    // Update queue
-    updateQueue()
+    // Update spectators
+    updatespectators()
   })
 
   // temp
@@ -222,55 +211,17 @@ function playerLeave(id) {
   delete frame.ships[id]
 }
 
-function getNumberInQueue(id) {
-  return parseInt(Object.keys(queue).find((key) => { return queue[key].id == id })) + 1
-}
-
-function updateQueue() {
-  // Send new queue to all users
-  io.emit('queue', queue.map((queued) => { return queued.name }))
-  // Loop the queue
-  queue.forEach((queued, index) => {
-    // If everyone in queue can join
-    if (queue.length + Object.keys(frame.ships) <= CONFIG.MAX_PLAYERS) {
-      log.info('CASE', 'One : %s', queued.name)
-      // Change button state to 'join'
-      io.to(queued.id).emit('private-state', 2)
-    } else if (Object.keys(frame.ships) < CONFIG.MAX_PLAYERS && index == 0) { // If not everyone can join, 
-      log.info('CASE', 'Two : %s', queued.name)
-      io.to(queued.id).emit('private-state', 3)                               // give first in the queue X seconds
-      // Check the flag                                                       // then move him to the end of the line
-      if (!countingDown) {
-        countdown(CONFIG.QUEUE_TIMELIMIT)
-      } else {
-        clearTimeout(timeoutId)
-        countingDown = false
-      }
-    } else if (Object.keys(frame.ships) + index >= CONFIG.MAX_PLAYERS) { // Not your turn :)
-      log.info('CASE', 'Three : %s', queued.name)
-      io.to(queued.id).emit('private-state', 0)
-    } else { // Ok, go ahead
-      log.info('CASE', 'Four : %s', queued.name)
-      io.to(queued.id).emit('private-state', 2)
-    }
-  })
-}
-
-function countdown(counter) {
-  // Change the flag
-  countingDown = true
-  // End
-  if (counter == 0) {
-    // Change the flag
-    countingDown = false
-    // The first will be last
-    queue.push(queue.shift())
-    // Updating...
-    updateQueue()
-    return false
-  }
-  // If user has time yet
-  if (counter > 0) {
-    timeoutId = setTimeout(countdown.bind(null, --counter), 1000)
+function updatespectators() {
+  // Send new spectators to all users
+  io.emit('spectators', spectators.map((spectator) => { return spectator.name }))
+  // Disable or enable join option
+  if (Object.keys(frame.ships).length === CONFIG.MAX_PLAYERS) {
+    spectators.forEach((spectator) => {
+      io.to(spectator.id).emit('private-state', 0)
+    })
+  } else {    
+    spectators.forEach((spectator) => {
+      io.to(spectator.id).emit('private-state', 1)
+    })
   }
 }

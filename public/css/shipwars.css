@@ -258,14 +258,14 @@ body {
     background-color: rgba(0, 0, 0, 0.2)
 }
 
-/* Queue */
-.aside-panel .queue {
+/* Spectators */
+.aside-panel .spectators {
     height: 100px;
     padding-top: 20px;
 }
 
-.aside-panel .queue::before {
-    content: 'QUEUE';
+.aside-panel .spectators::before {
+    content: 'SPECTATORS';
     position: relative;
     top: -20px;
     display: block;
@@ -279,11 +279,11 @@ body {
     background-color: #741;
 }
 
-.aside-panel .queue li {
+.aside-panel .spectators li {
     color: #fc9;
 }
 
-.aside-panel .queue li.fade {
+.aside-panel .spectators li.fade {
     background-color: rgba(0, 0, 0, 0.2)
 }
 

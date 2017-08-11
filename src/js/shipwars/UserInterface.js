@@ -28,18 +28,6 @@ export default class UserInterface {
          */
         this.messages = []
 
-        /**
-         * This variable determines if time counter is working.
-         * @type {boolean}
-         */
-        this.countingDown = false
-
-        /**
-         * This variable contains timeout’s id. Required to stop countdown.
-         * @type {number}
-         */
-        this.timeoutId = 0
-
         this.init()
 
     }
@@ -167,10 +155,10 @@ export default class UserInterface {
         panelRanking.className = 'ranking scrollable'
         this.asidePanel.appendChild(panelRanking)
 
-        // Queue
-        let panelQueue = this._panelQueue = document.createElement('div')
-        panelQueue.className = 'queue scrollable'
-        this.asidePanel.appendChild(panelQueue)
+        // Spectators
+        let panelSpectators = this._panelSpectators = document.createElement('div')
+        panelSpectators.className = 'spectators scrollable'
+        this.asidePanel.appendChild(panelSpectators)
 
         // Join / Leave Button
         let panelJoinLeaveBtn = document.createElement('div')
@@ -268,8 +256,6 @@ export default class UserInterface {
 
         ranking.forEach((player) => {
 
-            console.log(player)
-
             let item = document.createElement('li')
 
             item.style.color = getContrast(player.color)
@@ -298,11 +284,11 @@ export default class UserInterface {
     /**
      * @type {array}
      */
-    set queue(queue) {
+    set spectators(spectators) {
 
         let list = document.createElement('ul')
 
-        queue.forEach((queued, index) => {
+        spectators.forEach((spectator, index) => {
 
             let item = document.createElement('li')
 
@@ -312,14 +298,14 @@ export default class UserInterface {
 
             }
 
-            item.title = item.innerText = queued
+            item.title = item.innerText = spectator
 
             list.appendChild(item)
 
         })
 
-        this._panelQueue.innerHTML = ''
-        this._panelQueue.appendChild(list)
+        this._panelSpectators.innerHTML = ''
+        this._panelSpectators.appendChild(list)
 
     }
 
@@ -515,54 +501,15 @@ export default class UserInterface {
 
             case 1:
 
-                clearTimeout(this.timeoutId)
                 this._joinLeaveButton.classList.remove('disabled')
-                this._joinLeaveButton.innerText = 'Leave'
+                this._joinLeaveButton.innerText = 'Join'
 
                 break
 
             case 2:
 
                 this._joinLeaveButton.classList.remove('disabled')
-                this._joinLeaveButton.innerText = 'Join'
-
-                break
-
-            case 3:
-
-                this._joinLeaveButton.classList.remove('disabled')
-
-                function countdown(counter) {
-
-                    if (counter == 0) {
-
-                        this.countingDown = false
-
-                        this.updateJoinLeaveButton(0)
-
-                        return false
-
-                    }
-
-                    this.countingDown = true
-
-                    this._joinLeaveButton.innerText = `Join (${ counter })`
-
-                    if (counter > 0) {
-
-                        this.timeoutId = setTimeout(countdown.bind(this, --counter), 1000)
-
-                    }
-
-                }
-
-                if (this.countingDown) {
-
-                    clearTimeout(this.timeoutId)
-
-                }
-
-                countdown.call(this, Config.QUEUE_TIMELIMIT)
+                this._joinLeaveButton.innerText = 'Leave'
 
                 break
 
