@@ -3503,16 +3503,6 @@ class Core {
             }
         })
 
-        this.ui.keyDown(37, (e) => console.log('keyDown : Left'))
-        this.ui.keyDown(38, (e) => console.log('keyDown : Up'))
-        this.ui.keyDown(39, (e) => console.log('keyDown : Right'))
-        this.ui.keyDown(40, (e) => console.log('keyDown : Down'))
-
-        this.ui.keyUp(37, (e) => console.log('keyUp : Left'))
-        this.ui.keyUp(38, (e) => console.log('keyUp : Up'))
-        this.ui.keyUp(39, (e) => console.log('keyUp : Right'))
-        this.ui.keyUp(40, (e) => console.log('keyUp : Down'))
-
     }
 
     // temp
@@ -3665,15 +3655,22 @@ class Core {
 
                 if (this.shipsCreated.indexOf(id) < 0) {
 
-                    let ship = this.ships[id] = {}
-                    ship.node = document.createElement('div')
-                    ship.node.className = 'ship'
-                    ship.node.style.backgroundColor = ships[id].color
-                    ship.node.style.left = ships[id].x + 'px'
-                    ship.node.style.top = ships[id].y + 'px'
-                    this.ui.gamebox.appendChild(ship.node)
+                    let ship = document.createElement('div')
+                    ship.className = 'ship'
+                    ship.style.backgroundColor = ships[id].color
+                    ship.style.left = parseInt(ships[id].coords.x) + 'px'
+                    ship.style.top = parseInt(ships[id].coords.y) + 'px'
+                    this.ui.gamebox.appendChild(ship)
+
+                    this.ships[id] = ship
 
                     this.shipsCreated.push(id)
+
+                } else {
+
+                    this.ships[id].style.left = parseInt(ships[id].coords.x) + 'px'
+                    this.ships[id].style.top = parseInt(ships[id].coords.y) + 'px'
+                    this.ships[id].style.transform = `translate(-50%, -50%) rotate(${ -parseInt(ships[id].factors.angle) }deg)`
 
                 }
 
@@ -3684,7 +3681,7 @@ class Core {
 
                 if (! ships.hasOwnProperty(id)) {
 
-                    this.ui.gamebox.removeChild(this.ships[id].node)
+                    this.ui.gamebox.removeChild(this.ships[id])
                     delete this.ships[id]
 
                     return false
@@ -3738,6 +3735,68 @@ class Core {
         this.ui.helpButton.onclick = () => {
             console.log('Help')
         }
+
+        // Steerage
+
+        // Accelerate
+        this.ui.keyDown(38, (e) => {
+
+            // keyDown : Up
+            this.socket.emit('action', 1)
+
+        })
+
+        this.ui.keyUp(38, (e) => {
+
+            // keyUp : Up
+            this.socket.emit('action', 10)
+
+        })
+
+        // Decelerate
+        this.ui.keyDown(40, (e) => {
+
+            // keyDown : Down
+            this.socket.emit('action', 2)
+
+        })
+
+        this.ui.keyUp(40, (e) => {
+
+            // keyUp : Down
+            this.socket.emit('action', 20)
+
+        })
+
+        // Turn left
+        this.ui.keyDown(37, (e) => {
+
+            // keyDown : Left
+            this.socket.emit('action', 3)
+
+        })
+
+        this.ui.keyUp(37, (e) => {
+
+            // keyUp : Left
+            this.socket.emit('action', 30)
+
+        })
+
+        // Turn right
+        this.ui.keyDown(39, (e) => {
+
+            // keyDown : Right
+            this.socket.emit('action', 4)
+
+        })
+
+        this.ui.keyUp(39, (e) => {
+
+            // keyUp : Right
+            this.socket.emit('action', 40)
+
+        })
 
     }
 
