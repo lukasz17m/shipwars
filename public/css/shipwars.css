@@ -355,8 +355,6 @@ body {
     width: 2em;
     height: 1em;
     position: absolute;
-    top: 50px;
-    left: 100px;
     background-color: #808080;
     /*border-radius: 25% 50% 50% 25%;*/
     transform: translate(-50%, -50%);
@@ -383,5 +381,18 @@ body {
     right: -1em;
     background-color: inherit;
     border-radius: 0 50% 50% 0;
+}
 
+/* Cannonballs */
+.cannonball {
+    box-sizing: border-box;
+    font-size: 25px;
+    width: 1em;
+    height: 1em;
+    position: absolute;
+    background-color: #220;
+    border: 5px solid #000;
+    opacity: 0.5;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
 }

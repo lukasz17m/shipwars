@@ -21,6 +21,7 @@ const colors = ['#865f1d', '#3a2d18', '#473b2f', '#6d3d22']
 const factors = {
   acceleration: 0.05,
   speed: 0.2,
+  cannonballSpeed: 10,
   angle: 2
 }
 
@@ -35,8 +36,10 @@ const minmax = {
 
 const frame = {
   ships: {},
-  balls: {}
+  cannonballs: {}
 }
+
+let cannonballsId = 0
 
 app.use(express.static(path.join(__dirname, 'public')))
 
@@ -198,6 +201,12 @@ io.on('connection', (socket) => {
       // Shoot left
       case 5:
         frame.ships[socket.id].steerage.shootLeft = true
+        // temp
+        frame.cannonballs[++cannonballsId] = {
+          coords: { x: frame.ships[socket.id].coords.x, y: frame.ships[socket.id].coords.y },
+          factors: { angle: frame.ships[socket.id].factors.angle + 90 }
+        }
+        setTimeout(deleteCannonball.bind(this, cannonballsId), 3000)
         break
       case 50:
         frame.ships[socket.id].steerage.shootLeft = false
@@ -205,6 +214,12 @@ io.on('connection', (socket) => {
       // Shoot right
       case 6:
         frame.ships[socket.id].steerage.shootRight = true
+        // temp
+        frame.cannonballs[++cannonballsId] = {
+          coords: { x: frame.ships[socket.id].coords.x, y: frame.ships[socket.id].coords.y },
+          factors: { angle: frame.ships[socket.id].factors.angle - 90 }
+        }
+        setTimeout(deleteCannonball.bind(this, cannonballsId), 3000)
         break
       case 60:
         frame.ships[socket.id].steerage.shootRight = false
@@ -288,6 +303,12 @@ let timer = 0
     frame.ships[id].coords.x += (Math.cos((Math.PI / 180) * frame.ships[id].factors.angle) * frame.ships[id].factors.speed)
     frame.ships[id].coords.y -= (Math.sin((Math.PI / 180) * frame.ships[id].factors.angle) * frame.ships[id].factors.speed)
   }
+  // Loop the cannonballs
+  for (let id in frame.cannonballs) {
+    // Position
+    frame.cannonballs[id].coords.x += (Math.cos((Math.PI / 180) * frame.cannonballs[id].factors.angle) * factors.cannonballSpeed)
+    frame.cannonballs[id].coords.y -= (Math.sin((Math.PI / 180) * frame.cannonballs[id].factors.angle) * factors.cannonballSpeed)
+  }
   // Emits frame
   io.emit('frame', frame)
   // CODE GOES ABOVE
@@ -328,11 +349,15 @@ function updatespectators() {
   // Disable or enable join option
   if (Object.keys(frame.ships).length === CONFIG.MAX_PLAYERS) {
     spectators.forEach((spectator) => {
-      io.to(spectator.id).emit('private-state', 0)
+      io.to(spectator.id).emit('canjoin', 0)
     })
   } else {    
     spectators.forEach((spectator) => {
-      io.to(spectator.id).emit('private-state', 1)
+      io.to(spectator.id).emit('canjoin', 1)
     })
   }
+}
+
+function deleteCannonball(id) {
+  delete frame.cannonballs[id]
 }

@@ -32,6 +32,18 @@ export default class Core {
             this.shipsCreated = []
 
             /**
+             * Contains cannonballs object, key is an unique autoincremented id.
+             * @type {object}
+             */
+            this.cannonballs = {}
+
+            /**
+             * Contains list of cannonballs’ id.
+             * @type {number[]}
+             */
+            this.cannonballsCreated = []
+
+            /**
              * Indicates if user is currently in game.
              * @type {string[]}
              */
@@ -238,6 +250,7 @@ export default class Core {
         // Frame
         this.socket.on('frame', (data) => {
 
+            // Loop the ships
             let ships = data.ships
 
             for (let id in ships) {
@@ -247,8 +260,8 @@ export default class Core {
                     let ship = document.createElement('div')
                     ship.className = 'ship'
                     ship.style.backgroundColor = ships[id].color
-                    ship.style.left = parseInt(ships[id].coords.x) + 'px'
-                    ship.style.top = parseInt(ships[id].coords.y) + 'px'
+                    ship.style.left = Math.round(ships[id].coords.x) + 'px'
+                    ship.style.top = Math.round(ships[id].coords.y) + 'px'
                     this.ui.gamebox.appendChild(ship)
 
                     this.ships[id] = ship
@@ -257,15 +270,15 @@ export default class Core {
 
                 } else {
 
-                    this.ships[id].style.left = parseInt(ships[id].coords.x) + 'px'
-                    this.ships[id].style.top = parseInt(ships[id].coords.y) + 'px'
-                    this.ships[id].style.transform = `translate(-50%, -50%) rotate(${ -parseInt(ships[id].factors.angle) }deg)`
+                    this.ships[id].style.left = Math.round(ships[id].coords.x) + 'px'
+                    this.ships[id].style.top = Math.round(ships[id].coords.y) + 'px'
+                    this.ships[id].style.transform = `translate(-50%, -50%) rotate(${ -Math.round(ships[id].factors.angle) }deg)`
 
                 }
 
             }
 
-            // Delete ships of disconnected users
+            // Delete ship of user who left the game
             this.shipsCreated = this.shipsCreated.filter((id) => {
 
                 if (! ships.hasOwnProperty(id)) {
@@ -279,11 +292,52 @@ export default class Core {
                 return true
 
             })
+
+            // Loop the cannonballs
+            let cannonballs = data.cannonballs
+
+            for (let id in cannonballs) {
+
+                if (this.cannonballsCreated.indexOf(id) < 0) {
+
+                    let cannonball = document.createElement('div')
+                    cannonball.className = 'cannonball'
+                    cannonball.style.left = Math.round(cannonballs[id].coords.x) + 'px'
+                    cannonball.style.top = Math.round(cannonballs[id].coords.y) + 'px'
+                    this.ui.gamebox.appendChild(cannonball)
+
+                    this.cannonballs[id] = cannonball
+
+                    this.cannonballsCreated.push(id)
+
+                } else {
+
+                    this.cannonballs[id].style.left = Math.round(cannonballs[id].coords.x) + 'px'
+                    this.cannonballs[id].style.top = Math.round(cannonballs[id].coords.y) + 'px'
+
+                }
+
+            }
+
+            // Delete destroyed cannonballs
+            this.cannonballsCreated = this.cannonballsCreated.filter((id) => {
+
+                if (! cannonballs.hasOwnProperty(id)) {
+
+                    this.ui.gamebox.removeChild(this.cannonballs[id])
+                    delete this.cannonballs[id]
+
+                    return false
+                }
+
+                return true
+
+            })
             
         })
 
         // Update button state
-        this.socket.on('private-state', (state) => this.ui.updateJoinLeaveButton(state))
+        this.socket.on('canjoin', (state) => this.ui.updateJoinLeaveButton(state))
     }
 
     /**
@@ -293,8 +347,6 @@ export default class Core {
 
         // Join / Leave button
         this.ui.joinLeaveButton.onclick = () => {
-            // temp
-            console.log('Join / Leave')
 
             if (this.inGame) {
 
@@ -384,6 +436,36 @@ export default class Core {
 
             // keyUp : Right
             this.socket.emit('action', 40)
+
+        })
+
+        // Shoot left
+        this.ui.keyDown(90, (e) => {
+
+            // keyDown : Z
+            this.socket.emit('action', 5)
+
+        })
+
+        this.ui.keyUp(90, (e) => {
+
+            // keyUp : Z
+            this.socket.emit('action', 50)
+
+        })
+
+        // Shoot right
+        this.ui.keyDown(88, (e) => {
+
+            // keyDown : X
+            this.socket.emit('action', 6)
+
+        })
+
+        this.ui.keyUp(88, (e) => {
+
+            // keyUp : X
+            this.socket.emit('action', 60)
 
         })
 
