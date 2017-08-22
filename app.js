@@ -27,10 +27,10 @@ const factors = {
 
 const minmax = {
   min: {
-    speed: 0
+    speed: CONFIG.MIN_SPEED
   },
   max: {
-    speed: 5
+    speed: CONFIG.MAX_SPEED
   }
 }
 
@@ -169,6 +169,10 @@ io.on('connection', (socket) => {
    */
   // Steerage
   socket.on('action', (action) => {
+    if (typeof frame.ships[socket.id] == 'undefined') {
+      return false
+    }
+
     switch (action) {
       // Speed up
       case 1:

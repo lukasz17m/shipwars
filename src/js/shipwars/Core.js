@@ -333,6 +333,17 @@ export default class Core {
                 return true
 
             })
+
+            // Progress bars
+            if (typeof ships[this.socket.id] != 'undefined') {
+
+                const ship = ships[this.socket.id]
+
+                // Update speed
+                this.ui.speed = ship.factors.speed
+
+            }
+
             
         })
 
@@ -440,31 +451,31 @@ export default class Core {
         })
 
         // Shoot left
-        this.ui.keyDown(90, (e) => {
+        this.ui.keyDown(65, (e) => {
 
-            // keyDown : Z
+            // keyDown : A
             this.socket.emit('action', 5)
 
         })
 
-        this.ui.keyUp(90, (e) => {
+        this.ui.keyUp(65, (e) => {
 
-            // keyUp : Z
+            // keyUp : A
             this.socket.emit('action', 50)
 
         })
 
         // Shoot right
-        this.ui.keyDown(88, (e) => {
+        this.ui.keyDown(68, (e) => {
 
-            // keyDown : X
+            // keyDown : D
             this.socket.emit('action', 6)
 
         })
 
-        this.ui.keyUp(88, (e) => {
+        this.ui.keyUp(68, (e) => {
 
-            // keyUp : X
+            // keyUp : D
             this.socket.emit('action', 60)
 
         })

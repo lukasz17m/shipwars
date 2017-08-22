@@ -34,6 +34,60 @@ module.exports = class Config {
 
     }
 
+    /**
+     * @type {number}
+     */
+    static get MIN_SPEED() {
+
+        return 0
+
+    }
+
+    /**
+     * @type {number}
+     */
+    static get MAX_SPEED() {
+
+        return 5
+
+    }
+
+    /**
+     * @type {number}
+     */
+    static get MIN_HP() {
+
+        return 0
+
+    }
+
+    /**
+     * @type {number}
+     */
+    static get MAX_HP() {
+
+        return 100
+
+    }
+
+    /**
+     * @type {number}
+     */
+    static get MIN_FP() {
+
+        return 0
+
+    }
+
+    /**
+     * @type {number}
+     */
+    static get MAX_FP() {
+
+        return 100
+
+    }
+
     //=======================
     // ] : Static getters
     //=======================

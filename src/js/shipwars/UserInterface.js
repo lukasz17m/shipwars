@@ -182,7 +182,16 @@ export default class UserInterface {
 
         // Speedometer
         let panelSpeed = document.createElement('div')
-        panelSpeed.className = 'speed'
+        panelSpeed.className = 'speed progress'
+
+        let panelSpeedOuter = document.createElement('div')
+        panelSpeedOuter.className = 'outer'
+
+        let panelSpeedInner = this._panelSpeedInner = document.createElement('div')
+        panelSpeedInner.className = 'inner'
+
+        panelSpeedOuter.appendChild(panelSpeedInner)
+        panelSpeed.appendChild(panelSpeedOuter)
         this.asidePanel.appendChild(panelSpeed)
 
         // Compass
@@ -192,12 +201,30 @@ export default class UserInterface {
 
         // Hit points
         let panelHP = document.createElement('div')
-        panelHP.className = 'hp'
+        panelHP.className = 'hp progress'
+        
+        let panelHPOuter = document.createElement('div')
+        panelHPOuter.className = 'outer'
+        
+        let panelHPInner = this._panelHPInner = document.createElement('div')
+        panelHPInner.className = 'inner'
+
+        panelHPOuter.appendChild(panelHPInner)
+        panelHP.appendChild(panelHPOuter)
         this.asidePanel.appendChild(panelHP)
 
         // Firepower
         let panelFirepower = document.createElement('div')
-        panelFirepower.className = 'fp'
+        panelFirepower.className = 'fp progress'
+        
+        let panelFirepowerOuter = document.createElement('div')
+        panelFirepowerOuter.className = 'outer'
+        
+        let panelFirepowerInner = this._panelFirepowerInner = document.createElement('div')
+        panelFirepowerInner.className = 'inner'
+
+        panelFirepowerOuter.appendChild(panelFirepowerInner)
+        panelFirepower.appendChild(panelFirepowerOuter)
         this.asidePanel.appendChild(panelFirepower)
 
     }
@@ -306,6 +333,33 @@ export default class UserInterface {
 
         this._panelSpectators.innerHTML = ''
         this._panelSpectators.appendChild(list)
+
+    }
+
+    /**
+     * @type {number}
+     */
+    set speed(speed) {
+
+        this._panelSpeedInner.style.width = Math.round(speed / Config.MAX_SPEED * 100) + '%'
+
+    }
+
+    /**
+     * @type {number}
+     */
+    set hp(hp) {
+
+        this._panelHPInner.style.width = Math.round(hp / Config.MAX_HP * 100) + '%'
+
+    }
+
+    /**
+     * @type {number}
+     */
+    set fp(fp) {
+
+        this._panelFirepowerInner.style.width = Math.round(fp / Config.MAX_FP * 100) + '%'
 
     }
 

@@ -3380,6 +3380,60 @@ module.exports = class Config {
 
     }
 
+    /**
+     * @type {number}
+     */
+    static get MIN_SPEED() {
+
+        return 0
+
+    }
+
+    /**
+     * @type {number}
+     */
+    static get MAX_SPEED() {
+
+        return 5
+
+    }
+
+    /**
+     * @type {number}
+     */
+    static get MIN_HP() {
+
+        return 0
+
+    }
+
+    /**
+     * @type {number}
+     */
+    static get MAX_HP() {
+
+        return 100
+
+    }
+
+    /**
+     * @type {number}
+     */
+    static get MIN_FP() {
+
+        return 0
+
+    }
+
+    /**
+     * @type {number}
+     */
+    static get MAX_FP() {
+
+        return 100
+
+    }
+
     //=======================
     // ] : Static getters
     //=======================
@@ -3397,7 +3451,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 new __WEBPACK_IMPORTED_MODULE_0__shipwars_Core__["a" /* default */]()
 
-window.onkeydown = e => console.log(`keyCode: ${ e.keyCode }`)
+// window.onkeydown = e => console.log(`keyCode: ${ e.keyCode }`)
 
 /***/ }),
 /* 23 */
@@ -3744,6 +3798,17 @@ class Core {
                 return true
 
             })
+
+            // Progress bars
+            if (typeof ships[this.socket.id] != 'undefined') {
+
+                const ship = ships[this.socket.id]
+
+                // Update speed
+                this.ui.speed = ship.factors.speed
+
+            }
+
             
         })
 
@@ -3851,31 +3916,31 @@ class Core {
         })
 
         // Shoot left
-        this.ui.keyDown(90, (e) => {
+        this.ui.keyDown(65, (e) => {
 
-            // keyDown : Z
+            // keyDown : A
             this.socket.emit('action', 5)
 
         })
 
-        this.ui.keyUp(90, (e) => {
+        this.ui.keyUp(65, (e) => {
 
-            // keyUp : Z
+            // keyUp : A
             this.socket.emit('action', 50)
 
         })
 
         // Shoot right
-        this.ui.keyDown(88, (e) => {
+        this.ui.keyDown(68, (e) => {
 
-            // keyDown : X
+            // keyDown : D
             this.socket.emit('action', 6)
 
         })
 
-        this.ui.keyUp(88, (e) => {
+        this.ui.keyUp(68, (e) => {
 
-            // keyUp : X
+            // keyUp : D
             this.socket.emit('action', 60)
 
         })
@@ -7430,7 +7495,16 @@ class UserInterface {
 
         // Speedometer
         let panelSpeed = document.createElement('div')
-        panelSpeed.className = 'speed'
+        panelSpeed.className = 'speed progress'
+
+        let panelSpeedOuter = document.createElement('div')
+        panelSpeedOuter.className = 'outer'
+
+        let panelSpeedInner = this._panelSpeedInner = document.createElement('div')
+        panelSpeedInner.className = 'inner'
+
+        panelSpeedOuter.appendChild(panelSpeedInner)
+        panelSpeed.appendChild(panelSpeedOuter)
         this.asidePanel.appendChild(panelSpeed)
 
         // Compass
@@ -7440,12 +7514,30 @@ class UserInterface {
 
         // Hit points
         let panelHP = document.createElement('div')
-        panelHP.className = 'hp'
+        panelHP.className = 'hp progress'
+        
+        let panelHPOuter = document.createElement('div')
+        panelHPOuter.className = 'outer'
+        
+        let panelHPInner = this._panelHPInner = document.createElement('div')
+        panelHPInner.className = 'inner'
+
+        panelHPOuter.appendChild(panelHPInner)
+        panelHP.appendChild(panelHPOuter)
         this.asidePanel.appendChild(panelHP)
 
         // Firepower
         let panelFirepower = document.createElement('div')
-        panelFirepower.className = 'fp'
+        panelFirepower.className = 'fp progress'
+        
+        let panelFirepowerOuter = document.createElement('div')
+        panelFirepowerOuter.className = 'outer'
+        
+        let panelFirepowerInner = this._panelFirepowerInner = document.createElement('div')
+        panelFirepowerInner.className = 'inner'
+
+        panelFirepowerOuter.appendChild(panelFirepowerInner)
+        panelFirepower.appendChild(panelFirepowerOuter)
         this.asidePanel.appendChild(panelFirepower)
 
     }
@@ -7554,6 +7646,33 @@ class UserInterface {
 
         this._panelSpectators.innerHTML = ''
         this._panelSpectators.appendChild(list)
+
+    }
+
+    /**
+     * @type {number}
+     */
+    set speed(speed) {
+
+        this._panelSpeedInner.style.width = Math.round(speed / __WEBPACK_IMPORTED_MODULE_0__Config___default.a.MAX_SPEED * 100) + '%'
+
+    }
+
+    /**
+     * @type {number}
+     */
+    set hp(hp) {
+
+        this._panelHPInner.style.width = Math.round(hp / __WEBPACK_IMPORTED_MODULE_0__Config___default.a.MAX_HP * 100) + '%'
+
+    }
+
+    /**
+     * @type {number}
+     */
+    set fp(fp) {
+
+        this._panelFirepowerInner.style.width = Math.round(fp / __WEBPACK_IMPORTED_MODULE_0__Config___default.a.MAX_FP * 100) + '%'
 
     }
 

@@ -327,7 +327,10 @@ body {
 /* Speedometer */
 .aside-panel .speed {
     height: 40px;
-    background-color: #320059;
+}
+
+.aside-panel .speed .inner {
+    background-color: #9acbde;
 }
 
 /* Compass */
@@ -339,13 +342,38 @@ body {
 /* Hitpoints */
 .aside-panel .hp {
     height: 40px;
-    background-color: #021501;
+}
+
+.aside-panel .hp .inner {
+    background-color: #01b003;
 }
 
 /* Firepower */
 .aside-panel .fp {
     height: 40px;
-    background-color: #415874;
+}
+
+.aside-panel .fp .inner {
+    background-color: #000;
+}
+
+/* Progress */
+.aside-panel .progress {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.aside-panel .progress .outer {
+    width: 80%;
+    height: 20px;
+    background-color: #963;
+    border: 2px solid #963;
+    overflow: hidden;
+}
+
+.aside-panel .progress .inner {
+    height: 100%;
 }
 
 /* Ships */
