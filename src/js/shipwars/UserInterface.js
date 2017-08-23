@@ -197,6 +197,17 @@ export default class UserInterface {
         // Compass
         let panelCompass = document.createElement('div')
         panelCompass.className = 'compass'
+        
+        const xhr = new XMLHttpRequest()
+        xhr.open('GET', '../images/compass.svg')
+        xhr.send(null)
+
+        xhr.onload = () => {
+            this.compassNeedle = xhr.responseXML.documentElement.getElementById('needle')
+            panelCompass.appendChild(xhr.responseXML.documentElement)
+
+        }
+
         this.asidePanel.appendChild(panelCompass)
 
         // Hit points
@@ -342,6 +353,15 @@ export default class UserInterface {
     set speed(speed) {
 
         this._panelSpeedInner.style.width = Math.round(speed / Config.MAX_SPEED * 100) + '%'
+
+    }
+
+    /**
+     * @type {number}
+     */
+    set direction(direction) {
+
+        this.compassNeedle.style.transform = `rotate(${ -direction + 90 }deg)`
 
     }
 

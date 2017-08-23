@@ -1,6 +1,7 @@
 import io from 'socket.io-client'
 import Config from './Config'
 import UserInterface from './UserInterface'
+import getContrast from './utils/getContrast'
 
 /**
  * @module
@@ -260,8 +261,8 @@ export default class Core {
                     let ship = document.createElement('div')
                     ship.className = 'ship'
                     ship.style.backgroundColor = ships[id].color
-                    ship.style.left = Math.round(ships[id].coords.x) + 'px'
-                    ship.style.top = Math.round(ships[id].coords.y) + 'px'
+                    ship.style.left = Math.round(ships[id].x) + 'px'
+                    ship.style.top = Math.round(ships[id].y) + 'px'
                     this.ui.gamebox.appendChild(ship)
 
                     this.ships[id] = ship
@@ -270,9 +271,9 @@ export default class Core {
 
                 } else {
 
-                    this.ships[id].style.left = Math.round(ships[id].coords.x) + 'px'
-                    this.ships[id].style.top = Math.round(ships[id].coords.y) + 'px'
-                    this.ships[id].style.transform = `translate(-50%, -50%) rotate(${ -Math.round(ships[id].factors.angle) }deg)`
+                    this.ships[id].style.left = Math.round(ships[id].x) + 'px'
+                    this.ships[id].style.top = Math.round(ships[id].y) + 'px'
+                    this.ships[id].style.transform = `translate(-50%, -50%) rotate(${ -Math.round(ships[id].angle) }deg)`
 
                 }
 
@@ -302,8 +303,12 @@ export default class Core {
 
                     let cannonball = document.createElement('div')
                     cannonball.className = 'cannonball'
-                    cannonball.style.left = Math.round(cannonballs[id].coords.x) + 'px'
-                    cannonball.style.top = Math.round(cannonballs[id].coords.y) + 'px'
+                    cannonball.style.fontSize = cannonballs[id].diameter + 'px'
+                    cannonball.style.backgroundColor = cannonballs[id].color
+                    cannonball.style.left = Math.round(cannonballs[id].x) + 'px'
+                    cannonball.style.top = Math.round(cannonballs[id].y) + 'px'
+                    cannonball.style.color = getContrast(cannonballs[id].color)
+                    cannonball.dataset.power = cannonballs[id].diameter - 20
                     this.ui.gamebox.appendChild(cannonball)
 
                     this.cannonballs[id] = cannonball
@@ -312,8 +317,8 @@ export default class Core {
 
                 } else {
 
-                    this.cannonballs[id].style.left = Math.round(cannonballs[id].coords.x) + 'px'
-                    this.cannonballs[id].style.top = Math.round(cannonballs[id].coords.y) + 'px'
+                    this.cannonballs[id].style.left = Math.round(cannonballs[id].x) + 'px'
+                    this.cannonballs[id].style.top = Math.round(cannonballs[id].y) + 'px'
 
                 }
 
@@ -339,8 +344,14 @@ export default class Core {
 
                 const ship = ships[this.socket.id]
 
-                // Update speed
-                this.ui.speed = ship.factors.speed
+                // Update speedometer
+                this.ui.speed = ship.speed
+
+                // Update compass
+                this.ui.direction = ship.angle
+
+                // Update firepower meter
+                this.ui.fp = ship.fp
 
             }
 
@@ -349,6 +360,9 @@ export default class Core {
 
         // Update button state
         this.socket.on('canjoin', (state) => this.ui.updateJoinLeaveButton(state))
+
+        // Update button state
+        this.socket.on('console', (message) => console.log(message,))
     }
 
     /**

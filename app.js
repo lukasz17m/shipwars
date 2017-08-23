@@ -19,10 +19,12 @@ let spectators = []
 const colors = ['#865f1d', '#3a2d18', '#473b2f', '#6d3d22']
 
 const factors = {
-  acceleration: 0.05,
-  speed: 0.2,
-  cannonballSpeed: 10,
-  angle: 2
+  acceleration: 0.1,
+  cannonballSpeed: 6,
+  angle: 1,
+  fireLoadMinimum: 1,
+  fireLoadSpeed: 0.1,
+  fireLoadIncreasing: 0.02
 }
 
 const minmax = {
@@ -38,6 +40,8 @@ const frame = {
   ships: {},
   cannonballs: {}
 }
+
+let truncFrame = {}
 
 let cannonballsId = 0
 
@@ -64,10 +68,10 @@ io.on('connection', (socket) => {
     if (name.length < CONFIG.NAME_MIN_CHARS || name.length > CONFIG.NAME_MAX_CHARS) return abort()
     // Check if nickname is taken
     for (let i = 0; i < spectators.length; i++) {
-      if (spectators[i].name == name) return abort()
+      if (spectators[i].name === name) return abort()
     }
     for (let player in frame.ships) {
-      if (frame.ships[player].name == name) return abort()
+      if (frame.ships[player].name === name) return abort()
     }
     // Send callback, disconnect user and cancel function
     function abort() {
@@ -91,7 +95,7 @@ io.on('connection', (socket) => {
   // Gets ['player1', 'player2'] returns ['#4008a4', '#95fc45']
   socket.on('getColors', (players, callback) => {
     callback(players.map((player) => {
-      let id = Object.keys(frame.ships).find((key) => { return frame.ships[key].name == player })
+      let id = Object.keys(frame.ships).find((key) => { return frame.ships[key].name === player })
       return (typeof frame.ships[id] == 'undefined') ? '#f00' : frame.ships[id].color
     }))
   })
@@ -99,20 +103,20 @@ io.on('connection', (socket) => {
   // Joining the game
   socket.on('join', (callback) => {
     // Checks if there’s slot available for another player
-    if (Object.keys(frame.ships).length == CONFIG.MAX_PLAYERS) {
+    if (Object.keys(frame.ships).length === CONFIG.MAX_PLAYERS) {
       callback(false)
       return false
     }
     // Adds player to frame
     frame.ships[socket.id] = {
-      name: spectators[Object.keys(spectators).find((key) => { return spectators[key].id == socket.id })].name,
+      name: spectators[Object.keys(spectators).find((key) => { return spectators[key].id === socket.id })].name,
       color: drawColor(),
       coords: {
         x: Math.floor((Math.random() * 600) + 100),
         y: Math.floor((Math.random() * 400) + 100)
       },
-      hp: 100,
-      fp: 100,
+      hp: CONFIG.MAX_HP,
+      fp: CONFIG.MAX_FP,
       steerage: {
         accelerate: false,
         decelerate: false,
@@ -123,7 +127,9 @@ io.on('connection', (socket) => {
       },
       factors: {
         speed: 0,
-        angle: 0
+        angle: 0,
+        fireLeft: 0,
+        fireRight: 0,
       }
     }
     // Get new ranking
@@ -134,7 +140,7 @@ io.on('connection', (socket) => {
     })
     // Update spectators
     spectators = spectators.filter((spectator) => {
-      if (spectator.id == socket.id) {
+      if (spectator.id === socket.id) {
         return false
       }
       return true
@@ -204,26 +210,18 @@ io.on('connection', (socket) => {
         break
       // Shoot left
       case 5:
-        frame.ships[socket.id].steerage.shootLeft = true
-        // temp
-        frame.cannonballs[++cannonballsId] = {
-          coords: { x: frame.ships[socket.id].coords.x, y: frame.ships[socket.id].coords.y },
-          factors: { angle: frame.ships[socket.id].factors.angle + 90 }
+        if (frame.ships[socket.id].fp - factors.fireLoadMinimum >= CONFIG.MIN_FP) {
+          frame.ships[socket.id].steerage.shootLeft = true
         }
-        setTimeout(deleteCannonball.bind(this, cannonballsId), 3000)
         break
       case 50:
         frame.ships[socket.id].steerage.shootLeft = false
         break
       // Shoot right
       case 6:
-        frame.ships[socket.id].steerage.shootRight = true
-        // temp
-        frame.cannonballs[++cannonballsId] = {
-          coords: { x: frame.ships[socket.id].coords.x, y: frame.ships[socket.id].coords.y },
-          factors: { angle: frame.ships[socket.id].factors.angle - 90 }
+        if (frame.ships[socket.id].fp - factors.fireLoadMinimum >= CONFIG.MIN_FP) {
+          frame.ships[socket.id].steerage.shootRight = true
         }
-        setTimeout(deleteCannonball.bind(this, cannonballsId), 3000)
         break
       case 60:
         frame.ships[socket.id].steerage.shootRight = false
@@ -244,7 +242,7 @@ io.on('connection', (socket) => {
       playerLeave(socket.id)
     } else {
       spectators = spectators.filter((spectator) => {
-        if (spectator.id == socket.id) {
+        if (spectator.id === socket.id) {
           name = spectator.name
           return false
         }
@@ -278,20 +276,23 @@ io.on('connection', (socket) => {
   })
 })
 
-let timer = 0
-;(function loop() {
+;(function heartbeat() {
   // CODE GOES BELOW
+  truncFrame = {
+    ships: {},
+    cannonballs: {}
+  }
   // Loop the ships
   for (let id in frame.ships) {
     // Accelerate & deccelerate
     if (frame.ships[id].steerage.accelerate === frame.ships[id].steerage.decelerate) {
       // Do nothing
     } else if (frame.ships[id].steerage.accelerate) {
-      if ((frame.ships[id].factors.speed += factors.speed) > minmax.max.speed) {
+      if ((frame.ships[id].factors.speed += factors.acceleration) > minmax.max.speed) {
         frame.ships[id].factors.speed = minmax.max.speed
       }
     } else if (frame.ships[id].steerage.decelerate) {
-      if ((frame.ships[id].factors.speed -= factors.speed) < minmax.min.speed) {
+      if ((frame.ships[id].factors.speed -= factors.acceleration) < minmax.min.speed) {
         frame.ships[id].factors.speed = minmax.min.speed
       }
     }
@@ -303,20 +304,99 @@ let timer = 0
     } else if (frame.ships[id].steerage.turnRight) {
       frame.ships[id].factors.angle = (frame.ships[id].factors.angle - factors.angle) % 360
     }
+    // Shoot left
+    if (frame.ships[id].steerage.shootLeft === true) {
+      if (
+        frame.ships[id].factors.fireLeft < factors.fireLoadMinimum &&
+        frame.ships[id].fp - factors.fireLoadMinimum >= CONFIG.MIN_FP
+      ) {
+        frame.ships[id].fp -= factors.fireLoadMinimum
+        frame.ships[id].factors.fireLeft = factors.fireLoadMinimum
+      } else if (
+        frame.ships[id].factors.fireLeft + factors.fireLoadSpeed <= CONFIG.MAX_FP &&
+        frame.ships[id].fp - factors.fireLoadSpeed >= CONFIG.MIN_FP
+      ) {
+        frame.ships[id].fp -= factors.fireLoadSpeed
+        frame.ships[id].factors.fireLeft += factors.fireLoadSpeed
+      } else {
+        let power = Math.ceil(frame.ships[id].factors.fireLeft / CONFIG.MAX_FP * 10)
+        frame.ships[id].factors.fireLeft = 0
+        frame.ships[id].steerage.shootLeft = false
+        shootCannonball(frame.ships[id], 20 + power, 90)
+        io.emit('console', '1 power ' + power)
+      }
+    } else if (frame.ships[id].factors.fireLeft >= factors.fireLoadMinimum) {
+        let power = Math.ceil(frame.ships[id].factors.fireLeft / CONFIG.MAX_FP * 10)
+        frame.ships[id].factors.fireLeft = 0
+        frame.ships[id].steerage.shootLeft = false
+        shootCannonball(frame.ships[id], 20 + power, 90)
+        io.emit('console', '2 power ' + power)
+    }
+    // Shoot right
+    if (frame.ships[id].steerage.shootRight === true) {
+      if (
+        frame.ships[id].factors.fireRight < factors.fireLoadMinimum &&
+        frame.ships[id].fp - factors.fireLoadMinimum >= CONFIG.MIN_FP
+      ) {
+        frame.ships[id].fp -= factors.fireLoadMinimum
+        frame.ships[id].factors.fireRight = factors.fireLoadMinimum
+      } else if (
+        frame.ships[id].factors.fireRight + factors.fireLoadSpeed <= CONFIG.MAX_FP &&
+        frame.ships[id].fp - factors.fireLoadSpeed >= CONFIG.MIN_FP
+      ) {
+        frame.ships[id].fp -= factors.fireLoadSpeed
+        frame.ships[id].factors.fireRight += factors.fireLoadSpeed
+      } else {
+        let power = Math.ceil(frame.ships[id].factors.fireRight / CONFIG.MAX_FP * 10)
+        frame.ships[id].factors.fireRight = 0
+        frame.ships[id].steerage.shootRight = false
+        shootCannonball(frame.ships[id], 20 + power, -90)
+        io.emit('console', '3 power ' + power)
+      }
+    } else if (frame.ships[id].factors.fireRight >= factors.fireLoadMinimum) {
+        let power = Math.ceil(frame.ships[id].factors.fireRight / CONFIG.MAX_FP * 10)
+        frame.ships[id].factors.fireRight = 0
+        frame.ships[id].steerage.shootRight = false
+        shootCannonball(frame.ships[id], 20 + power, -90)
+        io.emit('console', '4 power ' + power)
+    } 
+    // Increase firepower
+    if (frame.ships[id].fp + factors.fireLoadIncreasing > CONFIG.MAX_FP) {
+      frame.ships[id].fp = CONFIG.MAX_FP
+    } else {
+      frame.ships[id].fp += factors.fireLoadIncreasing
+    }
     // Position
-    frame.ships[id].coords.x += (Math.cos((Math.PI / 180) * frame.ships[id].factors.angle) * frame.ships[id].factors.speed)
-    frame.ships[id].coords.y -= (Math.sin((Math.PI / 180) * frame.ships[id].factors.angle) * frame.ships[id].factors.speed)
+    frame.ships[id].coords.x += Math.cos((Math.PI / 180) * frame.ships[id].factors.angle) * frame.ships[id].factors.speed
+    frame.ships[id].coords.y -= Math.sin((Math.PI / 180) * frame.ships[id].factors.angle) * frame.ships[id].factors.speed
+    // Update truncated frame
+    truncFrame.ships[id] = {
+      color: frame.ships[id].color,
+      x: frame.ships[id].coords.x,
+      y: frame.ships[id].coords.y,
+      speed: frame.ships[id].factors.speed,
+      angle: frame.ships[id].factors.angle,
+      hp: frame.ships[id].hp,
+      fp: frame.ships[id].fp
+    }
   }
   // Loop the cannonballs
   for (let id in frame.cannonballs) {
     // Position
-    frame.cannonballs[id].coords.x += (Math.cos((Math.PI / 180) * frame.cannonballs[id].factors.angle) * factors.cannonballSpeed)
-    frame.cannonballs[id].coords.y -= (Math.sin((Math.PI / 180) * frame.cannonballs[id].factors.angle) * factors.cannonballSpeed)
+    frame.cannonballs[id].coords.x += Math.cos((Math.PI / 180) * frame.cannonballs[id].factors.angle) * factors.cannonballSpeed
+    frame.cannonballs[id].coords.y -= Math.sin((Math.PI / 180) * frame.cannonballs[id].factors.angle) * factors.cannonballSpeed
+    // Update truncated frame
+    truncFrame.cannonballs[id] = {
+      diameter: frame.cannonballs[id].diameter,
+      color: frame.cannonballs[id].color,
+      x: frame.cannonballs[id].coords.x,
+      y: frame.cannonballs[id].coords.y
+    }
   }
   // Emits frame
-  io.emit('frame', frame)
+  io.emit('frame', truncFrame)
   // CODE GOES ABOVE
-  if (timer < 3) setTimeout(loop, 1000 / FPS)
+  setTimeout(heartbeat, 1000 / FPS)
 })()
 // Listen for HTTP requests
 http.listen(PORT, () => log.http('OK', 'App listening on %i', PORT))
@@ -360,6 +440,21 @@ function updatespectators() {
       io.to(spectator.id).emit('canjoin', 1)
     })
   }
+}
+
+function shootCannonball(owner, diameter, angle) {
+  frame.cannonballs[++cannonballsId] = {
+    diameter,
+    color: owner.color,
+    coords: {
+      x: owner.coords.x,
+      y: owner.coords.y
+    },
+    factors: { 
+      angle: owner.factors.angle + angle
+    }
+  }
+  setTimeout(deleteCannonball.bind(this, cannonballsId), 3000)
 }
 
 function deleteCannonball(id) {

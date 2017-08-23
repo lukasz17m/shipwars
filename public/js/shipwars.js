@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 22);
+/******/ 	return __webpack_require__(__webpack_require__.s = 23);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -100,7 +100,7 @@ module.exports = g;
  * Expose `debug()` as the module.
  */
 
-exports = module.exports = __webpack_require__(27);
+exports = module.exports = __webpack_require__(28);
 exports.log = log;
 exports.formatArgs = formatArgs;
 exports.save = save;
@@ -280,7 +280,7 @@ function localstorage() {
   } catch (e) {}
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)))
 
 /***/ }),
 /* 2 */
@@ -459,15 +459,15 @@ Emitter.prototype.hasListeners = function(event){
  * Module dependencies.
  */
 
-var keys = __webpack_require__(35);
+var keys = __webpack_require__(36);
 var hasBinary = __webpack_require__(10);
-var sliceBuffer = __webpack_require__(36);
-var after = __webpack_require__(37);
-var utf8 = __webpack_require__(38);
+var sliceBuffer = __webpack_require__(37);
+var after = __webpack_require__(38);
+var utf8 = __webpack_require__(39);
 
 var base64encoder;
 if (global && global.ArrayBuffer) {
-  base64encoder = __webpack_require__(40);
+  base64encoder = __webpack_require__(41);
 }
 
 /**
@@ -525,7 +525,7 @@ var err = { type: 'error', data: 'parser error' };
  * Create a blob api even for blob builder when vendor prefixes exist
  */
 
-var Blob = __webpack_require__(41);
+var Blob = __webpack_require__(42);
 
 /**
  * Encodes a packet.
@@ -1131,7 +1131,7 @@ module.exports = function(a, b){
 var debug = __webpack_require__(1)('socket.io-parser');
 var Emitter = __webpack_require__(2);
 var hasBin = __webpack_require__(10);
-var binary = __webpack_require__(29);
+var binary = __webpack_require__(30);
 var isBuf = __webpack_require__(12);
 
 /**
@@ -1531,7 +1531,7 @@ function error() {
 
 /* WEBPACK VAR INJECTION */(function(global) {// browser shim for xmlhttprequest module
 
-var hasCORS = __webpack_require__(33);
+var hasCORS = __webpack_require__(34);
 
 module.exports = function (opts) {
   var xdomain = opts.xdomain;
@@ -1886,7 +1886,7 @@ function isBuf(obj) {
  * Module dependencies.
  */
 
-var eio = __webpack_require__(30);
+var eio = __webpack_require__(31);
 var Socket = __webpack_require__(18);
 var Emitter = __webpack_require__(2);
 var parser = __webpack_require__(6);
@@ -1894,7 +1894,7 @@ var on = __webpack_require__(19);
 var bind = __webpack_require__(20);
 var debug = __webpack_require__(1)('socket.io-client:manager');
 var indexOf = __webpack_require__(17);
-var Backoff = __webpack_require__(47);
+var Backoff = __webpack_require__(48);
 
 /**
  * IE6+ hasOwnProperty
@@ -2465,9 +2465,9 @@ Manager.prototype.onreconnect = function () {
  */
 
 var XMLHttpRequest = __webpack_require__(7);
-var XHR = __webpack_require__(34);
-var JSONP = __webpack_require__(42);
-var websocket = __webpack_require__(43);
+var XHR = __webpack_require__(35);
+var JSONP = __webpack_require__(43);
+var websocket = __webpack_require__(44);
 
 /**
  * Export transports.
@@ -2868,7 +2868,7 @@ module.exports = function(arr, obj){
 
 var parser = __webpack_require__(6);
 var Emitter = __webpack_require__(2);
-var toArray = __webpack_require__(46);
+var toArray = __webpack_require__(47);
 var on = __webpack_require__(19);
 var bind = __webpack_require__(20);
 var debug = __webpack_require__(1)('socket.io-client:socket');
@@ -3394,7 +3394,7 @@ module.exports = class Config {
      */
     static get MAX_SPEED() {
 
-        return 5
+        return 4
 
     }
 
@@ -3412,7 +3412,7 @@ module.exports = class Config {
      */
     static get MAX_HP() {
 
-        return 100
+        return 25
 
     }
 
@@ -3430,7 +3430,7 @@ module.exports = class Config {
      */
     static get MAX_FP() {
 
-        return 100
+        return 10
 
     }
 
@@ -3445,8 +3445,31 @@ module.exports = class Config {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/**
+ * Calculates contrast color (YIQ).
+ * @param {!string} color - Hex value.
+ * @returns {string} Black or white hex value.
+ */
+function getContrast(color) {
+
+    let r = parseInt(color.substr(1, 2), 16),
+        g = parseInt(color.substr(3, 2), 16),
+        b = parseInt(color.substr(5, 2), 16),
+        yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000
+
+    return (yiq >= 128) ? '#000' : '#fff';
+
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (getContrast);
+
+/***/ }),
+/* 23 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__shipwars_Core__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__shipwars_Core__ = __webpack_require__(24);
 
 
 new __WEBPACK_IMPORTED_MODULE_0__shipwars_Core__["a" /* default */]()
@@ -3454,15 +3477,17 @@ new __WEBPACK_IMPORTED_MODULE_0__shipwars_Core__["a" /* default */]()
 // window.onkeydown = e => console.log(`keyCode: ${ e.keyCode }`)
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_socket_io_client__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_socket_io_client__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_socket_io_client___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_socket_io_client__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Config__ = __webpack_require__(21);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Config___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__Config__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__UserInterface__ = __webpack_require__(48);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__UserInterface__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__utils_getContrast__ = __webpack_require__(22);
+
 
 
 
@@ -3725,8 +3750,8 @@ class Core {
                     let ship = document.createElement('div')
                     ship.className = 'ship'
                     ship.style.backgroundColor = ships[id].color
-                    ship.style.left = Math.round(ships[id].coords.x) + 'px'
-                    ship.style.top = Math.round(ships[id].coords.y) + 'px'
+                    ship.style.left = Math.round(ships[id].x) + 'px'
+                    ship.style.top = Math.round(ships[id].y) + 'px'
                     this.ui.gamebox.appendChild(ship)
 
                     this.ships[id] = ship
@@ -3735,9 +3760,9 @@ class Core {
 
                 } else {
 
-                    this.ships[id].style.left = Math.round(ships[id].coords.x) + 'px'
-                    this.ships[id].style.top = Math.round(ships[id].coords.y) + 'px'
-                    this.ships[id].style.transform = `translate(-50%, -50%) rotate(${ -Math.round(ships[id].factors.angle) }deg)`
+                    this.ships[id].style.left = Math.round(ships[id].x) + 'px'
+                    this.ships[id].style.top = Math.round(ships[id].y) + 'px'
+                    this.ships[id].style.transform = `translate(-50%, -50%) rotate(${ -Math.round(ships[id].angle) }deg)`
 
                 }
 
@@ -3767,8 +3792,12 @@ class Core {
 
                     let cannonball = document.createElement('div')
                     cannonball.className = 'cannonball'
-                    cannonball.style.left = Math.round(cannonballs[id].coords.x) + 'px'
-                    cannonball.style.top = Math.round(cannonballs[id].coords.y) + 'px'
+                    cannonball.style.fontSize = cannonballs[id].diameter + 'px'
+                    cannonball.style.backgroundColor = cannonballs[id].color
+                    cannonball.style.left = Math.round(cannonballs[id].x) + 'px'
+                    cannonball.style.top = Math.round(cannonballs[id].y) + 'px'
+                    cannonball.style.color = Object(__WEBPACK_IMPORTED_MODULE_3__utils_getContrast__["a" /* default */])(cannonballs[id].color)
+                    cannonball.dataset.power = cannonballs[id].diameter - 20
                     this.ui.gamebox.appendChild(cannonball)
 
                     this.cannonballs[id] = cannonball
@@ -3777,8 +3806,8 @@ class Core {
 
                 } else {
 
-                    this.cannonballs[id].style.left = Math.round(cannonballs[id].coords.x) + 'px'
-                    this.cannonballs[id].style.top = Math.round(cannonballs[id].coords.y) + 'px'
+                    this.cannonballs[id].style.left = Math.round(cannonballs[id].x) + 'px'
+                    this.cannonballs[id].style.top = Math.round(cannonballs[id].y) + 'px'
 
                 }
 
@@ -3804,8 +3833,14 @@ class Core {
 
                 const ship = ships[this.socket.id]
 
-                // Update speed
-                this.ui.speed = ship.factors.speed
+                // Update speedometer
+                this.ui.speed = ship.speed
+
+                // Update compass
+                this.ui.direction = ship.angle
+
+                // Update firepower meter
+                this.ui.fp = ship.fp
 
             }
 
@@ -3814,6 +3849,9 @@ class Core {
 
         // Update button state
         this.socket.on('canjoin', (state) => this.ui.updateJoinLeaveButton(state))
+
+        // Update button state
+        this.socket.on('console', (message) => console.log(message,))
     }
 
     /**
@@ -3956,7 +3994,7 @@ class Core {
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -3964,7 +4002,7 @@ class Core {
  * Module dependencies.
  */
 
-var url = __webpack_require__(25);
+var url = __webpack_require__(26);
 var parser = __webpack_require__(6);
 var Manager = __webpack_require__(13);
 var debug = __webpack_require__(1)('socket.io-client');
@@ -4056,7 +4094,7 @@ exports.Socket = __webpack_require__(18);
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {
@@ -4138,7 +4176,7 @@ function url (uri, loc) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -4328,7 +4366,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -4344,7 +4382,7 @@ exports.coerce = coerce;
 exports.disable = disable;
 exports.enable = enable;
 exports.enabled = enabled;
-exports.humanize = __webpack_require__(28);
+exports.humanize = __webpack_require__(29);
 
 /**
  * The currently active debug mode names, and names to skip.
@@ -4536,7 +4574,7 @@ function coerce(val) {
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports) {
 
 /**
@@ -4694,7 +4732,7 @@ function plural(ms, n, name) {
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/*global Blob,File*/
@@ -4842,19 +4880,19 @@ exports.removeBlobs = function(data, callback) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-module.exports = __webpack_require__(31);
-
-
-/***/ }),
 /* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
 module.exports = __webpack_require__(32);
+
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+module.exports = __webpack_require__(33);
 
 /**
  * Exports parser
@@ -4866,7 +4904,7 @@ module.exports.parser = __webpack_require__(3);
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -4879,7 +4917,7 @@ var debug = __webpack_require__(1)('engine.io-client:socket');
 var index = __webpack_require__(17);
 var parser = __webpack_require__(3);
 var parseuri = __webpack_require__(9);
-var parsejson = __webpack_require__(45);
+var parsejson = __webpack_require__(46);
 var parseqs = __webpack_require__(4);
 
 /**
@@ -5617,7 +5655,7 @@ Socket.prototype.filterUpgrades = function (upgrades) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports) {
 
 
@@ -5640,7 +5678,7 @@ try {
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -6060,7 +6098,7 @@ function unloadHandler () {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports) {
 
 
@@ -6085,7 +6123,7 @@ module.exports = Object.keys || function keys (obj){
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports) {
 
 /**
@@ -6120,7 +6158,7 @@ module.exports = function(arraybuffer, start, end) {
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports) {
 
 module.exports = after
@@ -6154,7 +6192,7 @@ function noop() {}
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module, global) {var __WEBPACK_AMD_DEFINE_RESULT__;/*! https://mths.be/utf8js v2.1.2 by @mathias */
@@ -6412,10 +6450,10 @@ function noop() {}
 
 }(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(39)(module), __webpack_require__(0)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(40)(module), __webpack_require__(0)))
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -6443,7 +6481,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports) {
 
 /*
@@ -6516,7 +6554,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -6619,7 +6657,7 @@ module.exports = (function() {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {
@@ -6857,7 +6895,7 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -6874,7 +6912,7 @@ var BrowserWebSocket = global.WebSocket || global.MozWebSocket;
 var NodeWebSocket;
 if (typeof window === 'undefined') {
   try {
-    NodeWebSocket = __webpack_require__(44);
+    NodeWebSocket = __webpack_require__(45);
   } catch (e) { }
 }
 
@@ -7150,13 +7188,13 @@ WS.prototype.check = function () {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -7194,7 +7232,7 @@ module.exports = function parsejson(data) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports) {
 
 module.exports = toArray
@@ -7213,7 +7251,7 @@ function toArray(list, index) {
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports) {
 
 
@@ -7304,13 +7342,13 @@ Backoff.prototype.setJitter = function(jitter){
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Config__ = __webpack_require__(21);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Config___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Config__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_getContrast__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_getContrast__ = __webpack_require__(22);
 
 
 
@@ -7510,6 +7548,17 @@ class UserInterface {
         // Compass
         let panelCompass = document.createElement('div')
         panelCompass.className = 'compass'
+        
+        const xhr = new XMLHttpRequest()
+        xhr.open('GET', '../images/compass.svg')
+        xhr.send(null)
+
+        xhr.onload = () => {
+            this.compassNeedle = xhr.responseXML.documentElement.getElementById('needle')
+            panelCompass.appendChild(xhr.responseXML.documentElement)
+
+        }
+
         this.asidePanel.appendChild(panelCompass)
 
         // Hit points
@@ -7655,6 +7704,15 @@ class UserInterface {
     set speed(speed) {
 
         this._panelSpeedInner.style.width = Math.round(speed / __WEBPACK_IMPORTED_MODULE_0__Config___default.a.MAX_SPEED * 100) + '%'
+
+    }
+
+    /**
+     * @type {number}
+     */
+    set direction(direction) {
+
+        this.compassNeedle.style.transform = `rotate(${ -direction + 90 }deg)`
 
     }
 
@@ -7893,29 +7951,6 @@ class UserInterface {
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = UserInterface;
 
-
-/***/ }),
-/* 49 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/**
- * Calculates contrast color (YIQ).
- * @param {!string} color - Hex value.
- * @returns {string} Black or white hex value.
- */
-function getContrast(color) {
-
-    let r = parseInt(color.substr(1, 2), 16),
-        g = parseInt(color.substr(3, 2), 16),
-        b = parseInt(color.substr(5, 2), 16),
-        yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000
-
-    return (yiq >= 128) ? '#000' : '#fff';
-
-}
-
-/* harmony default export */ __webpack_exports__["a"] = (getContrast);
 
 /***/ })
 /******/ ]);

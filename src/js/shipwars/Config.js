@@ -48,7 +48,7 @@ module.exports = class Config {
      */
     static get MAX_SPEED() {
 
-        return 5
+        return 4
 
     }
 
@@ -66,7 +66,7 @@ module.exports = class Config {
      */
     static get MAX_HP() {
 
-        return 100
+        return 25
 
     }
 
@@ -84,7 +84,7 @@ module.exports = class Config {
      */
     static get MAX_FP() {
 
-        return 100
+        return 10
 
     }
 
