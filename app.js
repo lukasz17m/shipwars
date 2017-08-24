@@ -111,9 +111,22 @@ io.on('connection', (socket) => {
     frame.ships[socket.id] = {
       name: spectators[Object.keys(spectators).find((key) => { return spectators[key].id === socket.id })].name,
       color: drawColor(),
+      diameter: 4 * CONFIG.SHIP_WIDTH,
       coords: {
         x: Math.floor((Math.random() * 600) + 100),
-        y: Math.floor((Math.random() * 400) + 100)
+        y: Math.floor((Math.random() * 400) + 100),
+        front() {
+          return {
+            x: frame.ships[socket.id].coords.x + (Math.cos((Math.PI / 180) * frame.ships[socket.id].factors.angle) * (CONFIG.SHIP_WIDTH * 3 / 2)),
+            y: frame.ships[socket.id].coords.y - (Math.sin((Math.PI / 180) * frame.ships[socket.id].factors.angle) * (CONFIG.SHIP_WIDTH * 3 / 2))
+          }
+        },
+        rear() {
+          return {
+            x: frame.ships[socket.id].coords.x - (Math.cos((Math.PI / 180) * frame.ships[socket.id].factors.angle) * (CONFIG.SHIP_WIDTH * 3 / 2)),
+            y: frame.ships[socket.id].coords.y + (Math.sin((Math.PI / 180) * frame.ships[socket.id].factors.angle) * (CONFIG.SHIP_WIDTH * 3 / 2))
+          }
+        }
       },
       hp: CONFIG.MAX_HP,
       fp: CONFIG.MAX_FP,
@@ -282,6 +295,118 @@ io.on('connection', (socket) => {
     ships: {},
     cannonballs: {}
   }
+  // Set items
+  let items = []
+  for (let id in frame.ships) {
+    items.push(frame.ships[id])
+  }
+  for (let id in frame.cannonballs) {
+    items.push(frame.cannonballs[id])
+  }
+  // log.info('ITEMS', items)
+  // Collisions
+  for (let i = 0; i < items.length; i++) {
+    // Wall impact
+    if (items[i].hasOwnProperty('name')) {
+      if (
+        items[i].coords.front().x + items[i].diameter / 8 > 800 ||
+        items[i].coords.front().x - items[i].diameter / 8 < 0 ||
+        items[i].coords.front().y + items[i].diameter / 8 > 600 ||
+        items[i].coords.front().y - items[i].diameter / 8 < 0 ||
+        items[i].coords.rear().x + items[i].diameter / 8 > 800 ||
+        items[i].coords.rear().x - items[i].diameter / 8 < 0 ||
+        items[i].coords.rear().y + items[i].diameter / 8 > 600 ||
+        items[i].coords.rear().y - items[i].diameter / 8 < 0
+      ) {
+        // io.emit('console', 'Zero condition : COLLISION')
+      }
+    } else {
+      if (
+        items[i].coords.x + items[i].diameter / 2 > 800 ||
+        items[i].coords.x - items[i].diameter / 2 < 0 ||
+        items[i].coords.y + items[i].diameter / 2 > 600 ||
+        items[i].coords.y - items[i].diameter / 2 < 0
+      ) {
+        destroyCannonball(Object.keys(frame.cannonballs).find((key) => { return frame.cannonballs[key].owner === items[i].owner }))
+        // io.emit('console', 'Zero condition : COLLISION')
+      }
+    }
+    // Collision between objects
+    for (let j = i + 1; j < items.length; j++) {
+      if (
+        distance(items[i].coords, items[j].coords)
+        < items[i].diameter / 2 + items[j].diameter / 2
+      ) {
+        // io.emit('console', 'First condition : INITIAL')
+        if (
+          ! (items[i].hasOwnProperty('name') || items[j].hasOwnProperty('name')) &&
+          distance(items[i].coords, items[j].coords) < items[i].diameter
+        ) { // Two cannonballs
+          // io.emit('console', 'Second condition : COLLISION')
+        } else if (items[i].hasOwnProperty('name') && ! items[j].hasOwnProperty('name')) { // Ship & cannonball
+          if (
+            distance(items[i].coords.front(), items[j].coords)
+            < items[i].diameter / 8 + items[j].diameter / 2 ||
+            distance(items[i].coords.rear(), items[j].coords)
+            < items[i].diameter / 8 + items[j].diameter / 2
+          ) {
+            // io.emit('console', 'Second condition : COLLISION')
+          } else if (triangleArea(items[i], items[j]) < minTriangleArea(items[j].diameter)) {
+            // io.emit('console', 'Third condition : COLLISION')
+          }
+        } else if (! items[i].hasOwnProperty('name') && items[j].hasOwnProperty('name')) { // Cannonball & ship
+          if (
+            distance(items[j].coords.front(), items[i].coords)
+            < items[j].diameter / 8 + items[i].diameter / 2 ||
+            distance(items[j].coords.rear(), items[i].coords)
+            < items[j].diameter / 8 + items[i].diameter / 2
+          ) {
+            // io.emit('console', 'Second condition : COLLISION')
+          } else if (triangleArea(items[j], items[i]) < minTriangleArea(items[i].diameter)) {
+            // io.emit('console', 'Third condition : COLLISION')
+          }
+        } else { // Two ships
+          if (
+            distance(items[i].coords.front(), items[j].coords.front())
+            < items[i].diameter / 4 ||
+            distance(items[i].coords.rear(), items[j].coords.rear())
+            < items[i].diameter / 4 ||
+            distance(items[i].coords.front(), items[j].coords.rear())
+            < items[i].diameter / 4 ||
+            distance(items[i].coords.rear(), items[j].coords.front())
+            < items[i].diameter / 4
+          ) {
+            // io.emit('console', 'Second condition : COLLISION')
+          } else { // Front and rear as cannonballs
+            if (
+              (
+                distance(items[i].coords.front(), items[j].coords)
+                < items[i].diameter / 8 + items[j].diameter / 2 &&
+                triangleArea(items[j], { coords: items[i].coords.front() }) < minTriangleArea(CONFIG.SHIP_WIDTH)
+              ) ||
+              (
+                distance(items[i].coords.rear(), items[j].coords)
+                < items[i].diameter / 8 + items[j].diameter / 2 &&
+                triangleArea(items[j], { coords: items[i].coords.rear() }) < minTriangleArea(CONFIG.SHIP_WIDTH)
+              ) ||
+              (
+                distance(items[j].coords.front(), items[i].coords)
+                < items[j].diameter / 8 + items[i].diameter / 2 &&
+                triangleArea(items[i], { coords: items[j].coords.front() }) < minTriangleArea(CONFIG.SHIP_WIDTH)
+              ) ||
+              (
+                distance(items[j].coords.rear(), items[i].coords)
+                < items[j].diameter / 8 + items[i].diameter / 2 &&
+                triangleArea(items[i], { coords: items[j].coords.rear() }) < minTriangleArea(CONFIG.SHIP_WIDTH)
+              )
+            ) {
+              // io.emit('console', 'Third condition : COLLISION')
+            }
+          }
+        }
+      }
+    }
+  }
   // Loop the ships
   for (let id in frame.ships) {
     // Accelerate & deccelerate
@@ -323,14 +448,12 @@ io.on('connection', (socket) => {
         frame.ships[id].factors.fireLeft = 0
         frame.ships[id].steerage.shootLeft = false
         shootCannonball(frame.ships[id], 20 + power, 90)
-        io.emit('console', '1 power ' + power)
       }
     } else if (frame.ships[id].factors.fireLeft >= factors.fireLoadMinimum) {
         let power = Math.ceil(frame.ships[id].factors.fireLeft / CONFIG.MAX_FP * 10)
         frame.ships[id].factors.fireLeft = 0
         frame.ships[id].steerage.shootLeft = false
         shootCannonball(frame.ships[id], 20 + power, 90)
-        io.emit('console', '2 power ' + power)
     }
     // Shoot right
     if (frame.ships[id].steerage.shootRight === true) {
@@ -351,14 +474,12 @@ io.on('connection', (socket) => {
         frame.ships[id].factors.fireRight = 0
         frame.ships[id].steerage.shootRight = false
         shootCannonball(frame.ships[id], 20 + power, -90)
-        io.emit('console', '3 power ' + power)
       }
     } else if (frame.ships[id].factors.fireRight >= factors.fireLoadMinimum) {
         let power = Math.ceil(frame.ships[id].factors.fireRight / CONFIG.MAX_FP * 10)
         frame.ships[id].factors.fireRight = 0
         frame.ships[id].steerage.shootRight = false
         shootCannonball(frame.ships[id], 20 + power, -90)
-        io.emit('console', '4 power ' + power)
     } 
     // Increase firepower
     if (frame.ships[id].fp + factors.fireLoadIncreasing > CONFIG.MAX_FP) {
@@ -454,9 +575,32 @@ function shootCannonball(owner, diameter, angle) {
       angle: owner.factors.angle + angle
     }
   }
-  setTimeout(deleteCannonball.bind(this, cannonballsId), 3000)
 }
 
-function deleteCannonball(id) {
+function destroyCannonball(id) {
   delete frame.cannonballs[id]
+}
+
+function distance(a, b) {
+  return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2))
+}
+
+function minTriangleArea(diameter) {
+  return 3 * CONFIG.SHIP_WIDTH * (CONFIG.SHIP_WIDTH + diameter) / 4
+}
+
+function triangleArea(ship, cannonball) {
+    const a = CONFIG.SHIP_WIDTH * 3
+    const b = distance(ship.coords.front(), cannonball.coords)
+    const c = distance(ship.coords.rear(), cannonball.coords)
+    // Law of cosines, bugfix
+    const x = a
+    const y = Math.min(b, c)
+    const z = Math.max(b, c)
+    const cosz = -(Math.pow(z, 2) - Math.pow(x, 2) - Math.pow(y, 2)) / (2 * x * y)
+    if (cosz < 0) {
+        return Number.POSITIVE_INFINITY
+    }
+    const p = (a + b + c) / 2
+    return Math.sqrt(p * (p - a) * (p - b) * (p - c))
 }

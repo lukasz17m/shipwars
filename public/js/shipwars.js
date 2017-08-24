@@ -3383,6 +3383,15 @@ module.exports = class Config {
     /**
      * @type {number}
      */
+    static get SHIP_WIDTH() {
+
+        return 25
+
+    }
+
+    /**
+     * @type {number}
+     */
     static get MIN_SPEED() {
 
         return 0
