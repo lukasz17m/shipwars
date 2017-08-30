@@ -18,6 +18,15 @@ body {
     background-color: #263238;
 }
 
+/* Infobox */
+
+#infobox {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: #fff;
+}
+
 /* Gamebox aka sea */
 
 #sea {

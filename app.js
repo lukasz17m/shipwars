@@ -11,7 +11,7 @@ const io = require('socket.io')(http)
 const client = redis.createClient()
 
 const CONFIG = require('./src/js/shipwars/Config.js')
-const PORT = 3000
+const PORT = 80
 const FPS = 60
 
 let spectators = []
@@ -92,6 +92,9 @@ io.on('connection', (socket) => {
     updatespectators()
   })
 
+  // Simple ping pong function
+  socket.on('pingpong', (callback) => callback())
+
   // Gets ['player1', 'player2'] returns ['#4008a4', '#95fc45']
   socket.on('getColors', (players, callback) => {
     callback(players.map((player) => {
@@ -109,12 +112,14 @@ io.on('connection', (socket) => {
     }
     // Adds player to frame
     frame.ships[socket.id] = {
+      id: socket.id,
       name: spectators[Object.keys(spectators).find((key) => { return spectators[key].id === socket.id })].name,
       color: drawColor(),
       diameter: 4 * CONFIG.SHIP_WIDTH,
+      sunken: true,
       coords: {
-        x: Math.floor((Math.random() * 600) + 100),
-        y: Math.floor((Math.random() * 400) + 100),
+        x: -9999,
+        y: -9999,
         front() {
           return {
             x: frame.ships[socket.id].coords.x + (Math.cos((Math.PI / 180) * frame.ships[socket.id].factors.angle) * (CONFIG.SHIP_WIDTH * 3 / 2)),
@@ -168,6 +173,9 @@ io.on('connection', (socket) => {
 
   // Leave the game
   socket.on('leave', () => {
+    if (typeof frame.ships[socket.id] == 'undefined') {
+      return false
+    }
     // Join spectators
     spectators.push({ id: socket.id, name: frame.ships[socket.id].name })
     // See this func below
@@ -304,65 +312,117 @@ io.on('connection', (socket) => {
     items.push(frame.cannonballs[id])
   }
   // log.info('ITEMS', items)
+  // Respawns sunken ships
+  for (let i = 0; i < items.length; i++) {
+    if (!items[i].sunken) continue
+    // Try respawn
+    let repeat = false
+    do {
+      // Draw coords
+      items[i].coords.x = Math.floor(Math.random() * (CONFIG.SEA_WIDTH - items[i].diameter * 2)) + items[i].diameter
+      items[i].coords.y = Math.floor(Math.random() * (CONFIG.SEA_HEIGHT - items[i].diameter * 2)) + items[i].diameter
+      for (let j = 0; j < items.length; j++) {
+        if (i === j) continue
+        // Check if drawed coords are not ok
+        if (distance(items[i].coords, items[j].coords) < items[i].diameter + items[j].diameter) {
+          repeat = true
+        } else {
+          repeat = false
+        }
+      }
+    } while (repeat)
+    frame.ships[items[i].id].coords.x = items[i].coords.x
+    frame.ships[items[i].id].coords.y = items[i].coords.y
+    frame.ships[items[i].id].sunken = items[i].sunken = false
+  }
   // Collisions
   for (let i = 0; i < items.length; i++) {
+    // Skips loop if ship is sunken
+    if (items[i].sunken) continue
     // Wall impact
     if (items[i].hasOwnProperty('name')) {
       if (
-        items[i].coords.front().x + items[i].diameter / 8 > 800 ||
+        items[i].coords.front().x + items[i].diameter / 8 > CONFIG.SEA_WIDTH ||
         items[i].coords.front().x - items[i].diameter / 8 < 0 ||
-        items[i].coords.front().y + items[i].diameter / 8 > 600 ||
+        items[i].coords.front().y + items[i].diameter / 8 > CONFIG.SEA_HEIGHT ||
         items[i].coords.front().y - items[i].diameter / 8 < 0 ||
-        items[i].coords.rear().x + items[i].diameter / 8 > 800 ||
+        items[i].coords.rear().x + items[i].diameter / 8 > CONFIG.SEA_WIDTH ||
         items[i].coords.rear().x - items[i].diameter / 8 < 0 ||
-        items[i].coords.rear().y + items[i].diameter / 8 > 600 ||
+        items[i].coords.rear().y + items[i].diameter / 8 > CONFIG.SEA_HEIGHT ||
         items[i].coords.rear().y - items[i].diameter / 8 < 0
       ) {
+        destroyShip(items[i].id)
         // io.emit('console', 'Zero condition : COLLISION')
       }
     } else {
       if (
-        items[i].coords.x + items[i].diameter / 2 > 800 ||
+        items[i].coords.x + items[i].diameter / 2 > CONFIG.SEA_WIDTH ||
         items[i].coords.x - items[i].diameter / 2 < 0 ||
-        items[i].coords.y + items[i].diameter / 2 > 600 ||
+        items[i].coords.y + items[i].diameter / 2 > CONFIG.SEA_HEIGHT ||
         items[i].coords.y - items[i].diameter / 2 < 0
       ) {
-        destroyCannonball(Object.keys(frame.cannonballs).find((key) => { return frame.cannonballs[key].owner === items[i].owner }))
+        destroyCannonball(items[i].id)
         // io.emit('console', 'Zero condition : COLLISION')
       }
     }
     // Collision between objects
     for (let j = i + 1; j < items.length; j++) {
+      // Skips loop if ship is sunken
+      if (items[j].sunken) continue
+      // Inital condition
       if (
+        items[i].owner !== items[j].owner &&
         distance(items[i].coords, items[j].coords)
         < items[i].diameter / 2 + items[j].diameter / 2
       ) {
         // io.emit('console', 'First condition : INITIAL')
         if (
-          ! (items[i].hasOwnProperty('name') || items[j].hasOwnProperty('name')) &&
+          !(items[i].hasOwnProperty('name') || items[j].hasOwnProperty('name')) &&
           distance(items[i].coords, items[j].coords) < items[i].diameter
         ) { // Two cannonballs
-          // io.emit('console', 'Second condition : COLLISION')
-        } else if (items[i].hasOwnProperty('name') && ! items[j].hasOwnProperty('name')) { // Ship & cannonball
+          destroyCannonball(items[i].id, items[j].id)
+        } else if (items[i].hasOwnProperty('name') && !items[j].hasOwnProperty('name')) { // Ship & cannonball
+          if (items[j].owner === items[i].name) continue
           if (
             distance(items[i].coords.front(), items[j].coords)
             < items[i].diameter / 8 + items[j].diameter / 2 ||
             distance(items[i].coords.rear(), items[j].coords)
             < items[i].diameter / 8 + items[j].diameter / 2
           ) {
+            items[i].hp -= items[j].power
+            if (items[i].hp <= CONFIG.MIN_HP) {
+              destroyShip(items[i].id)
+            }
+            destroyCannonball(items[j].id)
             // io.emit('console', 'Second condition : COLLISION')
           } else if (triangleArea(items[i], items[j]) < minTriangleArea(items[j].diameter)) {
+            items[i].hp -= items[j].power
+            if (items[i].hp <= CONFIG.MIN_HP) {
+              destroyShip(items[i].id)
+            }
+            destroyCannonball(items[j].id)
             // io.emit('console', 'Third condition : COLLISION')
           }
-        } else if (! items[i].hasOwnProperty('name') && items[j].hasOwnProperty('name')) { // Cannonball & ship
+        } else if (!items[i].hasOwnProperty('name') && items[j].hasOwnProperty('name')) { // Cannonball & ship
+          if (items[i].owner === items[j].name) continue
           if (
             distance(items[j].coords.front(), items[i].coords)
             < items[j].diameter / 8 + items[i].diameter / 2 ||
             distance(items[j].coords.rear(), items[i].coords)
             < items[j].diameter / 8 + items[i].diameter / 2
           ) {
+            items[j].hp -= items[i].power
+            if (items[j].hp <= CONFIG.MIN_HP) {
+              destroyShip(items[j].id)
+            }
+            destroyCannonball(items[i].id)
             // io.emit('console', 'Second condition : COLLISION')
           } else if (triangleArea(items[j], items[i]) < minTriangleArea(items[i].diameter)) {
+            items[j].hp -= items[i].power
+            if (items[j].hp <= CONFIG.MIN_HP) {
+              destroyShip(items[j].id)
+            }
+            destroyCannonball(items[i].id)
             // io.emit('console', 'Third condition : COLLISION')
           }
         } else { // Two ships
@@ -376,6 +436,7 @@ io.on('connection', (socket) => {
             distance(items[i].coords.rear(), items[j].coords.front())
             < items[i].diameter / 4
           ) {
+            destroyShip(items[i].id, items[j].id)
             // io.emit('console', 'Second condition : COLLISION')
           } else { // Front and rear as cannonballs
             if (
@@ -400,11 +461,18 @@ io.on('connection', (socket) => {
                 triangleArea(items[i], { coords: items[j].coords.rear() }) < minTriangleArea(CONFIG.SHIP_WIDTH)
               )
             ) {
+              destroyShip(items[i].id, items[j].id)
               // io.emit('console', 'Third condition : COLLISION')
             }
           }
         }
       }
+    }
+  }
+  // Update HP
+  for (let i = 0; i < items.length; i++) {
+    if (items[i].hasOwnProperty('name')) {
+      frame.ships[items[i].id].hp = items[i].hp
     }
   }
   // Loop the ships
@@ -509,6 +577,7 @@ io.on('connection', (socket) => {
     // Update truncated frame
     truncFrame.cannonballs[id] = {
       diameter: frame.cannonballs[id].diameter,
+      power: frame.cannonballs[id].power,
       color: frame.cannonballs[id].color,
       x: frame.cannonballs[id].coords.x,
       y: frame.cannonballs[id].coords.y
@@ -563,9 +632,37 @@ function updatespectators() {
   }
 }
 
+function destroyShip() {
+  for (let i = 0; i < arguments.length; i++) {
+    delete frame.cannonballs[arguments[i]]
+    frame.ships[arguments[i]].sunken = true
+    frame.ships[arguments[i]].coords.y = -9999
+    frame.ships[arguments[i]].coords.x = -9999
+    frame.ships[arguments[i]].hp = CONFIG.MAX_HP
+    frame.ships[arguments[i]].fp = CONFIG.MAX_FP
+    frame.ships[arguments[i]].steerage = {
+      accelerate: false,
+      decelerate: false,
+      turnLeft: false,
+      turnRight: false,
+      shootLeft: false,
+      shootRight: false
+    }
+    frame.ships[arguments[i]].factors = {
+      speed: 0,
+      angle: 0,
+      fireLeft: 0,
+      fireRight: 0,
+    }
+  }
+}
+
 function shootCannonball(owner, diameter, angle) {
   frame.cannonballs[++cannonballsId] = {
+    id: cannonballsId,
+    owner: owner.name,
     diameter,
+    power: diameter - 20,
     color: owner.color,
     coords: {
       x: owner.coords.x,
@@ -577,8 +674,10 @@ function shootCannonball(owner, diameter, angle) {
   }
 }
 
-function destroyCannonball(id) {
-  delete frame.cannonballs[id]
+function destroyCannonball() {
+  for (let i = 0; i < arguments.length; i++) {
+    delete frame.cannonballs[arguments[i]]
+  }
 }
 
 function distance(a, b) {

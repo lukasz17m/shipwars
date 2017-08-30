@@ -10,6 +10,26 @@ module.exports = class Config {
     /**
      * @type {number}
      */
+    static get SEA_WIDTH() {
+
+        return 800
+
+    }
+
+
+    /**
+     * @type {number}
+     */
+    static get SEA_HEIGHT() {
+
+        return 600
+
+    }
+
+
+    /**
+     * @type {number}
+     */
     static get NAME_MIN_CHARS() {
 
         return 2

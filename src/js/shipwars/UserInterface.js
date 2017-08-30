@@ -45,6 +45,7 @@ export default class UserInterface {
 
         this.asidePanel = document.createElement('aside')
 
+        this.infobox = document.createElement('div')
     }
 
     //=======================
@@ -398,6 +399,31 @@ export default class UserInterface {
     get helpButton() {
 
         return this._helpButton
+
+    }
+
+    /**
+     * @type {Node}
+     */
+    set infobox(node) {
+        
+        this._infobox = node
+        this.infobox.id = 'infobox'
+
+    }
+
+    get infobox() {
+        
+        return this._infobox
+
+    }
+
+    /**
+     * @type {number}
+     */
+    set ping(ping) {
+
+        this._infobox.innerText = `Ping: ${ ping }ms`
 
     }
 

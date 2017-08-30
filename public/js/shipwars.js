@@ -3356,6 +3356,26 @@ module.exports = class Config {
     /**
      * @type {number}
      */
+    static get SEA_WIDTH() {
+
+        return 800
+
+    }
+
+
+    /**
+     * @type {number}
+     */
+    static get SEA_HEIGHT() {
+
+        return 600
+
+    }
+
+
+    /**
+     * @type {number}
+     */
     static get NAME_MIN_CHARS() {
 
         return 2
@@ -3560,6 +3580,8 @@ class Core {
 
         document.body.appendChild(this.ui.gamebox)
 
+        document.body.appendChild(this.ui.infobox)
+
         // Append start screen, check if user has keyboard
         this.ui.gamebox.appendChild(this.ui.startScreen)
 
@@ -3604,50 +3626,6 @@ class Core {
         })
 
     }
-
-    // temp
-    start() {
-
-        this.socket.on('frame', (data) => {
-
-            let ships = data.ships
-
-            for (let id in ships) {
-
-                if (this.shipsCreated.indexOf(id) < 0) {
-
-                    let ship = this.ships[id] = {}
-                    ship.node = document.createElement('div')
-                    ship.node.className = 'ship'
-                    ship.node.style.left = ships[id].x + 'px'
-                    ship.node.style.top = ships[id].y + 'px'
-                    this.ui.gamebox.appendChild(ship.node)
-
-                    this.shipsCreated.push(id)
-
-                }
-
-            }
-
-            // Delete ships of disconnected users
-            this.shipsCreated = this.shipsCreated.filter((id) => {
-
-                if (! ships.hasOwnProperty(id)) {
-
-                    this.ui.gamebox.removeChild(this.ships[id].node)
-                    delete this.ships[id]
-
-                    return false
-                }
-
-                return true
-
-            })
-            
-        })
-
-    }
-
 
     //=============================================
     // ] : Setters & Getters ::: Class methods : [
@@ -3706,6 +3684,25 @@ class Core {
      * Inits Socket.io listeners.
      */
     listen() {
+
+        // Ping pong
+        function ping() {
+
+            let pingTime = Date.now()
+
+            this.socket.emit('pingpong', () => {
+
+                let pongTime = Date.now()
+
+                this.ui.ping = pongTime - pingTime
+            
+            })
+
+            setTimeout(ping.bind(this), 1000)
+
+        }
+
+        ping.call(this)
 
         // Messagebox
         this.socket.on('info', (message) => this.ui.message = message)
@@ -3806,7 +3803,7 @@ class Core {
                     cannonball.style.left = Math.round(cannonballs[id].x) + 'px'
                     cannonball.style.top = Math.round(cannonballs[id].y) + 'px'
                     cannonball.style.color = Object(__WEBPACK_IMPORTED_MODULE_3__utils_getContrast__["a" /* default */])(cannonballs[id].color)
-                    cannonball.dataset.power = cannonballs[id].diameter - 20
+                    cannonball.dataset.power = cannonballs[id].power
                     this.ui.gamebox.appendChild(cannonball)
 
                     this.cannonballs[id] = cannonball
@@ -3848,6 +3845,9 @@ class Core {
                 // Update compass
                 this.ui.direction = ship.angle
 
+                // Update hitpoints
+                this.ui.hp = ship.hp
+
                 // Update firepower meter
                 this.ui.fp = ship.fp
 
@@ -3860,7 +3860,7 @@ class Core {
         this.socket.on('canjoin', (state) => this.ui.updateJoinLeaveButton(state))
 
         // Update button state
-        this.socket.on('console', (message) => console.log(message,))
+        this.socket.on('console', (message) => console.log(message))
     }
 
     /**
@@ -7405,6 +7405,7 @@ class UserInterface {
 
         this.asidePanel = document.createElement('aside')
 
+        this.infobox = document.createElement('div')
     }
 
     //=======================
@@ -7758,6 +7759,31 @@ class UserInterface {
     get helpButton() {
 
         return this._helpButton
+
+    }
+
+    /**
+     * @type {Node}
+     */
+    set infobox(node) {
+        
+        this._infobox = node
+        this.infobox.id = 'infobox'
+
+    }
+
+    get infobox() {
+        
+        return this._infobox
+
+    }
+
+    /**
+     * @type {number}
+     */
+    set ping(ping) {
+
+        this._infobox.innerText = `Ping: ${ ping }ms`
 
     }
 
