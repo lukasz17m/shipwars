@@ -24,7 +24,8 @@ const factors = {
   angle: 1,
   fireLoadMinimum: 1,
   fireLoadSpeed: 0.1,
-  fireLoadIncreasing: 0.02
+  fireLoadIncreasing: 0.02,
+  repairRatio: 0.5
 }
 
 const minmax = {
@@ -191,6 +192,7 @@ io.on('connection', (socket) => {
    * 4 > Turn right
    * 5 > Shoot left
    * 6 > Shoot right
+   * 7 > Repair
    * 
    * x0 > Key release
    */
@@ -246,6 +248,15 @@ io.on('connection', (socket) => {
         break
       case 60:
         frame.ships[socket.id].steerage.shootRight = false
+        break
+      // Repair
+      case 7:
+        if (frame.ships[socket.id].fp - factors.fireLoadMinimum >= CONFIG.MIN_FP) {
+          frame.ships[socket.id].steerage.repair = true
+        }
+        break
+      case 70:
+        frame.ships[socket.id].steerage.repair = false
         break
       // No action
       default:
@@ -548,7 +559,19 @@ io.on('connection', (socket) => {
         frame.ships[id].factors.fireRight = 0
         frame.ships[id].steerage.shootRight = false
         shootCannonball(frame.ships[id], 20 + power, -90)
-    } 
+    }
+    // Repair
+    if (frame.ships[id].steerage.repair === true) {
+      if (
+        frame.ships[id].fp - factors.fireLoadSpeed >= CONFIG.MIN_FP &&
+        frame.ships[id].hp + factors.fireLoadSpeed * factors.repairRatio <= CONFIG.MAX_HP
+      ) {
+        frame.ships[id].fp -= factors.fireLoadSpeed
+        frame.ships[id].hp += factors.fireLoadSpeed * factors.repairRatio
+      } else {
+        frame.ships[id].steerage.repair = false
+      }
+    }
     // Increase firepower
     if (frame.ships[id].fp + factors.fireLoadIncreasing > CONFIG.MAX_FP) {
       frame.ships[id].fp = CONFIG.MAX_FP

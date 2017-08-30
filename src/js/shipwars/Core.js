@@ -474,6 +474,21 @@ export default class Core {
 
         })
 
+        // Repair
+        this.ui.keyDown(82, (e) => {
+
+            // keyDown : R
+            this.socket.emit('action', 7)
+
+        })
+
+        this.ui.keyUp(82, (e) => {
+
+            // keyUp : R
+            this.socket.emit('action', 70)
+
+        })
+
     }
 
     //===================
