@@ -1,38 +1,21 @@
 import Config from './Config'
-import getContrast from './utils/getContrast'
 
 /**
  * @module
  */
-export default class UserInterface {
+export default class Audio {
 
     /** 
-     * User interface constructor.
+     * Audio constructor.
      * @constructor
      */
     constructor() {
 
-        /**
-         * Object containing custom objects with listener type and function,
-         * helpful when you want to unset a listener.<br>Also has a 'count' 
-         * member which works like auto increment field in database.
-         * @type {object}
-         */
-        this.listeners = {
-            count: 0 // Doesn’t show number of listeners!
-        }
-
-        /**
-         * Array containing messages for infobox.
-         * @type {string[]}
-         */
-        this.messages = []
-
         this.init()
 
         this.cache([
-            '/images/cannonball-explosion.gif',
-            '/images/ship-explosion.gif'
+            '/sounds/cannonball-explosion.mp4',
+            '/sounds/ship-explosion.mp4'
         ])
 
     }
@@ -42,31 +25,21 @@ export default class UserInterface {
      */
     init() {
 
-        this.gamebox = document.createElement('div')
-
-        this.startScreen = document.createElement('div')
-
-        this.loginScreen = document.createElement('div')
-
-        this.asidePanel = document.createElement('aside')
-
-        this.infobox = document.createElement('div')
-
-        this.soundButton = document.createElement('div')
+        // 
 
     }
 
     /** 
-     * Caches images.
-     * @param {!string[]} images - Contains array of urls to cache.
+     * Caches sounds.
+     * @param {!string[]} sounds - Contains array of urls to cache.
      */
-    cache(images) {
+    cache(sounds) {
 
-        images.forEach(src => {
+        sounds.forEach(src => {
 
-            let image = new Image
-            image.alt = 'cache'
-            image.src = src
+            let audio = new Audio
+            audio.type = 'audio/mpeg'
+            audio.src = src
 
         })
         
@@ -451,24 +424,6 @@ export default class UserInterface {
 
     }
 
-    /**
-     * @type {Node}
-     */
-    set soundButton(node) {
-        
-        this._soundButton = node
-        this.soundButton.id = 'sound-button'
-
-        this.gamebox.appendChild(this.soundButton)
-
-    }
-
-    get soundButton() {
-        
-        return this._soundButton
-
-    }
-
     //=============================================
     // ] : Setters & Getters ::: Class methods : [
     //=============================================
@@ -664,10 +619,10 @@ export default class UserInterface {
     /**
      * Makes explosion effect.
      * @param {!object} coords - Explosion coordinates.
-     * @param {!number} diameter - Determines explosion power.
+     * @param {number=} diameter - Determines explosion power.
      * @param {boolean=} ship - Set to true if you want to get huge explosion.
      */
-    explosion(coords, diameter, ship = false) {
+    explosion(coords, diameter = 100, ship = false) {
 
         const boom = new Image
         boom.alt = ship ? 'Ship explosion' : 'Cannonball explosion'
@@ -682,23 +637,6 @@ export default class UserInterface {
         let lasting = ship ? 1200 : 500
 
         setTimeout(() => this.gamebox.removeChild(boom), lasting)
-
-    }
-
-    /**
-     * Toggles sound icon.
-     */
-    toggleMute() {
-
-        if (this.soundButton.classList.contains('muted')) {
-        
-            this.soundButton.classList.remove('muted')
-        
-        } else {
-
-            this.soundButton.classList.add('muted')
-            
-        }
 
     }
 

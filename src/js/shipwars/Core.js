@@ -1,6 +1,7 @@
 import io from 'socket.io-client'
 import Config from './Config'
 import UserInterface from './UserInterface'
+import AudioInterface from './AudioInterface'
 import getContrast from './utils/getContrast'
 
 /**
@@ -19,6 +20,12 @@ export default class Core {
              * @type {module:UserInterface}
              */
             this.ui = new UserInterface
+
+            /**
+             * Contains AudioInterface instance.
+             * @type {module:AudioInterface}
+             */
+            this.audio = new AudioInterface
 
             /**
              * Contains ships object, key is a player id (from Socket.io).
@@ -345,8 +352,25 @@ export default class Core {
         this.socket.on('console', (message) => console.log(message))
 
         // Explosions
-        this.socket.on('shipExplosion', (coords) => this.ui.explosion(coords, 100, true))
-        this.socket.on('cannonballExplosion', (coords, diameter) => this.ui.explosion(coords, diameter))
+        this.socket.on('shipExplosion', (coords) => {
+
+            this.ui.explosion(coords, 100, true)
+            this.audio.play('/sounds/ship-explosion.mp3')
+        
+        })
+
+        this.socket.on('cannonballShot', () => {
+        
+            this.audio.play('/sounds/cannonball-shot.mp3')
+
+        })
+
+        this.socket.on('cannonballExplosion', (coords, diameter) => {
+        
+            this.ui.explosion(coords, diameter)
+            this.audio.play('/sounds/cannonball-explosion.mp3')
+
+        })
         
     }
         
@@ -391,14 +415,14 @@ export default class Core {
         // Steerage
 
         // Accelerate
-        this.ui.keyDown(38, (e) => {
+        this.ui.keyDown(38, () => {
 
             // keyDown : Up
             this.socket.emit('action', 1)
 
         })
 
-        this.ui.keyUp(38, (e) => {
+        this.ui.keyUp(38, () => {
 
             // keyUp : Up
             this.socket.emit('action', 10)
@@ -406,14 +430,14 @@ export default class Core {
         })
 
         // Decelerate
-        this.ui.keyDown(40, (e) => {
+        this.ui.keyDown(40, () => {
 
             // keyDown : Down
             this.socket.emit('action', 2)
 
         })
 
-        this.ui.keyUp(40, (e) => {
+        this.ui.keyUp(40, () => {
 
             // keyUp : Down
             this.socket.emit('action', 20)
@@ -421,14 +445,14 @@ export default class Core {
         })
 
         // Turn left
-        this.ui.keyDown(37, (e) => {
+        this.ui.keyDown(37, () => {
 
             // keyDown : Left
             this.socket.emit('action', 3)
 
         })
 
-        this.ui.keyUp(37, (e) => {
+        this.ui.keyUp(37, () => {
 
             // keyUp : Left
             this.socket.emit('action', 30)
@@ -436,14 +460,14 @@ export default class Core {
         })
 
         // Turn right
-        this.ui.keyDown(39, (e) => {
+        this.ui.keyDown(39, () => {
 
             // keyDown : Right
             this.socket.emit('action', 4)
 
         })
 
-        this.ui.keyUp(39, (e) => {
+        this.ui.keyUp(39, () => {
 
             // keyUp : Right
             this.socket.emit('action', 40)
@@ -451,14 +475,14 @@ export default class Core {
         })
 
         // Shoot left
-        this.ui.keyDown(65, (e) => {
+        this.ui.keyDown(65, () => {
 
             // keyDown : A
             this.socket.emit('action', 5)
 
         })
 
-        this.ui.keyUp(65, (e) => {
+        this.ui.keyUp(65, () => {
 
             // keyUp : A
             this.socket.emit('action', 50)
@@ -466,14 +490,14 @@ export default class Core {
         })
 
         // Shoot right
-        this.ui.keyDown(68, (e) => {
+        this.ui.keyDown(68, () => {
 
             // keyDown : D
             this.socket.emit('action', 6)
 
         })
 
-        this.ui.keyUp(68, (e) => {
+        this.ui.keyUp(68, () => {
 
             // keyUp : D
             this.socket.emit('action', 60)
@@ -481,17 +505,34 @@ export default class Core {
         })
 
         // Repair
-        this.ui.keyDown(82, (e) => {
+        this.ui.keyDown(82, () => {
 
             // keyDown : R
             this.socket.emit('action', 7)
 
         })
 
-        this.ui.keyUp(82, (e) => {
+        this.ui.keyUp(82, () => {
 
             // keyUp : R
             this.socket.emit('action', 70)
+
+        })
+
+        // Toggle sound
+        this.ui.soundButton.onclick = () => {
+
+            this.audio.toggleMute()
+            this.ui.toggleMute()
+
+
+        }
+
+        this.ui.keyDown(77, () => {
+
+            // keyUp : M
+            this.audio.toggleMute()
+            this.ui.toggleMute()
 
         })
 

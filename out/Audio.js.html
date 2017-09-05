@@ -1,38 +1,49 @@
-import Config from './Config'
-import getContrast from './utils/getContrast'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Audio.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Audio.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import Config from './Config'
 
 /**
  * @module
  */
-export default class UserInterface {
+export default class Audio {
 
     /** 
-     * User interface constructor.
+     * Audio constructor.
      * @constructor
      */
     constructor() {
 
-        /**
-         * Object containing custom objects with listener type and function,
-         * helpful when you want to unset a listener.<br>Also has a 'count' 
-         * member which works like auto increment field in database.
-         * @type {object}
-         */
-        this.listeners = {
-            count: 0 // Doesn’t show number of listeners!
-        }
-
-        /**
-         * Array containing messages for infobox.
-         * @type {string[]}
-         */
-        this.messages = []
-
         this.init()
 
         this.cache([
-            '/images/cannonball-explosion.gif',
-            '/images/ship-explosion.gif'
+            '/sounds/cannonball-explosion.mp4',
+            '/sounds/ship-explosion.mp4'
         ])
 
     }
@@ -42,38 +53,28 @@ export default class UserInterface {
      */
     init() {
 
-        this.gamebox = document.createElement('div')
-
-        this.startScreen = document.createElement('div')
-
-        this.loginScreen = document.createElement('div')
-
-        this.asidePanel = document.createElement('aside')
-
-        this.infobox = document.createElement('div')
-
-        this.soundButton = document.createElement('div')
+        // 
 
     }
 
     /** 
-     * Caches images.
-     * @param {!string[]} images - Contains array of urls to cache.
+     * Caches sounds.
+     * @param {!string[]} sounds - Contains array of urls to cache.
      */
-    cache(images) {
+    cache(sounds) {
 
-        images.forEach(src => {
+        sounds.forEach(src => {
 
-            let image = new Image
-            image.alt = 'cache'
-            image.src = src
+            let audio = new Audio
+            audio.type = 'audio/mpeg'
+            audio.src = src
 
         })
         
     }
 
     //=======================
-    // Setters & Getters : [
+    // Setters &amp; Getters : [
     //=======================
 
     /**
@@ -276,7 +277,7 @@ export default class UserInterface {
      */
     set message(message) {
 
-        if (this.messages.length < 2) {
+        if (this.messages.length &lt; 2) {
 
             this.messages.push(message)
 
@@ -293,7 +294,7 @@ export default class UserInterface {
 
             let item = document.createElement('li')
 
-            if (this.messages.length == 2 && index == 0) {
+            if (this.messages.length == 2 &amp;&amp; index == 0) {
             
                 item.className = 'fade'
 
@@ -451,26 +452,8 @@ export default class UserInterface {
 
     }
 
-    /**
-     * @type {Node}
-     */
-    set soundButton(node) {
-        
-        this._soundButton = node
-        this.soundButton.id = 'sound-button'
-
-        this.gamebox.appendChild(this.soundButton)
-
-    }
-
-    get soundButton() {
-        
-        return this._soundButton
-
-    }
-
     //=============================================
-    // ] : Setters & Getters ::: Class methods : [
+    // ] : Setters &amp; Getters ::: Class methods : [
     //=============================================
 
     /**
@@ -492,7 +475,7 @@ export default class UserInterface {
 
             _function(e) {
 
-                if (fired || (keyCode !== null && e.keyCode !== keyCode)) return
+                if (fired || (keyCode !== null &amp;&amp; e.keyCode !== keyCode)) return
 
                 code = e.keyCode
 
@@ -546,7 +529,7 @@ export default class UserInterface {
 
             _function(e) {
 
-                if (keyCode !== null && e.keyCode !== keyCode) return
+                if (keyCode !== null &amp;&amp; e.keyCode !== keyCode) return
 
                 callback(e)
 
@@ -569,7 +552,7 @@ export default class UserInterface {
 
         if (id.length > 0) {
 
-            for (let i = 0; i < id.length; i++) {
+            for (let i = 0; i &lt; id.length; i++) {
 
                 window.removeEventListener(this.listeners[id[i]].type, this.listeners[id[i]]._function)
                 delete this.listeners[id[i]]
@@ -664,10 +647,10 @@ export default class UserInterface {
     /**
      * Makes explosion effect.
      * @param {!object} coords - Explosion coordinates.
-     * @param {!number} diameter - Determines explosion power.
+     * @param {number=} diameter - Determines explosion power.
      * @param {boolean=} ship - Set to true if you want to get huge explosion.
      */
-    explosion(coords, diameter, ship = false) {
+    explosion(coords, diameter = 100, ship = false) {
 
         const boom = new Image
         boom.alt = ship ? 'Ship explosion' : 'Cannonball explosion'
@@ -685,25 +668,30 @@ export default class UserInterface {
 
     }
 
-    /**
-     * Toggles sound icon.
-     */
-    toggleMute() {
-
-        if (this.soundButton.classList.contains('muted')) {
-        
-            this.soundButton.classList.remove('muted')
-        
-        } else {
-
-            this.soundButton.classList.add('muted')
-            
-        }
-
-    }
-
     //===================
     // ] : Class methods
     //===================
 
-}
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Audio.html">Audio</a></li><li><a href="module-AudioInterface.html">AudioInterface</a></li><li><a href="module-Config.html">Config</a></li><li><a href="module-Core.html">Core</a></li><li><a href="module-UserInterface.html">UserInterface</a></li></ul><h3>Classes</h3><ul><li><a href="module-Audio.html">Audio</a></li><li><a href="module-AudioInterface.html">AudioInterface</a></li><li><a href="module-Core.html">Core</a></li><li><a href="module-UserInterface.html">UserInterface</a></li></ul><h3>Global</h3><ul><li><a href="global.html#getContrast">getContrast</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Tue Sep 05 2017 22:07:26 GMT+0200 (CEST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

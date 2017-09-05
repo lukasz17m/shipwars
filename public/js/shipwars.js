@@ -3515,7 +3515,9 @@ new __WEBPACK_IMPORTED_MODULE_0__shipwars_Core__["a" /* default */]()
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Config__ = __webpack_require__(21);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Config___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__Config__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__UserInterface__ = __webpack_require__(49);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__utils_getContrast__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__AudioInterface__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__utils_getContrast__ = __webpack_require__(22);
+
 
 
 
@@ -3537,6 +3539,12 @@ class Core {
              * @type {module:UserInterface}
              */
             this.ui = new __WEBPACK_IMPORTED_MODULE_2__UserInterface__["a" /* default */]
+
+            /**
+             * Contains AudioInterface instance.
+             * @type {module:AudioInterface}
+             */
+            this.audio = new __WEBPACK_IMPORTED_MODULE_3__AudioInterface__["a" /* default */]
 
             /**
              * Contains ships object, key is a player id (from Socket.io).
@@ -3802,7 +3810,7 @@ class Core {
                     cannonball.style.backgroundColor = cannonballs[id].color
                     cannonball.style.left = Math.round(cannonballs[id].x) + 'px'
                     cannonball.style.top = Math.round(cannonballs[id].y) + 'px'
-                    cannonball.style.color = Object(__WEBPACK_IMPORTED_MODULE_3__utils_getContrast__["a" /* default */])(cannonballs[id].color)
+                    cannonball.style.color = Object(__WEBPACK_IMPORTED_MODULE_4__utils_getContrast__["a" /* default */])(cannonballs[id].color)
                     cannonball.dataset.power = cannonballs[id].power
                     this.ui.gamebox.appendChild(cannonball)
 
@@ -3863,8 +3871,25 @@ class Core {
         this.socket.on('console', (message) => console.log(message))
 
         // Explosions
-        this.socket.on('shipExplosion', (coords) => this.ui.explosion(coords, 100, true))
-        this.socket.on('cannonballExplosion', (coords, diameter) => this.ui.explosion(coords, diameter))
+        this.socket.on('shipExplosion', (coords) => {
+
+            this.ui.explosion(coords, 100, true)
+            this.audio.play('/sounds/ship-explosion.mp3')
+        
+        })
+
+        this.socket.on('cannonballShot', () => {
+        
+            this.audio.play('/sounds/cannonball-shot.mp3')
+
+        })
+
+        this.socket.on('cannonballExplosion', (coords, diameter) => {
+        
+            this.ui.explosion(coords, diameter)
+            this.audio.play('/sounds/cannonball-explosion.mp3')
+
+        })
         
     }
         
@@ -3909,14 +3934,14 @@ class Core {
         // Steerage
 
         // Accelerate
-        this.ui.keyDown(38, (e) => {
+        this.ui.keyDown(38, () => {
 
             // keyDown : Up
             this.socket.emit('action', 1)
 
         })
 
-        this.ui.keyUp(38, (e) => {
+        this.ui.keyUp(38, () => {
 
             // keyUp : Up
             this.socket.emit('action', 10)
@@ -3924,14 +3949,14 @@ class Core {
         })
 
         // Decelerate
-        this.ui.keyDown(40, (e) => {
+        this.ui.keyDown(40, () => {
 
             // keyDown : Down
             this.socket.emit('action', 2)
 
         })
 
-        this.ui.keyUp(40, (e) => {
+        this.ui.keyUp(40, () => {
 
             // keyUp : Down
             this.socket.emit('action', 20)
@@ -3939,14 +3964,14 @@ class Core {
         })
 
         // Turn left
-        this.ui.keyDown(37, (e) => {
+        this.ui.keyDown(37, () => {
 
             // keyDown : Left
             this.socket.emit('action', 3)
 
         })
 
-        this.ui.keyUp(37, (e) => {
+        this.ui.keyUp(37, () => {
 
             // keyUp : Left
             this.socket.emit('action', 30)
@@ -3954,14 +3979,14 @@ class Core {
         })
 
         // Turn right
-        this.ui.keyDown(39, (e) => {
+        this.ui.keyDown(39, () => {
 
             // keyDown : Right
             this.socket.emit('action', 4)
 
         })
 
-        this.ui.keyUp(39, (e) => {
+        this.ui.keyUp(39, () => {
 
             // keyUp : Right
             this.socket.emit('action', 40)
@@ -3969,14 +3994,14 @@ class Core {
         })
 
         // Shoot left
-        this.ui.keyDown(65, (e) => {
+        this.ui.keyDown(65, () => {
 
             // keyDown : A
             this.socket.emit('action', 5)
 
         })
 
-        this.ui.keyUp(65, (e) => {
+        this.ui.keyUp(65, () => {
 
             // keyUp : A
             this.socket.emit('action', 50)
@@ -3984,14 +4009,14 @@ class Core {
         })
 
         // Shoot right
-        this.ui.keyDown(68, (e) => {
+        this.ui.keyDown(68, () => {
 
             // keyDown : D
             this.socket.emit('action', 6)
 
         })
 
-        this.ui.keyUp(68, (e) => {
+        this.ui.keyUp(68, () => {
 
             // keyUp : D
             this.socket.emit('action', 60)
@@ -3999,17 +4024,34 @@ class Core {
         })
 
         // Repair
-        this.ui.keyDown(82, (e) => {
+        this.ui.keyDown(82, () => {
 
             // keyDown : R
             this.socket.emit('action', 7)
 
         })
 
-        this.ui.keyUp(82, (e) => {
+        this.ui.keyUp(82, () => {
 
             // keyUp : R
             this.socket.emit('action', 70)
+
+        })
+
+        // Toggle sound
+        this.ui.soundButton.onclick = () => {
+
+            this.audio.toggleMute()
+            this.ui.toggleMute()
+
+
+        }
+
+        this.ui.keyDown(77, () => {
+
+            // keyUp : M
+            this.audio.toggleMute()
+            this.ui.toggleMute()
 
         })
 
@@ -7432,6 +7474,9 @@ class UserInterface {
         this.asidePanel = document.createElement('aside')
 
         this.infobox = document.createElement('div')
+
+        this.soundButton = document.createElement('div')
+
     }
 
     /** 
@@ -7829,6 +7874,24 @@ class UserInterface {
 
     }
 
+    /**
+     * @type {Node}
+     */
+    set soundButton(node) {
+        
+        this._soundButton = node
+        this.soundButton.id = 'sound-button'
+
+        this.gamebox.appendChild(this.soundButton)
+
+    }
+
+    get soundButton() {
+        
+        return this._soundButton
+
+    }
+
     //=============================================
     // ] : Setters & Getters ::: Class methods : [
     //=============================================
@@ -8024,12 +8087,10 @@ class UserInterface {
     /**
      * Makes explosion effect.
      * @param {!object} coords - Explosion coordinates.
-     * @param {number=} diameter - Determines explosion power.
+     * @param {!number} diameter - Determines explosion power.
      * @param {boolean=} ship - Set to true if you want to get huge explosion.
      */
-    explosion(coords, diameter = 100, ship = false) {
-
-        console.log(coords)
+    explosion(coords, diameter, ship = false) {
 
         const boom = new Image
         boom.alt = ship ? 'Ship explosion' : 'Cannonball explosion'
@@ -8047,12 +8108,129 @@ class UserInterface {
 
     }
 
+    /**
+     * Toggles sound icon.
+     */
+    toggleMute() {
+
+        if (this.soundButton.classList.contains('muted')) {
+        
+            this.soundButton.classList.remove('muted')
+        
+        } else {
+
+            this.soundButton.classList.add('muted')
+            
+        }
+
+    }
+
     //===================
     // ] : Class methods
     //===================
 
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = UserInterface;
+
+
+/***/ }),
+/* 50 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/**
+ * @module
+ */
+class AudioInterface {
+
+    /** 
+     * Audio constructor.
+     * @constructor
+     */
+    constructor() {
+
+        /**
+         * If this variable is set to true any sound will not be played.
+         * @type {boolean}
+         */
+        this.muted = false
+
+        this.init()
+
+        this.cache([
+            '/sounds/bg-music.mp3',
+            '/sounds/cannonball-shot.mp3',
+            '/sounds/cannonball-explosion.mp3',
+            '/sounds/ship-explosion.mp3'
+        ])
+
+    }
+
+    /** 
+     * User interface initiator.
+     */
+    init() {
+
+        let music = this.music = new Audio
+        music.type = 'audio/mpeg'
+        music.src = '/sounds/bg-music.mp3'
+        music.loop = true
+        music.muted = false
+        music.play()
+
+    }
+
+    /** 
+     * Caches sounds.
+     * @param {!string[]} sounds - Contains array of urls to cache.
+     */
+    cache(sounds) {
+
+        sounds.forEach(src => {
+
+            let audio = new Audio
+            audio.type = 'audio/mpeg'
+            audio.src = src
+
+        })
+        
+    }
+
+    //=============================================
+    // Class methods : [
+    //=============================================
+
+    /**
+     * Plays audio.
+     * @param {!string} src - Source to audio.
+     */
+    play(src) {
+
+        if (this.muted) return
+
+        let audio = new Audio
+        audio.type = 'audio/mpeg'
+        audio.src = src
+        audio.play()
+
+    }
+
+    /**
+     * Mutes / unmutes audio.
+     */
+    toggleMute() {
+
+        this.muted = ! this.muted
+        this.music.muted = ! this.music.muted
+
+    }
+
+    //===================
+    // ] : Class methods
+    //===================
+
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = AudioInterface;
 
 
 /***/ })

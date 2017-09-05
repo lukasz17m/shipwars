@@ -11,7 +11,7 @@ const io = require('socket.io')(http)
 const client = redis.createClient()
 
 const CONFIG = require('./src/js/shipwars/Config.js')
-const PORT = 3000
+const PORT = 80
 const FPS = 60
 
 let spectators = []
@@ -638,7 +638,9 @@ function updatespectators() {
 
 function destroyShip() {
   for (let i = 0; i < arguments.length; i++) {
-    io.emit('shipExplosion', frame.ships[arguments[i]].coords)
+    if (typeof frame.ships[arguments[i]] != 'undefined') {
+      io.emit('shipExplosion', frame.ships[arguments[i]].coords)
+    }
     frame.ships[arguments[i]].sunken = true
     frame.ships[arguments[i]].coords.y = -9999
     frame.ships[arguments[i]].coords.x = -9999
@@ -662,6 +664,7 @@ function destroyShip() {
 }
 
 function shootCannonball(owner, diameter, angle) {
+  io.emit('cannonballShot')
   frame.cannonballs[++cannonballsId] = {
     id: cannonballsId,
     owner: owner.name,
@@ -680,7 +683,9 @@ function shootCannonball(owner, diameter, angle) {
 
 function destroyCannonball() {
   for (let i = 0; i < arguments.length; i++) {
-    io.emit('cannonballExplosion', frame.cannonballs[arguments[i]].coords, frame.cannonballs[arguments[i]].diameter)
+    if (typeof frame.cannonballs[arguments[i]] != 'undefined') {
+      io.emit('cannonballExplosion', frame.cannonballs[arguments[i]].coords, frame.cannonballs[arguments[i]].diameter)
+    }
     delete frame.cannonballs[arguments[i]]
   }
 }

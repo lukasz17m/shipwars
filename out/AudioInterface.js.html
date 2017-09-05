@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: Config.js</title>
+    <title>JSDoc: Source: AudioInterface.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: Config.js</h1>
+    <h1 class="page-title">Source: AudioInterface.js</h1>
 
     
 
@@ -29,125 +29,93 @@
             <pre class="prettyprint source linenums"><code>/**
  * @module
  */
-module.exports = class Config {
+export default class AudioInterface {
 
-    //=======================
-    // Static getters : [
-    //=======================
-
-    /**
-     * @type {number}
+    /** 
+     * Audio constructor.
+     * @constructor
      */
-    static get SEA_WIDTH() {
+    constructor() {
 
-        return 800
+        /**
+         * If this variable is set to true any sound will not be played.
+         * @type {boolean}
+         */
+        this.muted = false
+
+        this.init()
+
+        this.cache([
+            '/sounds/bg-music.mp3',
+            '/sounds/cannonball-shot.mp3',
+            '/sounds/cannonball-explosion.mp3',
+            '/sounds/ship-explosion.mp3'
+        ])
 
     }
 
-
-    /**
-     * @type {number}
+    /** 
+     * User interface initiator.
      */
-    static get SEA_HEIGHT() {
+    init() {
 
-        return 600
+        let music = this.music = new Audio
+        music.type = 'audio/mpeg'
+        music.src = '/sounds/bg-music.mp3'
+        music.loop = true
+        music.muted = false
+        music.play()
 
     }
 
-
-    /**
-     * @type {number}
+    /** 
+     * Caches sounds.
+     * @param {!string[]} sounds - Contains array of urls to cache.
      */
-    static get NAME_MIN_CHARS() {
+    cache(sounds) {
 
-        return 2
+        sounds.forEach(src => {
 
+            let audio = new Audio
+            audio.type = 'audio/mpeg'
+            audio.src = src
+
+        })
+        
     }
 
-    /**
-     * @type {number}
-     */
-    static get NAME_MAX_CHARS() {
-
-        return 16
-
-    }
+    //=============================================
+    // Class methods : [
+    //=============================================
 
     /**
-     * @type {number}
+     * Plays audio.
+     * @param {!string} src - Source to audio.
      */
-    static get MAX_PLAYERS() {
+    play(src) {
 
-        return 4
+        if (this.muted) return
 
-    }
-
-    /**
-     * @type {number}
-     */
-    static get SHIP_WIDTH() {
-
-        return 25
-
-    }
-
-    /**
-     * @type {number}
-     */
-    static get MIN_SPEED() {
-
-        return 0
-
-    }
-
-    /**
-     * @type {number}
-     */
-    static get MAX_SPEED() {
-
-        return 4
+        let audio = new Audio
+        audio.type = 'audio/mpeg'
+        audio.src = src
+        audio.play()
 
     }
 
     /**
-     * @type {number}
+     * Mutes / unmutes audio.
      */
-    static get MIN_HP() {
+    toggleMute() {
 
-        return 0
+        this.muted = ! this.muted
+        this.music.muted = ! this.music.muted
 
     }
 
-    /**
-     * @type {number}
-     */
-    static get MAX_HP() {
-
-        return 25
-
-    }
-
-    /**
-     * @type {number}
-     */
-    static get MIN_FP() {
-
-        return 0
-
-    }
-
-    /**
-     * @type {number}
-     */
-    static get MAX_FP() {
-
-        return 10
-
-    }
-
-    //=======================
-    // ] : Static getters
-    //=======================
+    //===================
+    // ] : Class methods
+    //===================
 
 }</code></pre>
         </article>
