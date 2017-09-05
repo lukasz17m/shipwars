@@ -638,6 +638,7 @@ function updatespectators() {
 
 function destroyShip() {
   for (let i = 0; i < arguments.length; i++) {
+    io.emit('shipExplosion', frame.ships[arguments[i]].coords)
     frame.ships[arguments[i]].sunken = true
     frame.ships[arguments[i]].coords.y = -9999
     frame.ships[arguments[i]].coords.x = -9999
@@ -679,6 +680,7 @@ function shootCannonball(owner, diameter, angle) {
 
 function destroyCannonball() {
   for (let i = 0; i < arguments.length; i++) {
+    io.emit('cannonballExplosion', frame.cannonballs[arguments[i]].coords, frame.cannonballs[arguments[i]].diameter)
     delete frame.cannonballs[arguments[i]]
   }
 }

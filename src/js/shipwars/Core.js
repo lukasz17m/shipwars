@@ -343,7 +343,13 @@ export default class Core {
 
         // Update button state
         this.socket.on('console', (message) => console.log(message))
+
+        // Explosions
+        this.socket.on('shipExplosion', (coords) => this.ui.explosion(coords, 100, true))
+        this.socket.on('cannonballExplosion', (coords, diameter) => this.ui.explosion(coords, diameter))
+        
     }
+        
 
     /**
      * Inits UI listeners.

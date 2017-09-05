@@ -3861,7 +3861,13 @@ class Core {
 
         // Update button state
         this.socket.on('console', (message) => console.log(message))
+
+        // Explosions
+        this.socket.on('shipExplosion', (coords) => this.ui.explosion(coords, 100, true))
+        this.socket.on('cannonballExplosion', (coords, diameter) => this.ui.explosion(coords, diameter))
+        
     }
+        
 
     /**
      * Inits UI listeners.
@@ -7405,6 +7411,11 @@ class UserInterface {
 
         this.init()
 
+        this.cache([
+            '/images/cannonball-explosion.gif',
+            '/images/ship-explosion.gif'
+        ])
+
     }
 
     /** 
@@ -7421,6 +7432,22 @@ class UserInterface {
         this.asidePanel = document.createElement('aside')
 
         this.infobox = document.createElement('div')
+    }
+
+    /** 
+     * Caches images.
+     * @param {!string[]} images - Contains array of urls to cache.
+     */
+    cache(images) {
+
+        images.forEach(src => {
+
+            let image = new Image
+            image.alt = 'cache'
+            image.src = src
+
+        })
+        
     }
 
     //=======================
@@ -7991,6 +8018,32 @@ class UserInterface {
             default:
 
         }
+
+    }
+
+    /**
+     * Makes explosion effect.
+     * @param {!object} coords - Explosion coordinates.
+     * @param {number=} diameter - Determines explosion power.
+     * @param {boolean=} ship - Set to true if you want to get huge explosion.
+     */
+    explosion(coords, diameter = 100, ship = false) {
+
+        console.log(coords)
+
+        const boom = new Image
+        boom.alt = ship ? 'Ship explosion' : 'Cannonball explosion'
+        boom.src = ship ? '/images/ship-explosion.gif' : '/images/cannonball-explosion.gif'
+        boom.className = 'explosion'
+        boom.style.width = diameter * 2 + 'px'
+        boom.style.left = coords.x + 'px'
+        boom.style.top = (ship ? coords.y - 130 : coords.y) + 'px'
+
+        this.gamebox.appendChild(boom)
+
+        let lasting = ship ? 1200 : 500
+
+        setTimeout(() => this.gamebox.removeChild(boom), lasting)
 
     }
 
