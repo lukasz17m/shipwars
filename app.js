@@ -11,20 +11,20 @@ const io = require('socket.io')(http)
 const client = redis.createClient()
 
 const CONFIG = require('./src/js/shipwars/Config.js')
-const PORT = 80
+const PORT = 3000
 const FPS = 60
 
 let spectators = []
 
-const colors = ['#865f1d', '#3a2d18', '#473b2f', '#6d3d22']
+const colors = ['#865f1d', '#cd853f', '#8b4513', '#6d3d22']
 
 const factors = {
-  acceleration: 0.1,
-  cannonballSpeed: 6,
+  acceleration: 0.04,
+  cannonballSpeed: 5,
   angle: 1,
   fireLoadMinimum: 1,
   fireLoadSpeed: 0.1,
-  fireLoadIncreasing: 0.02,
+  fireLoadIncreasing: 0.03,
   repairRatio: 0.5
 }
 

@@ -421,12 +421,21 @@ body {
 /* Ships */
 
 .ship {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+}
+
+/*
+ * Old
+ *
+ *** 
+.ship {
     font-size: 25px;
     width: 2em;
     height: 1em;
     position: absolute;
     background-color: #808080;
-    /*border-radius: 25% 50% 50% 25%;*/
     transform: translate(-50%, -50%);
     z-index: 2;
 }
@@ -452,7 +461,7 @@ body {
     right: -1em;
     background-color: inherit;
     border-radius: 0 50% 50% 0;
-}
+}*/
 
 /* Cannonballs */
 .cannonball {

@@ -3405,7 +3405,7 @@ module.exports = class Config {
      */
     static get SHIP_WIDTH() {
 
-        return 25
+        return 20
 
     }
 
@@ -3423,7 +3423,7 @@ module.exports = class Config {
      */
     static get MAX_SPEED() {
 
-        return 4
+        return 3
 
     }
 
@@ -3516,7 +3516,9 @@ new __WEBPACK_IMPORTED_MODULE_0__shipwars_Core__["a" /* default */]()
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Config___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__Config__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__UserInterface__ = __webpack_require__(49);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__AudioInterface__ = __webpack_require__(50);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__utils_getContrast__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Ship__ = __webpack_require__(51);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_getContrast__ = __webpack_require__(22);
+
 
 
 
@@ -3611,7 +3613,7 @@ class Core {
             function tryLogin() {
 
                 this.login(this.ui.nickname)
-                .then((data) => {
+                .then(() => {
 
                     this.ui.hideErrorMessage()
 
@@ -3626,6 +3628,9 @@ class Core {
 
                     // Listen for the user interface interaction
                     this.userInterfaceListen()
+
+                    // Play background music
+                    this.audio.playMusic()
 
                 })
                 .catch((error) => this.ui.showErrorMessage(error))
@@ -3761,12 +3766,16 @@ class Core {
 
                 if (this.shipsCreated.indexOf(id) < 0) {
 
-                    let ship = document.createElement('div')
-                    ship.className = 'ship'
-                    ship.style.backgroundColor = ships[id].color
-                    ship.style.left = Math.round(ships[id].x) + 'px'
-                    ship.style.top = Math.round(ships[id].y) + 'px'
-                    this.ui.gamebox.appendChild(ship)
+                    // let ship = document.createElement('div')
+                    // ship.className = 'ship'
+                    // ship.style.backgroundColor = ships[id].color
+                    // ship.style.left = Math.round(ships[id].x) + 'px'
+                    // ship.style.top = Math.round(ships[id].y) + 'px'
+
+                    const ship = new __WEBPACK_IMPORTED_MODULE_4__Ship__["a" /* default */](__WEBPACK_IMPORTED_MODULE_1__Config___default.a.SHIP_WIDTH, ships[id].color)
+                    ship.canvas.style.left = Math.round(ships[id].x) + 'px'
+                    ship.canvas.top = Math.round(ships[id].y) + 'px'
+                    this.ui.gamebox.appendChild(ship.canvas)
 
                     this.ships[id] = ship
 
@@ -3774,9 +3783,9 @@ class Core {
 
                 } else {
 
-                    this.ships[id].style.left = Math.round(ships[id].x) + 'px'
-                    this.ships[id].style.top = Math.round(ships[id].y) + 'px'
-                    this.ships[id].style.transform = `translate(-50%, -50%) rotate(${ -Math.round(ships[id].angle) }deg)`
+                    this.ships[id].canvas.style.left = Math.round(ships[id].x) + 'px'
+                    this.ships[id].canvas.style.top = Math.round(ships[id].y) + 'px'
+                    this.ships[id].canvas.style.transform = `translate(-50%, -50%) rotate(${ -Math.round(ships[id].angle) }deg)`
 
                 }
 
@@ -3787,7 +3796,7 @@ class Core {
 
                 if (! ships.hasOwnProperty(id)) {
 
-                    this.ui.gamebox.removeChild(this.ships[id])
+                    this.ui.gamebox.removeChild(this.ships[id].canvas)
                     delete this.ships[id]
 
                     return false
@@ -3810,7 +3819,7 @@ class Core {
                     cannonball.style.backgroundColor = cannonballs[id].color
                     cannonball.style.left = Math.round(cannonballs[id].x) + 'px'
                     cannonball.style.top = Math.round(cannonballs[id].y) + 'px'
-                    cannonball.style.color = Object(__WEBPACK_IMPORTED_MODULE_4__utils_getContrast__["a" /* default */])(cannonballs[id].color)
+                    cannonball.style.color = Object(__WEBPACK_IMPORTED_MODULE_5__utils_getContrast__["a" /* default */])(cannonballs[id].color)
                     cannonball.dataset.power = cannonballs[id].power
                     this.ui.gamebox.appendChild(cannonball)
 
@@ -3898,6 +3907,10 @@ class Core {
      * Inits UI listeners.
      */
     userInterfaceListen() {
+
+        // temp
+        // let cShip = new Ship(25)
+        // this.ui.gamebox.appendChild(cShip.canvas)
 
         // Join / Leave button
         this.ui.joinLeaveButton.onclick = () => {
@@ -4039,21 +4052,18 @@ class Core {
         })
 
         // Toggle sound
-        this.ui.soundButton.onclick = () => {
+        this.ui.audioControls()
+
+        this.ui.soundButton.onclick = toggleMute.bind(this)
+
+        this.ui.keyDown(77, toggleMute.bind(this))
+
+        function toggleMute() {
 
             this.audio.toggleMute()
             this.ui.toggleMute()
-
 
         }
-
-        this.ui.keyDown(77, () => {
-
-            // keyUp : M
-            this.audio.toggleMute()
-            this.ui.toggleMute()
-
-        })
 
     }
 
@@ -7882,8 +7892,6 @@ class UserInterface {
         this._soundButton = node
         this.soundButton.id = 'sound-button'
 
-        this.gamebox.appendChild(this.soundButton)
-
     }
 
     get soundButton() {
@@ -8109,6 +8117,15 @@ class UserInterface {
     }
 
     /**
+     * Shows mute button.
+     */
+    audioControls() {
+
+        this.gamebox.appendChild(this.soundButton)
+
+    }
+
+    /**
      * Toggles sound icon.
      */
     toggleMute() {
@@ -8167,7 +8184,7 @@ class AudioInterface {
     }
 
     /** 
-     * User interface initiator.
+     * Audio initiator.
      */
     init() {
 
@@ -8176,7 +8193,6 @@ class AudioInterface {
         music.src = '/sounds/bg-music.mp3'
         music.loop = true
         music.muted = false
-        music.play()
 
     }
 
@@ -8216,6 +8232,16 @@ class AudioInterface {
     }
 
     /**
+     * Plays background music.
+     * @param {!string} src - Source to audio.
+     */
+    playMusic() {
+
+        this.music.play()
+
+    }
+
+    /**
      * Mutes / unmutes audio.
      */
     toggleMute() {
@@ -8231,6 +8257,119 @@ class AudioInterface {
 
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = AudioInterface;
+
+
+/***/ }),
+/* 51 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/**
+ * @module
+ */
+class Ship {
+
+    /** 
+     * Ship constructor.
+     * @constructor
+     */
+    constructor(width, color = '#f00') {
+
+        /**
+         * Contains ship width in px.
+         * @type {number}
+         */
+        this.width = width
+
+        /**
+         * Contains ship color in HTML notation.
+         * @type {string}
+         */
+        this.color = color
+
+        /**
+         * Contains sail color in HTML notation.
+         * @type {string}
+         */
+        this.sailcolor = '#efefff'
+
+        this.init()
+
+    }
+
+    /** 
+     * Ship initiator.
+     */
+    init() {
+
+        const canvas = this.canvas = document.createElement('canvas')
+        canvas.width = this.width * 4
+        canvas.height = this.width * 4
+        canvas.className = 'ship'
+
+        const ctx = this.ctx = canvas.getContext('2d')
+
+        // Rear
+        ctx.beginPath()
+        ctx.arc(this.width / 2, this.width * 2, this.width / 2, 0, 2 * Math.PI)
+        ctx.fillStyle = this.color
+        ctx.fill()
+        
+        // Center
+        ctx.fillStyle = this.color
+        ctx.fillRect(this.width / 2, this.width * 3 / 2, this.width * 3, this.width)
+
+        // Front
+        ctx.beginPath();
+        ctx.arc(this.width * 7 / 2, this.width * 2, this.width / 2, 0, 2 * Math.PI)
+        ctx.fillStyle = this.color
+        ctx.fill()
+
+        // Foremast
+        ctx.beginPath()
+        ctx.arc(this.width * 7 / 3, this.width * 2, this.width * 7 / 6, - Math.PI * 1 / 3, Math.PI * 1 / 3)
+        ctx.fillStyle = this.sailcolor
+        ctx.fill()
+
+        // Main mast
+        ctx.beginPath()
+        ctx.arc(this.width * 10 / 9, this.width * 2, this.width * 10 / 7, - Math.PI * 1 / 3, Math.PI * 1 / 3)
+        ctx.fillStyle = this.sailcolor
+        ctx.fill()
+
+        // Mizenmast
+        ctx.beginPath()
+        ctx.arc(this.width / 2, this.width * 2, this.width * 8 / 9, - Math.PI * 1 / 3, Math.PI * 1 / 3)
+        ctx.fillStyle = this.sailcolor
+        ctx.fill()
+
+    }
+
+    //=============================================
+    // Setters & Getters : [
+    //=============================================
+
+    /**
+     * @type {Node}
+     */
+    set canvas(node) {
+        
+        this._canvas = node
+
+    }
+
+    get canvas() {
+        
+        return this._canvas
+
+    }
+
+    //===================
+    // ] : Setters & Getters
+    //===================
+
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = Ship;
 
 
 /***/ })

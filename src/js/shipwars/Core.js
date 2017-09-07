@@ -2,6 +2,7 @@ import io from 'socket.io-client'
 import Config from './Config'
 import UserInterface from './UserInterface'
 import AudioInterface from './AudioInterface'
+import Ship from './Ship'
 import getContrast from './utils/getContrast'
 
 /**
@@ -92,7 +93,7 @@ export default class Core {
             function tryLogin() {
 
                 this.login(this.ui.nickname)
-                .then((data) => {
+                .then(() => {
 
                     this.ui.hideErrorMessage()
 
@@ -107,6 +108,9 @@ export default class Core {
 
                     // Listen for the user interface interaction
                     this.userInterfaceListen()
+
+                    // Play background music
+                    this.audio.playMusic()
 
                 })
                 .catch((error) => this.ui.showErrorMessage(error))
@@ -242,12 +246,16 @@ export default class Core {
 
                 if (this.shipsCreated.indexOf(id) < 0) {
 
-                    let ship = document.createElement('div')
-                    ship.className = 'ship'
-                    ship.style.backgroundColor = ships[id].color
-                    ship.style.left = Math.round(ships[id].x) + 'px'
-                    ship.style.top = Math.round(ships[id].y) + 'px'
-                    this.ui.gamebox.appendChild(ship)
+                    // let ship = document.createElement('div')
+                    // ship.className = 'ship'
+                    // ship.style.backgroundColor = ships[id].color
+                    // ship.style.left = Math.round(ships[id].x) + 'px'
+                    // ship.style.top = Math.round(ships[id].y) + 'px'
+
+                    const ship = new Ship(Config.SHIP_WIDTH, ships[id].color)
+                    ship.canvas.style.left = Math.round(ships[id].x) + 'px'
+                    ship.canvas.top = Math.round(ships[id].y) + 'px'
+                    this.ui.gamebox.appendChild(ship.canvas)
 
                     this.ships[id] = ship
 
@@ -255,9 +263,9 @@ export default class Core {
 
                 } else {
 
-                    this.ships[id].style.left = Math.round(ships[id].x) + 'px'
-                    this.ships[id].style.top = Math.round(ships[id].y) + 'px'
-                    this.ships[id].style.transform = `translate(-50%, -50%) rotate(${ -Math.round(ships[id].angle) }deg)`
+                    this.ships[id].canvas.style.left = Math.round(ships[id].x) + 'px'
+                    this.ships[id].canvas.style.top = Math.round(ships[id].y) + 'px'
+                    this.ships[id].canvas.style.transform = `translate(-50%, -50%) rotate(${ -Math.round(ships[id].angle) }deg)`
 
                 }
 
@@ -268,7 +276,7 @@ export default class Core {
 
                 if (! ships.hasOwnProperty(id)) {
 
-                    this.ui.gamebox.removeChild(this.ships[id])
+                    this.ui.gamebox.removeChild(this.ships[id].canvas)
                     delete this.ships[id]
 
                     return false
@@ -379,6 +387,10 @@ export default class Core {
      * Inits UI listeners.
      */
     userInterfaceListen() {
+
+        // temp
+        // let cShip = new Ship(25)
+        // this.ui.gamebox.appendChild(cShip.canvas)
 
         // Join / Leave button
         this.ui.joinLeaveButton.onclick = () => {
@@ -520,21 +532,18 @@ export default class Core {
         })
 
         // Toggle sound
-        this.ui.soundButton.onclick = () => {
+        this.ui.audioControls()
+
+        this.ui.soundButton.onclick = toggleMute.bind(this)
+
+        this.ui.keyDown(77, toggleMute.bind(this))
+
+        function toggleMute() {
 
             this.audio.toggleMute()
             this.ui.toggleMute()
-
 
         }
-
-        this.ui.keyDown(77, () => {
-
-            // keyUp : M
-            this.audio.toggleMute()
-            this.ui.toggleMute()
-
-        })
 
     }
 

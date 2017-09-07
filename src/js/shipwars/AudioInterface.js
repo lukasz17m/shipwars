@@ -27,7 +27,7 @@ export default class AudioInterface {
     }
 
     /** 
-     * User interface initiator.
+     * Audio initiator.
      */
     init() {
 
@@ -36,7 +36,6 @@ export default class AudioInterface {
         music.src = '/sounds/bg-music.mp3'
         music.loop = true
         music.muted = false
-        music.play()
 
     }
 
@@ -72,6 +71,16 @@ export default class AudioInterface {
         audio.type = 'audio/mpeg'
         audio.src = src
         audio.play()
+
+    }
+
+    /**
+     * Plays background music.
+     * @param {!string} src - Source to audio.
+     */
+    playMusic() {
+
+        this.music.play()
 
     }
 

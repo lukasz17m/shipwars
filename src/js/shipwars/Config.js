@@ -59,7 +59,7 @@ module.exports = class Config {
      */
     static get SHIP_WIDTH() {
 
-        return 25
+        return 20
 
     }
 
@@ -77,7 +77,7 @@ module.exports = class Config {
      */
     static get MAX_SPEED() {
 
-        return 4
+        return 3
 
     }
 

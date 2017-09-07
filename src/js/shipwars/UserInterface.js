@@ -459,8 +459,6 @@ export default class UserInterface {
         this._soundButton = node
         this.soundButton.id = 'sound-button'
 
-        this.gamebox.appendChild(this.soundButton)
-
     }
 
     get soundButton() {
@@ -682,6 +680,15 @@ export default class UserInterface {
         let lasting = ship ? 1200 : 500
 
         setTimeout(() => this.gamebox.removeChild(boom), lasting)
+
+    }
+
+    /**
+     * Shows mute button.
+     */
+    audioControls() {
+
+        this.gamebox.appendChild(this.soundButton)
 
     }
 
