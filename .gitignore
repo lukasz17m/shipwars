@@ -1,3 +1,4 @@
 /node_modules
+/out
 .npmignore
 package-lock.json
