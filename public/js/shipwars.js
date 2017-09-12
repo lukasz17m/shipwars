@@ -1,1 +1,8487 @@
-!function(t){function e(i){if(n[i])return n[i].exports;var r=n[i]={i:i,l:!1,exports:{}};return t[i].call(r.exports,r,r.exports,e),r.l=!0,r.exports}var n={};e.m=t,e.c=n,e.d=function(t,n,i){e.o(t,n)||Object.defineProperty(t,n,{configurable:!1,enumerable:!0,get:i})},e.n=function(t){var n=t&&t.__esModule?function(){return t.default}:function(){return t};return e.d(n,"a",n),n},e.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},e.p="",e(e.s=23)}([function(t,e){var n;n=function(){return this}();try{n=n||Function("return this")()||(0,eval)("this")}catch(t){"object"==typeof window&&(n=window)}t.exports=n},function(t,e,n){(function(i){function r(){var t;try{t=e.storage.debug}catch(t){}return!t&&void 0!==i&&"env"in i&&(t=i.env.DEBUG),t}(e=t.exports=n(28)).log=function(){return"object"==typeof console&&console.log&&Function.prototype.apply.call(console.log,console,arguments)},e.formatArgs=function(t){var n=this.useColors;if(t[0]=(n?"%c":"")+this.namespace+(n?" %c":" ")+t[0]+(n?"%c ":" ")+"+"+e.humanize(this.diff),n){var i="color: "+this.color;t.splice(1,0,i,"color: inherit");var r=0,s=0;t[0].replace(/%[a-zA-Z%]/g,function(t){"%%"!==t&&(r++,"%c"===t&&(s=r))}),t.splice(s,0,i)}},e.save=function(t){try{null==t?e.storage.removeItem("debug"):e.storage.debug=t}catch(t){}},e.load=r,e.useColors=function(){return!(!window||!window.process||"renderer"!==window.process.type)||document&&document.documentElement&&document.documentElement.style&&document.documentElement.style.WebkitAppearance||window&&window.console&&(window.console.firebug||window.console.exception&&window.console.table)||navigator&&navigator.userAgent&&navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/)&&parseInt(RegExp.$1,10)>=31||navigator&&navigator.userAgent&&navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/)},e.storage="undefined"!=typeof chrome&&void 0!==chrome.storage?chrome.storage.local:function(){try{return window.localStorage}catch(t){}}(),e.colors=["lightseagreen","forestgreen","goldenrod","dodgerblue","darkorchid","crimson"],e.formatters.j=function(t){try{return JSON.stringify(t)}catch(t){return"[UnexpectedJSONParseError]: "+t.message}},e.enable(r())}).call(e,n(27))},function(t,e,n){function i(t){if(t)return r(t)}function r(t){for(var e in i.prototype)t[e]=i.prototype[e];return t}t.exports=i,i.prototype.on=i.prototype.addEventListener=function(t,e){return this._callbacks=this._callbacks||{},(this._callbacks["$"+t]=this._callbacks["$"+t]||[]).push(e),this},i.prototype.once=function(t,e){function n(){this.off(t,n),e.apply(this,arguments)}return n.fn=e,this.on(t,n),this},i.prototype.off=i.prototype.removeListener=i.prototype.removeAllListeners=i.prototype.removeEventListener=function(t,e){if(this._callbacks=this._callbacks||{},0==arguments.length)return this._callbacks={},this;var n=this._callbacks["$"+t];if(!n)return this;if(1==arguments.length)return delete this._callbacks["$"+t],this;for(var i,r=0;r<n.length;r++)if((i=n[r])===e||i.fn===e){n.splice(r,1);break}return this},i.prototype.emit=function(t){this._callbacks=this._callbacks||{};var e=[].slice.call(arguments,1),n=this._callbacks["$"+t];if(n)for(var i=0,r=(n=n.slice(0)).length;i<r;++i)n[i].apply(this,e);return this},i.prototype.listeners=function(t){return this._callbacks=this._callbacks||{},this._callbacks["$"+t]||[]},i.prototype.hasListeners=function(t){return!!this.listeners(t).length}},function(t,e,n){(function(t){function i(t,n){return n("b"+e.packets[t.type]+t.data.data)}function r(t,n,i){if(!n)return e.encodeBase64Packet(t,i);var r=t.data,s=new Uint8Array(r),o=new Uint8Array(1+r.byteLength);o[0]=v[t.type];for(var a=0;a<s.length;a++)o[a+1]=s[a];return i(o.buffer)}function s(t,n,i){if(!n)return e.encodeBase64Packet(t,i);var r=new FileReader;return r.onload=function(){t.data=r.result,e.encodePacket(t,n,!0,i)},r.readAsArrayBuffer(t.data)}function o(t,n,i){if(!n)return e.encodeBase64Packet(t,i);if(g)return s(t,n,i);var r=new Uint8Array(1);return r[0]=v[t.type],i(new k([r.buffer,t.data]))}function a(t){try{t=f.decode(t,{strict:!1})}catch(t){return!1}return t}function c(t,e,n){for(var i=new Array(t.length),r=d(t.length,n),s=0;s<t.length;s++)!function(t,n,r){e(n,function(e,n){i[t]=n,r(e,i)})}(s,t[s],r)}var h,p=n(36),u=n(10),l=n(37),d=n(38),f=n(39);t&&t.ArrayBuffer&&(h=n(41));var m="undefined"!=typeof navigator&&/Android/i.test(navigator.userAgent),y="undefined"!=typeof navigator&&/PhantomJS/i.test(navigator.userAgent),g=m||y;e.protocol=3;var v=e.packets={open:0,close:1,ping:2,pong:3,message:4,upgrade:5,noop:6},b=p(v),w={type:"error",data:"parser error"},k=n(42);e.encodePacket=function(e,n,s,a){"function"==typeof n&&(a=n,n=!1),"function"==typeof s&&(a=s,s=null);var c=void 0===e.data?void 0:e.data.buffer||e.data;if(t.ArrayBuffer&&c instanceof ArrayBuffer)return r(e,n,a);if(k&&c instanceof t.Blob)return o(e,n,a);if(c&&c.base64)return i(e,a);var h=v[e.type];return void 0!==e.data&&(h+=s?f.encode(String(e.data),{strict:!1}):String(e.data)),a(""+h)},e.encodeBase64Packet=function(n,i){var r="b"+e.packets[n.type];if(k&&n.data instanceof t.Blob){var s=new FileReader;return s.onload=function(){var t=s.result.split(",")[1];i(r+t)},s.readAsDataURL(n.data)}var o;try{o=String.fromCharCode.apply(null,new Uint8Array(n.data))}catch(t){for(var a=new Uint8Array(n.data),c=new Array(a.length),h=0;h<a.length;h++)c[h]=a[h];o=String.fromCharCode.apply(null,c)}return r+=t.btoa(o),i(r)},e.decodePacket=function(t,n,i){if(void 0===t)return w;if("string"==typeof t){if("b"===t.charAt(0))return e.decodeBase64Packet(t.substr(1),n);if(i&&!1===(t=a(t)))return w;r=t.charAt(0);return Number(r)==r&&b[r]?t.length>1?{type:b[r],data:t.substring(1)}:{type:b[r]}:w}var r=new Uint8Array(t)[0],s=l(t,1);return k&&"blob"===n&&(s=new k([s])),{type:b[r],data:s}},e.decodeBase64Packet=function(t,e){var n=b[t.charAt(0)];if(!h)return{type:n,data:{base64:!0,data:t.substr(1)}};var i=h.decode(t.substr(1));return"blob"===e&&k&&(i=new k([i])),{type:n,data:i}},e.encodePayload=function(t,n,i){function r(t){return t.length+":"+t}"function"==typeof n&&(i=n,n=null);var s=u(t);return n&&s?k&&!g?e.encodePayloadAsBlob(t,i):e.encodePayloadAsArrayBuffer(t,i):t.length?void c(t,function(t,i){e.encodePacket(t,!!s&&n,!1,function(t){i(null,r(t))})},function(t,e){return i(e.join(""))}):i("0:")},e.decodePayload=function(t,n,i){if("string"!=typeof t)return e.decodePayloadAsBinary(t,n,i);"function"==typeof n&&(i=n,n=null);var r;if(""===t)return i(w,0,1);for(var s,o,a="",c=0,h=t.length;c<h;c++){var p=t.charAt(c);if(":"===p){if(""===a||a!=(s=Number(a)))return i(w,0,1);if(o=t.substr(c+1,s),a!=o.length)return i(w,0,1);if(o.length){if(r=e.decodePacket(o,n,!1),w.type===r.type&&w.data===r.data)return i(w,0,1);if(!1===i(r,c+s,h))return}c+=s,a=""}else a+=p}return""!==a?i(w,0,1):void 0},e.encodePayloadAsArrayBuffer=function(t,n){if(!t.length)return n(new ArrayBuffer(0));c(t,function(t,n){e.encodePacket(t,!0,!0,function(t){return n(null,t)})},function(t,e){var i=e.reduce(function(t,e){var n;return n="string"==typeof e?e.length:e.byteLength,t+n.toString().length+n+2},0),r=new Uint8Array(i),s=0;return e.forEach(function(t){var e="string"==typeof t,n=t;if(e){for(var i=new Uint8Array(t.length),o=0;o<t.length;o++)i[o]=t.charCodeAt(o);n=i.buffer}r[s++]=e?0:1;for(var a=n.byteLength.toString(),o=0;o<a.length;o++)r[s++]=parseInt(a[o]);r[s++]=255;for(var i=new Uint8Array(n),o=0;o<i.length;o++)r[s++]=i[o]}),n(r.buffer)})},e.encodePayloadAsBlob=function(t,n){c(t,function(t,n){e.encodePacket(t,!0,!0,function(t){var e=new Uint8Array(1);if(e[0]=1,"string"==typeof t){for(var i=new Uint8Array(t.length),r=0;r<t.length;r++)i[r]=t.charCodeAt(r);t=i.buffer,e[0]=0}for(var s=(t instanceof ArrayBuffer?t.byteLength:t.size).toString(),o=new Uint8Array(s.length+1),r=0;r<s.length;r++)o[r]=parseInt(s[r]);if(o[s.length]=255,k){var a=new k([e.buffer,o.buffer,t]);n(null,a)}})},function(t,e){return n(new k(e))})},e.decodePayloadAsBinary=function(t,n,i){"function"==typeof n&&(i=n,n=null);for(var r=t,s=[];r.byteLength>0;){for(var o=new Uint8Array(r),a=0===o[0],c="",h=1;255!==o[h];h++){if(c.length>310)return i(w,0,1);c+=o[h]}r=l(r,2+c.length),c=parseInt(c);var p=l(r,0,c);if(a)try{p=String.fromCharCode.apply(null,new Uint8Array(p))}catch(t){var u=new Uint8Array(p);p="";for(h=0;h<u.length;h++)p+=String.fromCharCode(u[h])}s.push(p),r=l(r,c)}var d=s.length;s.forEach(function(t,r){i(e.decodePacket(t,n,!0),r,d)})}}).call(e,n(0))},function(t,e){e.encode=function(t){var e="";for(var n in t)t.hasOwnProperty(n)&&(e.length&&(e+="&"),e+=encodeURIComponent(n)+"="+encodeURIComponent(t[n]));return e},e.decode=function(t){for(var e={},n=t.split("&"),i=0,r=n.length;i<r;i++){var s=n[i].split("=");e[decodeURIComponent(s[0])]=decodeURIComponent(s[1])}return e}},function(t,e){t.exports=function(t,e){var n=function(){};n.prototype=e.prototype,t.prototype=new n,t.prototype.constructor=t}},function(t,e,n){function i(){}function r(t){var n=""+t.type;return e.BINARY_EVENT!==t.type&&e.BINARY_ACK!==t.type||(n+=t.attachments+"-"),t.nsp&&"/"!==t.nsp&&(n+=t.nsp+","),null!=t.id&&(n+=t.id),null!=t.data&&(n+=JSON.stringify(t.data)),u("encoded %j as %s",t,n),n}function s(t,e){f.removeBlobs(t,function(t){var n=f.deconstructPacket(t),i=r(n.packet),s=n.buffers;s.unshift(i),e(s)})}function o(){this.reconstructor=null}function a(t){var n=0,i={type:Number(t.charAt(0))};if(null==e.types[i.type])return p();if(e.BINARY_EVENT===i.type||e.BINARY_ACK===i.type){for(var r="";"-"!==t.charAt(++n)&&(r+=t.charAt(n),n!=t.length););if(r!=Number(r)||"-"!==t.charAt(n))throw new Error("Illegal attachments");i.attachments=Number(r)}if("/"===t.charAt(n+1))for(i.nsp="";++n&&","!==(o=t.charAt(n))&&(i.nsp+=o,n!==t.length););else i.nsp="/";var s=t.charAt(n+1);if(""!==s&&Number(s)==s){for(i.id="";++n;){var o=t.charAt(n);if(null==o||Number(o)!=o){--n;break}if(i.id+=t.charAt(n),n===t.length)break}i.id=Number(i.id)}return t.charAt(++n)&&(i=c(i,t.substr(n))),u("decoded %s as %j",t,i),i}function c(t,e){try{t.data=JSON.parse(e)}catch(t){return p()}return t}function h(t){this.reconPack=t,this.buffers=[]}function p(){return{type:e.ERROR,data:"parser error"}}var u=n(1)("socket.io-parser"),l=n(2),d=n(10),f=n(30),m=n(12);e.protocol=4,e.types=["CONNECT","DISCONNECT","EVENT","ACK","ERROR","BINARY_EVENT","BINARY_ACK"],e.CONNECT=0,e.DISCONNECT=1,e.EVENT=2,e.ACK=3,e.ERROR=4,e.BINARY_EVENT=5,e.BINARY_ACK=6,e.Encoder=i,e.Decoder=o,i.prototype.encode=function(t,n){t.type!==e.EVENT&&t.type!==e.ACK||!d(t.data)||(t.type=t.type===e.EVENT?e.BINARY_EVENT:e.BINARY_ACK),u("encoding packet %j",t),e.BINARY_EVENT===t.type||e.BINARY_ACK===t.type?s(t,n):n([r(t)])},l(o.prototype),o.prototype.add=function(t){var n;if("string"==typeof t)n=a(t),e.BINARY_EVENT===n.type||e.BINARY_ACK===n.type?(this.reconstructor=new h(n),0===this.reconstructor.reconPack.attachments&&this.emit("decoded",n)):this.emit("decoded",n);else{if(!m(t)&&!t.base64)throw new Error("Unknown type: "+t);if(!this.reconstructor)throw new Error("got binary data when not reconstructing a packet");(n=this.reconstructor.takeBinaryData(t))&&(this.reconstructor=null,this.emit("decoded",n))}},o.prototype.destroy=function(){this.reconstructor&&this.reconstructor.finishedReconstruction()},h.prototype.takeBinaryData=function(t){if(this.buffers.push(t),this.buffers.length===this.reconPack.attachments){var e=f.reconstructPacket(this.reconPack,this.buffers);return this.finishedReconstruction(),e}return null},h.prototype.finishedReconstruction=function(){this.reconPack=null,this.buffers=[]}},function(t,e,n){(function(e){var i=n(34);t.exports=function(t){var n=t.xdomain,r=t.xscheme,s=t.enablesXDR;try{if("undefined"!=typeof XMLHttpRequest&&(!n||i))return new XMLHttpRequest}catch(t){}try{if("undefined"!=typeof XDomainRequest&&!r&&s)return new XDomainRequest}catch(t){}if(!n)try{return new(e[["Active"].concat("Object").join("X")])("Microsoft.XMLHTTP")}catch(t){}}}).call(e,n(0))},function(t,e,n){function i(t){this.path=t.path,this.hostname=t.hostname,this.port=t.port,this.secure=t.secure,this.query=t.query,this.timestampParam=t.timestampParam,this.timestampRequests=t.timestampRequests,this.readyState="",this.agent=t.agent||!1,this.socket=t.socket,this.enablesXDR=t.enablesXDR,this.pfx=t.pfx,this.key=t.key,this.passphrase=t.passphrase,this.cert=t.cert,this.ca=t.ca,this.ciphers=t.ciphers,this.rejectUnauthorized=t.rejectUnauthorized,this.forceNode=t.forceNode,this.extraHeaders=t.extraHeaders,this.localAddress=t.localAddress}var r=n(3),s=n(2);t.exports=i,s(i.prototype),i.prototype.onError=function(t,e){var n=new Error(t);return n.type="TransportError",n.description=e,this.emit("error",n),this},i.prototype.open=function(){return"closed"!==this.readyState&&""!==this.readyState||(this.readyState="opening",this.doOpen()),this},i.prototype.close=function(){return"opening"!==this.readyState&&"open"!==this.readyState||(this.doClose(),this.onClose()),this},i.prototype.send=function(t){if("open"!==this.readyState)throw new Error("Transport not open");this.write(t)},i.prototype.onOpen=function(){this.readyState="open",this.writable=!0,this.emit("open")},i.prototype.onData=function(t){var e=r.decodePacket(t,this.socket.binaryType);this.onPacket(e)},i.prototype.onPacket=function(t){this.emit("packet",t)},i.prototype.onClose=function(){this.readyState="closed",this.emit("close")}},function(t,e){var n=/^(?:(?![^:@]+:[^:@\/]*@)(http|https|ws|wss):\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?((?:[a-f0-9]{0,4}:){2,7}[a-f0-9]{0,4}|[^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/,i=["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"];t.exports=function(t){var e=t,r=t.indexOf("["),s=t.indexOf("]");-1!=r&&-1!=s&&(t=t.substring(0,r)+t.substring(r,s).replace(/:/g,";")+t.substring(s,t.length));for(var o=n.exec(t||""),a={},c=14;c--;)a[i[c]]=o[c]||"";return-1!=r&&-1!=s&&(a.source=e,a.host=a.host.substring(1,a.host.length-1).replace(/;/g,":"),a.authority=a.authority.replace("[","").replace("]","").replace(/;/g,":"),a.ipv6uri=!0),a}},function(t,e,n){(function(e){function i(t){if(!t||"object"!=typeof t)return!1;if(r(t)){for(var n=0,s=t.length;n<s;n++)if(i(t[n]))return!0;return!1}if("function"==typeof e.Buffer&&e.Buffer.isBuffer&&e.Buffer.isBuffer(t)||"function"==typeof e.ArrayBuffer&&t instanceof ArrayBuffer||o&&t instanceof Blob||a&&t instanceof File)return!0;if(t.toJSON&&"function"==typeof t.toJSON&&1===arguments.length)return i(t.toJSON(),!0);for(var c in t)if(Object.prototype.hasOwnProperty.call(t,c)&&i(t[c]))return!0;return!1}var r=n(11),s=Object.prototype.toString,o="function"==typeof e.Blob||"[object BlobConstructor]"===s.call(e.Blob),a="function"==typeof e.File||"[object FileConstructor]"===s.call(e.File);t.exports=i}).call(e,n(0))},function(t,e){var n={}.toString;t.exports=Array.isArray||function(t){return"[object Array]"==n.call(t)}},function(t,e,n){(function(e){t.exports=function(t){return e.Buffer&&e.Buffer.isBuffer(t)||e.ArrayBuffer&&t instanceof ArrayBuffer}}).call(e,n(0))},function(t,e,n){function i(t,e){if(!(this instanceof i))return new i(t,e);t&&"object"==typeof t&&(e=t,t=void 0),(e=e||{}).path=e.path||"/socket.io",this.nsps={},this.subs=[],this.opts=e,this.reconnection(!1!==e.reconnection),this.reconnectionAttempts(e.reconnectionAttempts||1/0),this.reconnectionDelay(e.reconnectionDelay||1e3),this.reconnectionDelayMax(e.reconnectionDelayMax||5e3),this.randomizationFactor(e.randomizationFactor||.5),this.backoff=new l({min:this.reconnectionDelay(),max:this.reconnectionDelayMax(),jitter:this.randomizationFactor()}),this.timeout(null==e.timeout?2e4:e.timeout),this.readyState="closed",this.uri=t,this.connecting=[],this.lastPing=null,this.encoding=!1,this.packetBuffer=[];var n=e.parser||a;this.encoder=new n.Encoder,this.decoder=new n.Decoder,this.autoConnect=!1!==e.autoConnect,this.autoConnect&&this.open()}var r=n(31),s=n(18),o=n(2),a=n(6),c=n(19),h=n(20),p=n(1)("socket.io-client:manager"),u=n(17),l=n(48),d=Object.prototype.hasOwnProperty;t.exports=i,i.prototype.emitAll=function(){this.emit.apply(this,arguments);for(var t in this.nsps)d.call(this.nsps,t)&&this.nsps[t].emit.apply(this.nsps[t],arguments)},i.prototype.updateSocketIds=function(){for(var t in this.nsps)d.call(this.nsps,t)&&(this.nsps[t].id=this.generateId(t))},i.prototype.generateId=function(t){return("/"===t?"":t+"#")+this.engine.id},o(i.prototype),i.prototype.reconnection=function(t){return arguments.length?(this._reconnection=!!t,this):this._reconnection},i.prototype.reconnectionAttempts=function(t){return arguments.length?(this._reconnectionAttempts=t,this):this._reconnectionAttempts},i.prototype.reconnectionDelay=function(t){return arguments.length?(this._reconnectionDelay=t,this.backoff&&this.backoff.setMin(t),this):this._reconnectionDelay},i.prototype.randomizationFactor=function(t){return arguments.length?(this._randomizationFactor=t,this.backoff&&this.backoff.setJitter(t),this):this._randomizationFactor},i.prototype.reconnectionDelayMax=function(t){return arguments.length?(this._reconnectionDelayMax=t,this.backoff&&this.backoff.setMax(t),this):this._reconnectionDelayMax},i.prototype.timeout=function(t){return arguments.length?(this._timeout=t,this):this._timeout},i.prototype.maybeReconnectOnOpen=function(){!this.reconnecting&&this._reconnection&&0===this.backoff.attempts&&this.reconnect()},i.prototype.open=i.prototype.connect=function(t,e){if(p("readyState %s",this.readyState),~this.readyState.indexOf("open"))return this;p("opening %s",this.uri),this.engine=r(this.uri,this.opts);var n=this.engine,i=this;this.readyState="opening",this.skipReconnect=!1;var s=c(n,"open",function(){i.onopen(),t&&t()}),o=c(n,"error",function(e){if(p("connect_error"),i.cleanup(),i.readyState="closed",i.emitAll("connect_error",e),t){var n=new Error("Connection error");n.data=e,t(n)}else i.maybeReconnectOnOpen()});if(!1!==this._timeout){var a=this._timeout;p("connect attempt will timeout after %d",a);var h=setTimeout(function(){p("connect attempt timed out after %d",a),s.destroy(),n.close(),n.emit("error","timeout"),i.emitAll("connect_timeout",a)},a);this.subs.push({destroy:function(){clearTimeout(h)}})}return this.subs.push(s),this.subs.push(o),this},i.prototype.onopen=function(){p("open"),this.cleanup(),this.readyState="open",this.emit("open");var t=this.engine;this.subs.push(c(t,"data",h(this,"ondata"))),this.subs.push(c(t,"ping",h(this,"onping"))),this.subs.push(c(t,"pong",h(this,"onpong"))),this.subs.push(c(t,"error",h(this,"onerror"))),this.subs.push(c(t,"close",h(this,"onclose"))),this.subs.push(c(this.decoder,"decoded",h(this,"ondecoded")))},i.prototype.onping=function(){this.lastPing=new Date,this.emitAll("ping")},i.prototype.onpong=function(){this.emitAll("pong",new Date-this.lastPing)},i.prototype.ondata=function(t){this.decoder.add(t)},i.prototype.ondecoded=function(t){this.emit("packet",t)},i.prototype.onerror=function(t){p("error",t),this.emitAll("error",t)},i.prototype.socket=function(t,e){function n(){~u(r.connecting,i)||r.connecting.push(i)}var i=this.nsps[t];if(!i){i=new s(this,t,e),this.nsps[t]=i;var r=this;i.on("connecting",n),i.on("connect",function(){i.id=r.generateId(t)}),this.autoConnect&&n()}return i},i.prototype.destroy=function(t){var e=u(this.connecting,t);~e&&this.connecting.splice(e,1),this.connecting.length||this.close()},i.prototype.packet=function(t){p("writing packet %j",t);var e=this;t.query&&0===t.type&&(t.nsp+="?"+t.query),e.encoding?e.packetBuffer.push(t):(e.encoding=!0,this.encoder.encode(t,function(n){for(var i=0;i<n.length;i++)e.engine.write(n[i],t.options);e.encoding=!1,e.processPacketQueue()}))},i.prototype.processPacketQueue=function(){if(this.packetBuffer.length>0&&!this.encoding){var t=this.packetBuffer.shift();this.packet(t)}},i.prototype.cleanup=function(){p("cleanup");for(var t=this.subs.length,e=0;e<t;e++)this.subs.shift().destroy();this.packetBuffer=[],this.encoding=!1,this.lastPing=null,this.decoder.destroy()},i.prototype.close=i.prototype.disconnect=function(){p("disconnect"),this.skipReconnect=!0,this.reconnecting=!1,"opening"===this.readyState&&this.cleanup(),this.backoff.reset(),this.readyState="closed",this.engine&&this.engine.close()},i.prototype.onclose=function(t){p("onclose"),this.cleanup(),this.backoff.reset(),this.readyState="closed",this.emit("close",t),this._reconnection&&!this.skipReconnect&&this.reconnect()},i.prototype.reconnect=function(){if(this.reconnecting||this.skipReconnect)return this;var t=this;if(this.backoff.attempts>=this._reconnectionAttempts)p("reconnect failed"),this.backoff.reset(),this.emitAll("reconnect_failed"),this.reconnecting=!1;else{var e=this.backoff.duration();p("will wait %dms before reconnect attempt",e),this.reconnecting=!0;var n=setTimeout(function(){t.skipReconnect||(p("attempting reconnect"),t.emitAll("reconnect_attempt",t.backoff.attempts),t.emitAll("reconnecting",t.backoff.attempts),t.skipReconnect||t.open(function(e){e?(p("reconnect attempt error"),t.reconnecting=!1,t.reconnect(),t.emitAll("reconnect_error",e.data)):(p("reconnect success"),t.onreconnect())}))},e);this.subs.push({destroy:function(){clearTimeout(n)}})}},i.prototype.onreconnect=function(){var t=this.backoff.attempts;this.reconnecting=!1,this.backoff.reset(),this.updateSocketIds(),this.emitAll("reconnect",t)}},function(t,e,n){(function(t){var i=n(7),r=n(35),s=n(43),o=n(44);e.polling=function(e){var n=!1,o=!1,a=!1!==e.jsonp;if(t.location){var c="https:"===location.protocol,h=location.port;h||(h=c?443:80),n=e.hostname!==location.hostname||h!==e.port,o=e.secure!==c}if(e.xdomain=n,e.xscheme=o,"open"in new i(e)&&!e.forceJSONP)return new r(e);if(!a)throw new Error("JSONP disabled");return new s(e)},e.websocket=o}).call(e,n(0))},function(t,e,n){function i(t){var e=t&&t.forceBase64;p&&!e||(this.supportsBinary=!1),r.call(this,t)}var r=n(8),s=n(4),o=n(3),a=n(5),c=n(16),h=n(1)("engine.io-client:polling");t.exports=i;var p=null!=new(n(7))({xdomain:!1}).responseType;a(i,r),i.prototype.name="polling",i.prototype.doOpen=function(){this.poll()},i.prototype.pause=function(t){function e(){h("paused"),n.readyState="paused",t()}var n=this;if(this.readyState="pausing",this.polling||!this.writable){var i=0;this.polling&&(h("we are currently polling - waiting to pause"),i++,this.once("pollComplete",function(){h("pre-pause polling complete"),--i||e()})),this.writable||(h("we are currently writing - waiting to pause"),i++,this.once("drain",function(){h("pre-pause writing complete"),--i||e()}))}else e()},i.prototype.poll=function(){h("polling"),this.polling=!0,this.doPoll(),this.emit("poll")},i.prototype.onData=function(t){var e=this;h("polling got data %s",t);o.decodePayload(t,this.socket.binaryType,function(t,n,i){if("opening"===e.readyState&&e.onOpen(),"close"===t.type)return e.onClose(),!1;e.onPacket(t)}),"closed"!==this.readyState&&(this.polling=!1,this.emit("pollComplete"),"open"===this.readyState?this.poll():h('ignoring poll - transport state "%s"',this.readyState))},i.prototype.doClose=function(){function t(){h("writing close packet"),e.write([{type:"close"}])}var e=this;"open"===this.readyState?(h("transport open - closing"),t()):(h("transport not open - deferring close"),this.once("open",t))},i.prototype.write=function(t){var e=this;this.writable=!1;var n=function(){e.writable=!0,e.emit("drain")};o.encodePayload(t,this.supportsBinary,function(t){e.doWrite(t,n)})},i.prototype.uri=function(){var t=this.query||{},e=this.secure?"https":"http",n="";return!1!==this.timestampRequests&&(t[this.timestampParam]=c()),this.supportsBinary||t.sid||(t.b64=1),t=s.encode(t),this.port&&("https"===e&&443!==Number(this.port)||"http"===e&&80!==Number(this.port))&&(n=":"+this.port),t.length&&(t="?"+t),e+"://"+(-1!==this.hostname.indexOf(":")?"["+this.hostname+"]":this.hostname)+n+this.path+t}},function(t,e,n){"use strict";function i(t){var e="";do{e=o[t%a]+e,t=Math.floor(t/a)}while(t>0);return e}function r(){var t=i(+new Date);return t!==s?(h=0,s=t):t+"."+i(h++)}for(var s,o="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_".split(""),a=64,c={},h=0,p=0;p<a;p++)c[o[p]]=p;r.encode=i,r.decode=function(t){var e=0;for(p=0;p<t.length;p++)e=e*a+c[t.charAt(p)];return e},t.exports=r},function(t,e){var n=[].indexOf;t.exports=function(t,e){if(n)return t.indexOf(e);for(var i=0;i<t.length;++i)if(t[i]===e)return i;return-1}},function(t,e,n){function i(t,e,n){this.io=t,this.nsp=e,this.json=this,this.ids=0,this.acks={},this.receiveBuffer=[],this.sendBuffer=[],this.connected=!1,this.disconnected=!0,n&&n.query&&(this.query=n.query),this.io.autoConnect&&this.open()}var r=n(6),s=n(2),o=n(47),a=n(19),c=n(20),h=n(1)("socket.io-client:socket"),p=n(4);t.exports=i;var u={connect:1,connect_error:1,connect_timeout:1,connecting:1,disconnect:1,error:1,reconnect:1,reconnect_attempt:1,reconnect_failed:1,reconnect_error:1,reconnecting:1,ping:1,pong:1},l=s.prototype.emit;s(i.prototype),i.prototype.subEvents=function(){if(!this.subs){var t=this.io;this.subs=[a(t,"open",c(this,"onopen")),a(t,"packet",c(this,"onpacket")),a(t,"close",c(this,"onclose"))]}},i.prototype.open=i.prototype.connect=function(){return this.connected?this:(this.subEvents(),this.io.open(),"open"===this.io.readyState&&this.onopen(),this.emit("connecting"),this)},i.prototype.send=function(){var t=o(arguments);return t.unshift("message"),this.emit.apply(this,t),this},i.prototype.emit=function(t){if(u.hasOwnProperty(t))return l.apply(this,arguments),this;var e=o(arguments),n={type:r.EVENT,data:e};return n.options={},n.options.compress=!this.flags||!1!==this.flags.compress,"function"==typeof e[e.length-1]&&(h("emitting packet with ack id %d",this.ids),this.acks[this.ids]=e.pop(),n.id=this.ids++),this.connected?this.packet(n):this.sendBuffer.push(n),delete this.flags,this},i.prototype.packet=function(t){t.nsp=this.nsp,this.io.packet(t)},i.prototype.onopen=function(){if(h("transport is open - connecting"),"/"!==this.nsp)if(this.query){var t="object"==typeof this.query?p.encode(this.query):this.query;h("sending connect packet with query %s",t),this.packet({type:r.CONNECT,query:t})}else this.packet({type:r.CONNECT})},i.prototype.onclose=function(t){h("close (%s)",t),this.connected=!1,this.disconnected=!0,delete this.id,this.emit("disconnect",t)},i.prototype.onpacket=function(t){if(t.nsp===this.nsp)switch(t.type){case r.CONNECT:this.onconnect();break;case r.EVENT:case r.BINARY_EVENT:this.onevent(t);break;case r.ACK:case r.BINARY_ACK:this.onack(t);break;case r.DISCONNECT:this.ondisconnect();break;case r.ERROR:this.emit("error",t.data)}},i.prototype.onevent=function(t){var e=t.data||[];h("emitting event %j",e),null!=t.id&&(h("attaching ack callback to event"),e.push(this.ack(t.id))),this.connected?l.apply(this,e):this.receiveBuffer.push(e)},i.prototype.ack=function(t){var e=this,n=!1;return function(){if(!n){n=!0;var i=o(arguments);h("sending ack %j",i),e.packet({type:r.ACK,id:t,data:i})}}},i.prototype.onack=function(t){var e=this.acks[t.id];"function"==typeof e?(h("calling ack %s with %j",t.id,t.data),e.apply(this,t.data),delete this.acks[t.id]):h("bad ack %s",t.id)},i.prototype.onconnect=function(){this.connected=!0,this.disconnected=!1,this.emit("connect"),this.emitBuffered()},i.prototype.emitBuffered=function(){var t;for(t=0;t<this.receiveBuffer.length;t++)l.apply(this,this.receiveBuffer[t]);for(this.receiveBuffer=[],t=0;t<this.sendBuffer.length;t++)this.packet(this.sendBuffer[t]);this.sendBuffer=[]},i.prototype.ondisconnect=function(){h("server disconnect (%s)",this.nsp),this.destroy(),this.onclose("io server disconnect")},i.prototype.destroy=function(){if(this.subs){for(var t=0;t<this.subs.length;t++)this.subs[t].destroy();this.subs=null}this.io.destroy(this)},i.prototype.close=i.prototype.disconnect=function(){return this.connected&&(h("performing disconnect (%s)",this.nsp),this.packet({type:r.DISCONNECT})),this.destroy(),this.connected&&this.onclose("io client disconnect"),this},i.prototype.compress=function(t){return this.flags=this.flags||{},this.flags.compress=t,this}},function(t,e){t.exports=function(t,e,n){return t.on(e,n),{destroy:function(){t.removeListener(e,n)}}}},function(t,e){var n=[].slice;t.exports=function(t,e){if("string"==typeof e&&(e=t[e]),"function"!=typeof e)throw new Error("bind() requires a function");var i=n.call(arguments,2);return function(){return e.apply(t,i.concat(n.call(arguments)))}}},function(t,e){t.exports=class{static get SEA_WIDTH(){return 800}static get SEA_HEIGHT(){return 600}static get NAME_MIN_CHARS(){return 2}static get NAME_MAX_CHARS(){return 16}static get MAX_PLAYERS(){return 4}static get SHIP_WIDTH(){return 20}static get MIN_SPEED(){return 0}static get MAX_SPEED(){return 3}static get MIN_HP(){return 0}static get MAX_HP(){return 25}static get MIN_FP(){return 0}static get MAX_FP(){return 10}}},function(t,e,n){"use strict";e.a=function(t){return(299*parseInt(t.substr(1,2),16)+587*parseInt(t.substr(3,2),16)+114*parseInt(t.substr(5,2),16))/1e3>=128?"#000":"#fff"}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),new(n(24).a)},function(t,e,n){"use strict";var i=n(25),r=n.n(i),s=n(21),o=n.n(s),a=n(49),c=n(50),h=n(51),p=n(22);class u{constructor(){this.ui=new a.a,this.audio=new c.a,this.ships={},this.shipsCreated=[],this.cannonballs={},this.cannonballsCreated=[],this.inGame=!1,this.init()}init(){document.body.appendChild(this.ui.gamebox),document.body.appendChild(this.ui.infobox),this.ui.gamebox.appendChild(this.ui.startScreen);let t=this.ui.keyDown(null,()=>{this.ui.unset(t),this.ui.gamebox.removeChild(this.ui.startScreen),this.ui.gamebox.appendChild(this.ui.loginScreen),this.ui.playButton.onclick=function(){this.login(this.ui.nickname).then(()=>{this.ui.hideErrorMessage(),this.ui.gamebox.removeChild(this.ui.loginScreen),this.ui.gamebox.appendChild(this.ui.asidePanel),this.listen(),this.userInterfaceListen(),this.audio.playMusic()}).catch(t=>this.ui.showErrorMessage(t))}.bind(this)})}login(t){return new Promise((e,n)=>{t.length<o.a.NAME_MIN_CHARS?n(`Your nickname is too short (min ${o.a.NAME_MIN_CHARS} char${o.a.NAME_MIN_CHARS>1?"s":""})`):t.length>o.a.NAME_MAX_CHARS?n(`Your nickname is too long (max ${o.a.NAME_MAX_CHARS} char${o.a.NAME_MAX_CHARS>1?"s":""})`):(this.ui.spinPlayButton(),this.socket=r()({transports:["websocket"]}),this.socket.emit("login",t,t=>{this.ui.spinPlayButton(!1),t||n("This nickname is taken"),e()}))})}listen(){function t(){let e=Date.now();this.socket.emit("pingpong",()=>{let t=Date.now();this.ui.ping=t-e}),setTimeout(t.bind(this),1e3)}t.call(this),this.socket.on("info",t=>this.ui.message=t),this.socket.on("ranking",t=>{let e=[],n=t.filter((t,e)=>e%2==0);this.socket.emit("getColors",n,n=>{let i=0;for(let r=0;r<t.length;r+=2)e.push({name:t[r],score:t[r+1],color:n[i++]});this.ui.ranking=e})}),this.socket.on("spectators",t=>this.ui.spectators=t),this.socket.on("frame",t=>{let e={},n=t.ships;for(let t in n){if(this.shipsCreated.indexOf(t)<0){const e=new h.a(o.a.SHIP_WIDTH,n[t].color);e.canvas.style.left=Math.round(n[t].x)+"px",e.canvas.top=Math.round(n[t].y)+"px",this.ui.gamebox.appendChild(e.canvas),this.ships[t]=e,this.shipsCreated.push(t)}else this.ships[t].canvas.style.left=Math.round(n[t].x)+"px",this.ships[t].canvas.style.top=Math.round(n[t].y)+"px",this.ships[t].canvas.style.transform=`translate(-50%, -50%) rotate(${-Math.round(n[t].angle)}deg)`;e[n[t].name]=Math.round(n[t].hp/o.a.MAX_HP*100)}this.ui.rankingHp=e,this.shipsCreated=this.shipsCreated.filter(t=>!!n.hasOwnProperty(t)||(this.ui.gamebox.removeChild(this.ships[t].canvas),delete this.ships[t],!1));let i=t.cannonballs;for(let t in i)if(this.cannonballsCreated.indexOf(t)<0){let e=document.createElement("div");e.className="cannonball",e.style.fontSize=i[t].diameter+"px",e.style.backgroundColor=i[t].color,e.style.left=Math.round(i[t].x)+"px",e.style.top=Math.round(i[t].y)+"px",e.style.color=Object(p.a)(i[t].color),e.dataset.power=i[t].power,this.ui.gamebox.appendChild(e),this.cannonballs[t]=e,this.cannonballsCreated.push(t)}else this.cannonballs[t].style.left=Math.round(i[t].x)+"px",this.cannonballs[t].style.top=Math.round(i[t].y)+"px";if(this.cannonballsCreated=this.cannonballsCreated.filter(t=>!!i.hasOwnProperty(t)||(this.ui.gamebox.removeChild(this.cannonballs[t]),delete this.cannonballs[t],!1)),void 0!==n[this.socket.id]){const t=n[this.socket.id];this.ui.speed=t.speed,this.ui.direction=t.angle,this.ui.hp=t.hp,this.ui.fp=t.fp}}),this.socket.on("canjoin",t=>this.ui.updateJoinLeaveButton(t)),this.socket.on("console",t=>console.log(t)),this.socket.on("shipExplosion",t=>{this.ui.explosion(t,100,!0),this.audio.play("/sounds/ship-explosion.mp3")}),this.socket.on("cannonballShot",()=>{this.audio.play("/sounds/cannonball-shot.mp3")}),this.socket.on("cannonballExplosion",(t,e)=>{this.ui.explosion(t,e),this.audio.play("/sounds/cannonball-explosion.mp3")})}userInterfaceListen(){function t(){this.audio.toggleMute(),this.ui.toggleMute()}this.ui.joinLeaveButton.onclick=(()=>{this.inGame?(this.socket.emit("leave"),this.inGame=!1,this.ui.toggleDevices()):this.socket.emit("join",t=>{t&&(this.ui.updateJoinLeaveButton(2),this.inGame=!0,this.ui.toggleDevices())})}),this.ui.keyDown(38,()=>{this.socket.emit("action",1)}),this.ui.keyUp(38,()=>{this.socket.emit("action",10)}),this.ui.keyDown(40,()=>{this.socket.emit("action",2)}),this.ui.keyUp(40,()=>{this.socket.emit("action",20)}),this.ui.keyDown(37,()=>{this.socket.emit("action",3)}),this.ui.keyUp(37,()=>{this.socket.emit("action",30)}),this.ui.keyDown(39,()=>{this.socket.emit("action",4)}),this.ui.keyUp(39,()=>{this.socket.emit("action",40)}),this.ui.keyDown(65,()=>{this.socket.emit("action",5)}),this.ui.keyUp(65,()=>{this.socket.emit("action",50)}),this.ui.keyDown(68,()=>{this.socket.emit("action",6)}),this.ui.keyUp(68,()=>{this.socket.emit("action",60)}),this.ui.keyDown(82,()=>{this.socket.emit("action",7)}),this.ui.keyUp(82,()=>{this.socket.emit("action",70)}),this.ui.helpButton.onclick=this.ui.toggleHelp.bind(this.ui),this.ui.keyDown(72,this.ui.toggleHelp.bind(this.ui)),this.ui.audioControls(),this.ui.soundButton.onclick=t.bind(this),this.ui.keyDown(77,t.bind(this))}}e.a=u},function(t,e,n){function i(t,e){"object"==typeof t&&(e=t,t=void 0),e=e||{};var n,i=r(t),s=i.source,h=i.id,p=i.path,u=c[h]&&p in c[h].nsps;return e.forceNew||e["force new connection"]||!1===e.multiplex||u?(a("ignoring socket cache for %s",s),n=o(s,e)):(c[h]||(a("new io instance for %s",s),c[h]=o(s,e)),n=c[h]),i.query&&!e.query&&(e.query=i.query),n.socket(i.path,e)}var r=n(26),s=n(6),o=n(13),a=n(1)("socket.io-client");t.exports=e=i;var c=e.managers={};e.protocol=s.protocol,e.connect=i,e.Manager=n(13),e.Socket=n(18)},function(t,e,n){(function(e){var i=n(9),r=n(1)("socket.io-client:url");t.exports=function(t,n){var s=t;n=n||e.location,null==t&&(t=n.protocol+"//"+n.host),"string"==typeof t&&("/"===t.charAt(0)&&(t="/"===t.charAt(1)?n.protocol+t:n.host+t),/^(https?|wss?):\/\//.test(t)||(r("protocol-less url %s",t),t=void 0!==n?n.protocol+"//"+t:"https://"+t),r("parse %s",t),s=i(t)),s.port||(/^(http|ws)$/.test(s.protocol)?s.port="80":/^(http|ws)s$/.test(s.protocol)&&(s.port="443")),s.path=s.path||"/";var o=-1!==s.host.indexOf(":")?"["+s.host+"]":s.host;return s.id=s.protocol+"://"+o+":"+s.port,s.href=s.protocol+"://"+o+(n&&n.port===s.port?"":":"+s.port),s}}).call(e,n(0))},function(t,e){function n(){throw new Error("setTimeout has not been defined")}function i(){throw new Error("clearTimeout has not been defined")}function r(t){if(p===setTimeout)return setTimeout(t,0);if((p===n||!p)&&setTimeout)return p=setTimeout,setTimeout(t,0);try{return p(t,0)}catch(e){try{return p.call(null,t,0)}catch(e){return p.call(this,t,0)}}}function s(t){if(u===clearTimeout)return clearTimeout(t);if((u===i||!u)&&clearTimeout)return u=clearTimeout,clearTimeout(t);try{return u(t)}catch(e){try{return u.call(null,t)}catch(e){return u.call(this,t)}}}function o(){m&&d&&(m=!1,d.length?f=d.concat(f):y=-1,f.length&&a())}function a(){if(!m){var t=r(o);m=!0;for(var e=f.length;e;){for(d=f,f=[];++y<e;)d&&d[y].run();y=-1,e=f.length}d=null,m=!1,s(t)}}function c(t,e){this.fun=t,this.array=e}function h(){}var p,u,l=t.exports={};!function(){try{p="function"==typeof setTimeout?setTimeout:n}catch(t){p=n}try{u="function"==typeof clearTimeout?clearTimeout:i}catch(t){u=i}}();var d,f=[],m=!1,y=-1;l.nextTick=function(t){var e=new Array(arguments.length-1);if(arguments.length>1)for(var n=1;n<arguments.length;n++)e[n-1]=arguments[n];f.push(new c(t,e)),1!==f.length||m||r(a)},c.prototype.run=function(){this.fun.apply(null,this.array)},l.title="browser",l.browser=!0,l.env={},l.argv=[],l.version="",l.versions={},l.on=h,l.addListener=h,l.once=h,l.off=h,l.removeListener=h,l.removeAllListeners=h,l.emit=h,l.prependListener=h,l.prependOnceListener=h,l.listeners=function(t){return[]},l.binding=function(t){throw new Error("process.binding is not supported")},l.cwd=function(){return"/"},l.chdir=function(t){throw new Error("process.chdir is not supported")},l.umask=function(){return 0}},function(t,e,n){function i(t){var n,i=0;for(n in t)i=(i<<5)-i+t.charCodeAt(n),i|=0;return e.colors[Math.abs(i)%e.colors.length]}function r(t){function n(){if(n.enabled){var t=n,i=+new Date,r=i-(s||i);t.diff=r,t.prev=s,t.curr=i,s=i;for(var o=new Array(arguments.length),a=0;a<o.length;a++)o[a]=arguments[a];o[0]=e.coerce(o[0]),"string"!=typeof o[0]&&o.unshift("%O");var c=0;o[0]=o[0].replace(/%([a-zA-Z%])/g,function(n,i){if("%%"===n)return n;c++;var r=e.formatters[i];if("function"==typeof r){var s=o[c];n=r.call(t,s),o.splice(c,1),c--}return n}),e.formatArgs.call(t,o),(n.log||e.log||console.log.bind(console)).apply(t,o)}}return n.namespace=t,n.enabled=e.enabled(t),n.useColors=e.useColors(),n.color=i(t),"function"==typeof e.init&&e.init(n),n}(e=t.exports=r.debug=r.default=r).coerce=function(t){return t instanceof Error?t.stack||t.message:t},e.disable=function(){e.enable("")},e.enable=function(t){e.save(t),e.names=[],e.skips=[];for(var n=("string"==typeof t?t:"").split(/[\s,]+/),i=n.length,r=0;r<i;r++)n[r]&&("-"===(t=n[r].replace(/\*/g,".*?"))[0]?e.skips.push(new RegExp("^"+t.substr(1)+"$")):e.names.push(new RegExp("^"+t+"$")))},e.enabled=function(t){var n,i;for(n=0,i=e.skips.length;n<i;n++)if(e.skips[n].test(t))return!1;for(n=0,i=e.names.length;n<i;n++)if(e.names[n].test(t))return!0;return!1},e.humanize=n(29),e.names=[],e.skips=[],e.formatters={};var s},function(t,e){function n(t){if(!((t=String(t)).length>100)){var e=/^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(t);if(e){var n=parseFloat(e[1]);switch((e[2]||"ms").toLowerCase()){case"years":case"year":case"yrs":case"yr":case"y":return n*p;case"days":case"day":case"d":return n*h;case"hours":case"hour":case"hrs":case"hr":case"h":return n*c;case"minutes":case"minute":case"mins":case"min":case"m":return n*a;case"seconds":case"second":case"secs":case"sec":case"s":return n*o;case"milliseconds":case"millisecond":case"msecs":case"msec":case"ms":return n;default:return}}}}function i(t){return t>=h?Math.round(t/h)+"d":t>=c?Math.round(t/c)+"h":t>=a?Math.round(t/a)+"m":t>=o?Math.round(t/o)+"s":t+"ms"}function r(t){return s(t,h,"day")||s(t,c,"hour")||s(t,a,"minute")||s(t,o,"second")||t+" ms"}function s(t,e,n){if(!(t<e))return t<1.5*e?Math.floor(t/e)+" "+n:Math.ceil(t/e)+" "+n+"s"}var o=1e3,a=60*o,c=60*a,h=24*c,p=365.25*h;t.exports=function(t,e){e=e||{};var s=typeof t;if("string"===s&&t.length>0)return n(t);if("number"===s&&!1===isNaN(t))return e.long?r(t):i(t);throw new Error("val is not a non-empty string or a valid number. val="+JSON.stringify(t))}},function(t,e,n){(function(t){function i(t,e){if(!t)return t;if(o(t)){var n={_placeholder:!0,num:e.length};return e.push(t),n}if(s(t)){for(var r=new Array(t.length),a=0;a<t.length;a++)r[a]=i(t[a],e);return r}if("object"==typeof t&&!(t instanceof Date)){r={};for(var c in t)r[c]=i(t[c],e);return r}return t}function r(t,e){if(!t)return t;if(t&&t._placeholder)return e[t.num];if(s(t))for(var n=0;n<t.length;n++)t[n]=r(t[n],e);else if("object"==typeof t)for(var i in t)t[i]=r(t[i],e);return t}var s=n(11),o=n(12),a=Object.prototype.toString,c="function"==typeof t.Blob||"[object BlobConstructor]"===a.call(t.Blob),h="function"==typeof t.File||"[object FileConstructor]"===a.call(t.File);e.deconstructPacket=function(t){var e=[],n=t.data,r=t;return r.data=i(n,e),r.attachments=e.length,{packet:r,buffers:e}},e.reconstructPacket=function(t,e){return t.data=r(t.data,e),t.attachments=void 0,t},e.removeBlobs=function(t,e){function n(t,a,p){if(!t)return t;if(c&&t instanceof Blob||h&&t instanceof File){i++;var u=new FileReader;u.onload=function(){p?p[a]=this.result:r=this.result,--i||e(r)},u.readAsArrayBuffer(t)}else if(s(t))for(var l=0;l<t.length;l++)n(t[l],l,t);else if("object"==typeof t&&!o(t))for(var d in t)n(t[d],d,t)}var i=0,r=t;n(r),i||e(r)}}).call(e,n(0))},function(t,e,n){t.exports=n(32)},function(t,e,n){t.exports=n(33),t.exports.parser=n(3)},function(t,e,n){(function(e){function i(t,n){if(!(this instanceof i))return new i(t,n);n=n||{},t&&"object"==typeof t&&(n=t,t=null),t?(t=p(t),n.hostname=t.host,n.secure="https"===t.protocol||"wss"===t.protocol,n.port=t.port,t.query&&(n.query=t.query)):n.host&&(n.hostname=p(n.host).host),this.secure=null!=n.secure?n.secure:e.location&&"https:"===location.protocol,n.hostname&&!n.port&&(n.port=this.secure?"443":"80"),this.agent=n.agent||!1,this.hostname=n.hostname||(e.location?location.hostname:"localhost"),this.port=n.port||(e.location&&location.port?location.port:this.secure?443:80),this.query=n.query||{},"string"==typeof this.query&&(this.query=l.decode(this.query)),this.upgrade=!1!==n.upgrade,this.path=(n.path||"/engine.io").replace(/\/$/,"")+"/",this.forceJSONP=!!n.forceJSONP,this.jsonp=!1!==n.jsonp,this.forceBase64=!!n.forceBase64,this.enablesXDR=!!n.enablesXDR,this.timestampParam=n.timestampParam||"t",this.timestampRequests=n.timestampRequests,this.transports=n.transports||["polling","websocket"],this.transportOptions=n.transportOptions||{},this.readyState="",this.writeBuffer=[],this.prevBufferLen=0,this.policyPort=n.policyPort||843,this.rememberUpgrade=n.rememberUpgrade||!1,this.binaryType=null,this.onlyBinaryUpgrades=n.onlyBinaryUpgrades,this.perMessageDeflate=!1!==n.perMessageDeflate&&(n.perMessageDeflate||{}),!0===this.perMessageDeflate&&(this.perMessageDeflate={}),this.perMessageDeflate&&null==this.perMessageDeflate.threshold&&(this.perMessageDeflate.threshold=1024),this.pfx=n.pfx||null,this.key=n.key||null,this.passphrase=n.passphrase||null,this.cert=n.cert||null,this.ca=n.ca||null,this.ciphers=n.ciphers||null,this.rejectUnauthorized=void 0===n.rejectUnauthorized||n.rejectUnauthorized,this.forceNode=!!n.forceNode;var r="object"==typeof e&&e;r.global===r&&(n.extraHeaders&&Object.keys(n.extraHeaders).length>0&&(this.extraHeaders=n.extraHeaders),n.localAddress&&(this.localAddress=n.localAddress)),this.id=null,this.upgrades=null,this.pingInterval=null,this.pingTimeout=null,this.pingIntervalTimer=null,this.pingTimeoutTimer=null,this.open()}function r(t){var e={};for(var n in t)t.hasOwnProperty(n)&&(e[n]=t[n]);return e}var s=n(14),o=n(2),a=n(1)("engine.io-client:socket"),c=n(17),h=n(3),p=n(9),u=n(46),l=n(4);t.exports=i,i.priorWebsocketSuccess=!1,o(i.prototype),i.protocol=h.protocol,i.Socket=i,i.Transport=n(8),i.transports=n(14),i.parser=n(3),i.prototype.createTransport=function(t){a('creating transport "%s"',t);var e=r(this.query);e.EIO=h.protocol,e.transport=t;var n=this.transportOptions[t]||{};return this.id&&(e.sid=this.id),new s[t]({query:e,socket:this,agent:n.agent||this.agent,hostname:n.hostname||this.hostname,port:n.port||this.port,secure:n.secure||this.secure,path:n.path||this.path,forceJSONP:n.forceJSONP||this.forceJSONP,jsonp:n.jsonp||this.jsonp,forceBase64:n.forceBase64||this.forceBase64,enablesXDR:n.enablesXDR||this.enablesXDR,timestampRequests:n.timestampRequests||this.timestampRequests,timestampParam:n.timestampParam||this.timestampParam,policyPort:n.policyPort||this.policyPort,pfx:n.pfx||this.pfx,key:n.key||this.key,passphrase:n.passphrase||this.passphrase,cert:n.cert||this.cert,ca:n.ca||this.ca,ciphers:n.ciphers||this.ciphers,rejectUnauthorized:n.rejectUnauthorized||this.rejectUnauthorized,perMessageDeflate:n.perMessageDeflate||this.perMessageDeflate,extraHeaders:n.extraHeaders||this.extraHeaders,forceNode:n.forceNode||this.forceNode,localAddress:n.localAddress||this.localAddress,requestTimeout:n.requestTimeout||this.requestTimeout,protocols:n.protocols||void 0})},i.prototype.open=function(){var t;if(this.rememberUpgrade&&i.priorWebsocketSuccess&&-1!==this.transports.indexOf("websocket"))t="websocket";else{if(0===this.transports.length){var e=this;return void setTimeout(function(){e.emit("error","No transports available")},0)}t=this.transports[0]}this.readyState="opening";try{t=this.createTransport(t)}catch(t){return this.transports.shift(),void this.open()}t.open(),this.setTransport(t)},i.prototype.setTransport=function(t){a("setting transport %s",t.name);var e=this;this.transport&&(a("clearing existing transport %s",this.transport.name),this.transport.removeAllListeners()),this.transport=t,t.on("drain",function(){e.onDrain()}).on("packet",function(t){e.onPacket(t)}).on("error",function(t){e.onError(t)}).on("close",function(){e.onClose("transport close")})},i.prototype.probe=function(t){function e(){if(l.onlyBinaryUpgrades){var e=!this.supportsBinary&&l.transport.supportsBinary;u=u||e}u||(a('probe transport "%s" opened',t),p.send([{type:"ping",data:"probe"}]),p.once("packet",function(e){if(!u)if("pong"===e.type&&"probe"===e.data){if(a('probe transport "%s" pong',t),l.upgrading=!0,l.emit("upgrading",p),!p)return;i.priorWebsocketSuccess="websocket"===p.name,a('pausing current transport "%s"',l.transport.name),l.transport.pause(function(){u||"closed"!==l.readyState&&(a("changing transport and sending upgrade packet"),h(),l.setTransport(p),p.send([{type:"upgrade"}]),l.emit("upgrade",p),p=null,l.upgrading=!1,l.flush())})}else{a('probe transport "%s" failed',t);var n=new Error("probe error");n.transport=p.name,l.emit("upgradeError",n)}}))}function n(){u||(u=!0,h(),p.close(),p=null)}function r(e){var i=new Error("probe error: "+e);i.transport=p.name,n(),a('probe transport "%s" failed because of error: %s',t,e),l.emit("upgradeError",i)}function s(){r("transport closed")}function o(){r("socket closed")}function c(t){p&&t.name!==p.name&&(a('"%s" works - aborting "%s"',t.name,p.name),n())}function h(){p.removeListener("open",e),p.removeListener("error",r),p.removeListener("close",s),l.removeListener("close",o),l.removeListener("upgrading",c)}a('probing transport "%s"',t);var p=this.createTransport(t,{probe:1}),u=!1,l=this;i.priorWebsocketSuccess=!1,p.once("open",e),p.once("error",r),p.once("close",s),this.once("close",o),this.once("upgrading",c),p.open()},i.prototype.onOpen=function(){if(a("socket open"),this.readyState="open",i.priorWebsocketSuccess="websocket"===this.transport.name,this.emit("open"),this.flush(),"open"===this.readyState&&this.upgrade&&this.transport.pause){a("starting upgrade probes");for(var t=0,e=this.upgrades.length;t<e;t++)this.probe(this.upgrades[t])}},i.prototype.onPacket=function(t){if("opening"===this.readyState||"open"===this.readyState||"closing"===this.readyState)switch(a('socket receive: type "%s", data "%s"',t.type,t.data),this.emit("packet",t),this.emit("heartbeat"),t.type){case"open":this.onHandshake(u(t.data));break;case"pong":this.setPing(),this.emit("pong");break;case"error":var e=new Error("server error");e.code=t.data,this.onError(e);break;case"message":this.emit("data",t.data),this.emit("message",t.data)}else a('packet received with socket readyState "%s"',this.readyState)},i.prototype.onHandshake=function(t){this.emit("handshake",t),this.id=t.sid,this.transport.query.sid=t.sid,this.upgrades=this.filterUpgrades(t.upgrades),this.pingInterval=t.pingInterval,this.pingTimeout=t.pingTimeout,this.onOpen(),"closed"!==this.readyState&&(this.setPing(),this.removeListener("heartbeat",this.onHeartbeat),this.on("heartbeat",this.onHeartbeat))},i.prototype.onHeartbeat=function(t){clearTimeout(this.pingTimeoutTimer);var e=this;e.pingTimeoutTimer=setTimeout(function(){"closed"!==e.readyState&&e.onClose("ping timeout")},t||e.pingInterval+e.pingTimeout)},i.prototype.setPing=function(){var t=this;clearTimeout(t.pingIntervalTimer),t.pingIntervalTimer=setTimeout(function(){a("writing ping packet - expecting pong within %sms",t.pingTimeout),t.ping(),t.onHeartbeat(t.pingTimeout)},t.pingInterval)},i.prototype.ping=function(){var t=this;this.sendPacket("ping",function(){t.emit("ping")})},i.prototype.onDrain=function(){this.writeBuffer.splice(0,this.prevBufferLen),this.prevBufferLen=0,0===this.writeBuffer.length?this.emit("drain"):this.flush()},i.prototype.flush=function(){"closed"!==this.readyState&&this.transport.writable&&!this.upgrading&&this.writeBuffer.length&&(a("flushing %d packets in socket",this.writeBuffer.length),this.transport.send(this.writeBuffer),this.prevBufferLen=this.writeBuffer.length,this.emit("flush"))},i.prototype.write=i.prototype.send=function(t,e,n){return this.sendPacket("message",t,e,n),this},i.prototype.sendPacket=function(t,e,n,i){if("function"==typeof e&&(i=e,e=void 0),"function"==typeof n&&(i=n,n=null),"closing"!==this.readyState&&"closed"!==this.readyState){(n=n||{}).compress=!1!==n.compress;var r={type:t,data:e,options:n};this.emit("packetCreate",r),this.writeBuffer.push(r),i&&this.once("flush",i),this.flush()}},i.prototype.close=function(){function t(){i.onClose("forced close"),a("socket closing - telling transport to close"),i.transport.close()}function e(){i.removeListener("upgrade",e),i.removeListener("upgradeError",e),t()}function n(){i.once("upgrade",e),i.once("upgradeError",e)}if("opening"===this.readyState||"open"===this.readyState){this.readyState="closing";var i=this;this.writeBuffer.length?this.once("drain",function(){this.upgrading?n():t()}):this.upgrading?n():t()}return this},i.prototype.onError=function(t){a("socket error %j",t),i.priorWebsocketSuccess=!1,this.emit("error",t),this.onClose("transport error",t)},i.prototype.onClose=function(t,e){if("opening"===this.readyState||"open"===this.readyState||"closing"===this.readyState){a('socket close with reason: "%s"',t);var n=this;clearTimeout(this.pingIntervalTimer),clearTimeout(this.pingTimeoutTimer),this.transport.removeAllListeners("close"),this.transport.close(),this.transport.removeAllListeners(),this.readyState="closed",this.id=null,this.emit("close",t,e),n.writeBuffer=[],n.prevBufferLen=0}},i.prototype.filterUpgrades=function(t){for(var e=[],n=0,i=t.length;n<i;n++)~c(this.transports,t[n])&&e.push(t[n]);return e}}).call(e,n(0))},function(t,e){try{t.exports="undefined"!=typeof XMLHttpRequest&&"withCredentials"in new XMLHttpRequest}catch(e){t.exports=!1}},function(t,e,n){(function(e){function i(){}function r(t){if(c.call(this,t),this.requestTimeout=t.requestTimeout,this.extraHeaders=t.extraHeaders,e.location){var n="https:"===location.protocol,i=location.port;i||(i=n?443:80),this.xd=t.hostname!==e.location.hostname||i!==t.port,this.xs=t.secure!==n}}function s(t){this.method=t.method||"GET",this.uri=t.uri,this.xd=!!t.xd,this.xs=!!t.xs,this.async=!1!==t.async,this.data=void 0!==t.data?t.data:null,this.agent=t.agent,this.isBinary=t.isBinary,this.supportsBinary=t.supportsBinary,this.enablesXDR=t.enablesXDR,this.requestTimeout=t.requestTimeout,this.pfx=t.pfx,this.key=t.key,this.passphrase=t.passphrase,this.cert=t.cert,this.ca=t.ca,this.ciphers=t.ciphers,this.rejectUnauthorized=t.rejectUnauthorized,this.extraHeaders=t.extraHeaders,this.create()}function o(){for(var t in s.requests)s.requests.hasOwnProperty(t)&&s.requests[t].abort()}var a=n(7),c=n(15),h=n(2),p=n(5),u=n(1)("engine.io-client:polling-xhr");t.exports=r,t.exports.Request=s,p(r,c),r.prototype.supportsBinary=!0,r.prototype.request=function(t){return t=t||{},t.uri=this.uri(),t.xd=this.xd,t.xs=this.xs,t.agent=this.agent||!1,t.supportsBinary=this.supportsBinary,t.enablesXDR=this.enablesXDR,t.pfx=this.pfx,t.key=this.key,t.passphrase=this.passphrase,t.cert=this.cert,t.ca=this.ca,t.ciphers=this.ciphers,t.rejectUnauthorized=this.rejectUnauthorized,t.requestTimeout=this.requestTimeout,t.extraHeaders=this.extraHeaders,new s(t)},r.prototype.doWrite=function(t,e){var n="string"!=typeof t&&void 0!==t,i=this.request({method:"POST",data:t,isBinary:n}),r=this;i.on("success",e),i.on("error",function(t){r.onError("xhr post error",t)}),this.sendXhr=i},r.prototype.doPoll=function(){u("xhr poll");var t=this.request(),e=this;t.on("data",function(t){e.onData(t)}),t.on("error",function(t){e.onError("xhr poll error",t)}),this.pollXhr=t},h(s.prototype),s.prototype.create=function(){var t={agent:this.agent,xdomain:this.xd,xscheme:this.xs,enablesXDR:this.enablesXDR};t.pfx=this.pfx,t.key=this.key,t.passphrase=this.passphrase,t.cert=this.cert,t.ca=this.ca,t.ciphers=this.ciphers,t.rejectUnauthorized=this.rejectUnauthorized;var n=this.xhr=new a(t),i=this;try{u("xhr open %s: %s",this.method,this.uri),n.open(this.method,this.uri,this.async);try{if(this.extraHeaders){n.setDisableHeaderCheck&&n.setDisableHeaderCheck(!0);for(var r in this.extraHeaders)this.extraHeaders.hasOwnProperty(r)&&n.setRequestHeader(r,this.extraHeaders[r])}}catch(t){}if("POST"===this.method)try{this.isBinary?n.setRequestHeader("Content-type","application/octet-stream"):n.setRequestHeader("Content-type","text/plain;charset=UTF-8")}catch(t){}try{n.setRequestHeader("Accept","*/*")}catch(t){}"withCredentials"in n&&(n.withCredentials=!0),this.requestTimeout&&(n.timeout=this.requestTimeout),this.hasXDR()?(n.onload=function(){i.onLoad()},n.onerror=function(){i.onError(n.responseText)}):n.onreadystatechange=function(){if(2===n.readyState){var t;try{t=n.getResponseHeader("Content-Type")}catch(t){}"application/octet-stream"===t&&(n.responseType="arraybuffer")}4===n.readyState&&(200===n.status||1223===n.status?i.onLoad():setTimeout(function(){i.onError(n.status)},0))},u("xhr data %s",this.data),n.send(this.data)}catch(t){return void setTimeout(function(){i.onError(t)},0)}e.document&&(this.index=s.requestsCount++,s.requests[this.index]=this)},s.prototype.onSuccess=function(){this.emit("success"),this.cleanup()},s.prototype.onData=function(t){this.emit("data",t),this.onSuccess()},s.prototype.onError=function(t){this.emit("error",t),this.cleanup(!0)},s.prototype.cleanup=function(t){if(void 0!==this.xhr&&null!==this.xhr){if(this.hasXDR()?this.xhr.onload=this.xhr.onerror=i:this.xhr.onreadystatechange=i,t)try{this.xhr.abort()}catch(t){}e.document&&delete s.requests[this.index],this.xhr=null}},s.prototype.onLoad=function(){var t;try{var e;try{e=this.xhr.getResponseHeader("Content-Type")}catch(t){}t="application/octet-stream"===e?this.xhr.response||this.xhr.responseText:this.xhr.responseText}catch(t){this.onError(t)}null!=t&&this.onData(t)},s.prototype.hasXDR=function(){return void 0!==e.XDomainRequest&&!this.xs&&this.enablesXDR},s.prototype.abort=function(){this.cleanup()},s.requestsCount=0,s.requests={},e.document&&(e.attachEvent?e.attachEvent("onunload",o):e.addEventListener&&e.addEventListener("beforeunload",o,!1))}).call(e,n(0))},function(t,e){t.exports=Object.keys||function(t){var e=[],n=Object.prototype.hasOwnProperty;for(var i in t)n.call(t,i)&&e.push(i);return e}},function(t,e){t.exports=function(t,e,n){var i=t.byteLength;if(e=e||0,n=n||i,t.slice)return t.slice(e,n);if(e<0&&(e+=i),n<0&&(n+=i),n>i&&(n=i),e>=i||e>=n||0===i)return new ArrayBuffer(0);for(var r=new Uint8Array(t),s=new Uint8Array(n-e),o=e,a=0;o<n;o++,a++)s[a]=r[o];return s.buffer}},function(t,e){function n(){}t.exports=function(t,e,i){function r(t,n){if(r.count<=0)throw new Error("after called too many times");--r.count,t?(s=!0,e(t),e=i):0!==r.count||s||e(null,n)}var s=!1;return i=i||n,r.count=t,0===t?e():r}},function(t,e,n){(function(t,i){var r;!function(s){function o(t){for(var e,n,i=[],r=0,s=t.length;r<s;)(e=t.charCodeAt(r++))>=55296&&e<=56319&&r<s?56320==(64512&(n=t.charCodeAt(r++)))?i.push(((1023&e)<<10)+(1023&n)+65536):(i.push(e),r--):i.push(e);return i}function a(t){for(var e,n=t.length,i=-1,r="";++i<n;)(e=t[i])>65535&&(r+=v((e-=65536)>>>10&1023|55296),e=56320|1023&e),r+=v(e);return r}function c(t,e){if(t>=55296&&t<=57343){if(e)throw Error("Lone surrogate U+"+t.toString(16).toUpperCase()+" is not a scalar value");return!1}return!0}function h(t,e){return v(t>>e&63|128)}function p(t,e){if(0==(4294967168&t))return v(t);var n="";return 0==(4294965248&t)?n=v(t>>6&31|192):0==(4294901760&t)?(c(t,e)||(t=65533),n=v(t>>12&15|224),n+=h(t,6)):0==(4292870144&t)&&(n=v(t>>18&7|240),n+=h(t,12),n+=h(t,6)),n+=v(63&t|128)}function u(){if(g>=y)throw Error("Invalid byte index");var t=255&m[g];if(g++,128==(192&t))return 63&t;throw Error("Invalid continuation byte")}function l(t){var e,n,i,r,s;if(g>y)throw Error("Invalid byte index");if(g==y)return!1;if(e=255&m[g],g++,0==(128&e))return e;if(192==(224&e)){if(n=u(),(s=(31&e)<<6|n)>=128)return s;throw Error("Invalid continuation byte")}if(224==(240&e)){if(n=u(),i=u(),(s=(15&e)<<12|n<<6|i)>=2048)return c(s,t)?s:65533;throw Error("Invalid continuation byte")}if(240==(248&e)&&(n=u(),i=u(),r=u(),(s=(7&e)<<18|n<<12|i<<6|r)>=65536&&s<=1114111))return s;throw Error("Invalid UTF-8 detected")}var d="object"==typeof e&&e,f=("object"==typeof t&&t&&t.exports,"object"==typeof i&&i);var m,y,g,v=String.fromCharCode,b={version:"2.1.2",encode:function(t,e){for(var n=!1!==(e=e||{}).strict,i=o(t),r=i.length,s=-1,a="";++s<r;)a+=p(i[s],n);return a},decode:function(t,e){var n=!1!==(e=e||{}).strict;m=o(t),y=m.length,g=0;for(var i,r=[];!1!==(i=l(n));)r.push(i);return a(r)}};void 0!==(r=function(){return b}.call(e,n,e,t))&&(t.exports=r)}()}).call(e,n(40)(t),n(0))},function(t,e){t.exports=function(t){return t.webpackPolyfill||(t.deprecate=function(){},t.paths=[],t.children||(t.children=[]),Object.defineProperty(t,"loaded",{enumerable:!0,get:function(){return t.l}}),Object.defineProperty(t,"id",{enumerable:!0,get:function(){return t.i}}),t.webpackPolyfill=1),t}},function(t,e){!function(){"use strict";for(var t="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",n=new Uint8Array(256),i=0;i<t.length;i++)n[t.charCodeAt(i)]=i;e.encode=function(e){var n,i=new Uint8Array(e),r=i.length,s="";for(n=0;n<r;n+=3)s+=t[i[n]>>2],s+=t[(3&i[n])<<4|i[n+1]>>4],s+=t[(15&i[n+1])<<2|i[n+2]>>6],s+=t[63&i[n+2]];return r%3==2?s=s.substring(0,s.length-1)+"=":r%3==1&&(s=s.substring(0,s.length-2)+"=="),s},e.decode=function(t){var e,i,r,s,o,a=.75*t.length,c=t.length,h=0;"="===t[t.length-1]&&(a--,"="===t[t.length-2]&&a--);var p=new ArrayBuffer(a),u=new Uint8Array(p);for(e=0;e<c;e+=4)i=n[t.charCodeAt(e)],r=n[t.charCodeAt(e+1)],s=n[t.charCodeAt(e+2)],o=n[t.charCodeAt(e+3)],u[h++]=i<<2|r>>4,u[h++]=(15&r)<<4|s>>2,u[h++]=(3&s)<<6|63&o;return p}}()},function(t,e,n){(function(e){function n(t){for(var e=0;e<t.length;e++){var n=t[e];if(n.buffer instanceof ArrayBuffer){var i=n.buffer;if(n.byteLength!==i.byteLength){var r=new Uint8Array(n.byteLength);r.set(new Uint8Array(i,n.byteOffset,n.byteLength)),i=r.buffer}t[e]=i}}}function i(t,e){e=e||{};var i=new s;n(t);for(var r=0;r<t.length;r++)i.append(t[r]);return e.type?i.getBlob(e.type):i.getBlob()}function r(t,e){return n(t),new Blob(t,e||{})}var s=e.BlobBuilder||e.WebKitBlobBuilder||e.MSBlobBuilder||e.MozBlobBuilder,o=function(){try{return 2===new Blob(["hi"]).size}catch(t){return!1}}(),a=o&&function(){try{return 2===new Blob([new Uint8Array([1,2])]).size}catch(t){return!1}}(),c=s&&s.prototype.append&&s.prototype.getBlob;t.exports=o?a?e.Blob:r:c?i:void 0}).call(e,n(0))},function(t,e,n){(function(e){function i(){}function r(t){s.call(this,t),this.query=this.query||{},a||(e.___eio||(e.___eio=[]),a=e.___eio),this.index=a.length;var n=this;a.push(function(t){n.onData(t)}),this.query.j=this.index,e.document&&e.addEventListener&&e.addEventListener("beforeunload",function(){n.script&&(n.script.onerror=i)},!1)}var s=n(15),o=n(5);t.exports=r;var a,c=/\n/g,h=/\\n/g;o(r,s),r.prototype.supportsBinary=!1,r.prototype.doClose=function(){this.script&&(this.script.parentNode.removeChild(this.script),this.script=null),this.form&&(this.form.parentNode.removeChild(this.form),this.form=null,this.iframe=null),s.prototype.doClose.call(this)},r.prototype.doPoll=function(){var t=this,e=document.createElement("script");this.script&&(this.script.parentNode.removeChild(this.script),this.script=null),e.async=!0,e.src=this.uri(),e.onerror=function(e){t.onError("jsonp poll error",e)};var n=document.getElementsByTagName("script")[0];n?n.parentNode.insertBefore(e,n):(document.head||document.body).appendChild(e),this.script=e,"undefined"!=typeof navigator&&/gecko/i.test(navigator.userAgent)&&setTimeout(function(){var t=document.createElement("iframe");document.body.appendChild(t),document.body.removeChild(t)},100)},r.prototype.doWrite=function(t,e){function n(){i(),e()}function i(){if(r.iframe)try{r.form.removeChild(r.iframe)}catch(t){r.onError("jsonp polling iframe removal error",t)}try{var t='<iframe src="javascript:0" name="'+r.iframeId+'">';s=document.createElement(t)}catch(t){(s=document.createElement("iframe")).name=r.iframeId,s.src="javascript:0"}s.id=r.iframeId,r.form.appendChild(s),r.iframe=s}var r=this;if(!this.form){var s,o=document.createElement("form"),a=document.createElement("textarea"),p=this.iframeId="eio_iframe_"+this.index;o.className="socketio",o.style.position="absolute",o.style.top="-1000px",o.style.left="-1000px",o.target=p,o.method="POST",o.setAttribute("accept-charset","utf-8"),a.name="d",o.appendChild(a),document.body.appendChild(o),this.form=o,this.area=a}this.form.action=this.uri(),i(),t=t.replace(h,"\\\n"),this.area.value=t.replace(c,"\\n");try{this.form.submit()}catch(t){}this.iframe.attachEvent?this.iframe.onreadystatechange=function(){"complete"===r.iframe.readyState&&n()}:this.iframe.onload=n}}).call(e,n(0))},function(t,e,n){(function(e){function i(t){t&&t.forceBase64&&(this.supportsBinary=!1),this.perMessageDeflate=t.perMessageDeflate,this.usingBrowserWebSocket=u&&!t.forceNode,this.protocols=t.protocols,this.usingBrowserWebSocket||(l=r),s.call(this,t)}var r,s=n(8),o=n(3),a=n(4),c=n(5),h=n(16),p=n(1)("engine.io-client:websocket"),u=e.WebSocket||e.MozWebSocket;if("undefined"==typeof window)try{r=n(45)}catch(t){}var l=u;l||"undefined"!=typeof window||(l=r),t.exports=i,c(i,s),i.prototype.name="websocket",i.prototype.supportsBinary=!0,i.prototype.doOpen=function(){if(this.check()){var t=this.uri(),e=this.protocols,n={agent:this.agent,perMessageDeflate:this.perMessageDeflate};n.pfx=this.pfx,n.key=this.key,n.passphrase=this.passphrase,n.cert=this.cert,n.ca=this.ca,n.ciphers=this.ciphers,n.rejectUnauthorized=this.rejectUnauthorized,this.extraHeaders&&(n.headers=this.extraHeaders),this.localAddress&&(n.localAddress=this.localAddress);try{this.ws=this.usingBrowserWebSocket?e?new l(t,e):new l(t):new l(t,e,n)}catch(t){return this.emit("error",t)}void 0===this.ws.binaryType&&(this.supportsBinary=!1),this.ws.supports&&this.ws.supports.binary?(this.supportsBinary=!0,this.ws.binaryType="nodebuffer"):this.ws.binaryType="arraybuffer",this.addEventListeners()}},i.prototype.addEventListeners=function(){var t=this;this.ws.onopen=function(){t.onOpen()},this.ws.onclose=function(){t.onClose()},this.ws.onmessage=function(e){t.onData(e.data)},this.ws.onerror=function(e){t.onError("websocket error",e)}},i.prototype.write=function(t){function n(){i.emit("flush"),setTimeout(function(){i.writable=!0,i.emit("drain")},0)}var i=this;this.writable=!1;for(var r=t.length,s=0,a=r;s<a;s++)!function(t){o.encodePacket(t,i.supportsBinary,function(s){if(!i.usingBrowserWebSocket){var o={};t.options&&(o.compress=t.options.compress),i.perMessageDeflate&&("string"==typeof s?e.Buffer.byteLength(s):s.length)<i.perMessageDeflate.threshold&&(o.compress=!1)}try{i.usingBrowserWebSocket?i.ws.send(s):i.ws.send(s,o)}catch(t){p("websocket closed before onclose event")}--r||n()})}(t[s])},i.prototype.onClose=function(){s.prototype.onClose.call(this)},i.prototype.doClose=function(){void 0!==this.ws&&this.ws.close()},i.prototype.uri=function(){var t=this.query||{},e=this.secure?"wss":"ws",n="";return this.port&&("wss"===e&&443!==Number(this.port)||"ws"===e&&80!==Number(this.port))&&(n=":"+this.port),this.timestampRequests&&(t[this.timestampParam]=h()),this.supportsBinary||(t.b64=1),(t=a.encode(t)).length&&(t="?"+t),e+"://"+(-1!==this.hostname.indexOf(":")?"["+this.hostname+"]":this.hostname)+n+this.path+t},i.prototype.check=function(){return!(!l||"__initialize"in l&&this.name===i.prototype.name)}}).call(e,n(0))},function(t,e){},function(t,e,n){(function(e){var n=/^[\],:{}\s]*$/,i=/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,r=/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,s=/(?:^|:|,)(?:\s*\[)+/g,o=/^\s+/,a=/\s+$/;t.exports=function(t){return"string"==typeof t&&t?(t=t.replace(o,"").replace(a,""),e.JSON&&JSON.parse?JSON.parse(t):n.test(t.replace(i,"@").replace(r,"]").replace(s,""))?new Function("return "+t)():void 0):null}}).call(e,n(0))},function(t,e){t.exports=function(t,e){for(var n=[],i=(e=e||0)||0;i<t.length;i++)n[i-e]=t[i];return n}},function(t,e){function n(t){t=t||{},this.ms=t.min||100,this.max=t.max||1e4,this.factor=t.factor||2,this.jitter=t.jitter>0&&t.jitter<=1?t.jitter:0,this.attempts=0}t.exports=n,n.prototype.duration=function(){var t=this.ms*Math.pow(this.factor,this.attempts++);if(this.jitter){var e=Math.random(),n=Math.floor(e*this.jitter*t);t=0==(1&Math.floor(10*e))?t-n:t+n}return 0|Math.min(t,this.max)},n.prototype.reset=function(){this.attempts=0},n.prototype.setMin=function(t){this.ms=t},n.prototype.setMax=function(t){this.max=t},n.prototype.setJitter=function(t){this.jitter=t}},function(t,e,n){"use strict";var i=n(21),r=n.n(i),s=n(22);class o{constructor(){this.listeners={count:0},this.messages=[],this.names=[],this.init(),this.cache(["/images/cannonball-explosion.gif","/images/ship-explosion.gif"])}init(){this.gamebox=document.createElement("div"),this.startScreen=document.createElement("div"),this.loginScreen=document.createElement("div"),this.asidePanel=document.createElement("aside"),this.helpScreen=document.createElement("div"),this.infobox=document.createElement("div"),this.soundButton=document.createElement("div")}cache(t){t.forEach(t=>{let e=new Image;e.alt="cache",e.src=t})}set gamebox(t){this._gamebox=t,this.gamebox.id="sea"}get gamebox(){return this._gamebox}set startScreen(t){this._startScreen=t,this.startScreen.className="start-screen"}get startScreen(){return this._startScreen}set loginScreen(t){this._loginScreen=t,this.loginScreen.className="nickname-screen";let e=document.createElement("div");e.className="wrapper",this.loginScreen.appendChild(e);let n=document.createElement("h2");n.innerText="Enter your name, pirate!",e.appendChild(n);let i=this._nameInput=document.createElement("input");i.autofocus="autofocus",e.appendChild(i);let r=this._errorMessage=document.createElement("div");r.className="error-message",e.appendChild(r);let s=this._playButton=document.createElement("div");s.className="play-button",e.appendChild(s)}get loginScreen(){return this._loginScreen}get playButton(){return this._playButton}get nickname(){return this._nameInput.value.trim()}set asidePanel(t){this._asidePanel=t,this.asidePanel.className="aside-panel";let e=this._panelInfo=document.createElement("div");e.className="info",this.asidePanel.appendChild(e);let n=this._panelRanking=document.createElement("div");n.className="ranking scrollable",this.asidePanel.appendChild(n);let i=this._panelSpectators=document.createElement("div");i.className="spectators scrollable",this.asidePanel.appendChild(i);let r=document.createElement("div");r.className="btn";let s=this._joinLeaveButton=document.createElement("div");s.innerText="Join",r.appendChild(s),this.asidePanel.appendChild(r);let o=document.createElement("div");o.className="btn";let a=this._helpButton=document.createElement("div");a.innerText="Help",o.appendChild(a),this.asidePanel.appendChild(o);let c=this._devices=document.createElement("div");c.className="devices inactive";let h=document.createElement("div");h.className="speed progress",h.title="Speed";let p=document.createElement("div");p.className="outer";let u=this._panelSpeedInner=document.createElement("div");u.className="inner",p.appendChild(u),h.appendChild(p),c.appendChild(h);let l=document.createElement("div");l.className="compass",l.title="Direction";const d=new XMLHttpRequest;d.open("GET","../images/compass.svg"),d.send(null),d.onload=(()=>{this.compassNeedle=d.responseXML.documentElement.getElementById("needle"),l.appendChild(d.responseXML.documentElement)}),c.appendChild(l);let f=document.createElement("div");f.className="hp progress",f.title="Hit points";let m=document.createElement("div");m.className="outer";let y=this._panelHPInner=document.createElement("div");y.className="inner",m.appendChild(y),f.appendChild(m),c.appendChild(f);let g=document.createElement("div");g.className="fp progress",g.title="Firepower";let v=document.createElement("div");v.className="outer";let b=this._panelFirepowerInner=document.createElement("div");b.className="inner",v.appendChild(b),g.appendChild(v),c.appendChild(g),this.asidePanel.appendChild(c)}get asidePanel(){return this._asidePanel}set message(t){this.messages.length<2?this.messages.push(t):(this.messages.shift(),this.messages.push(t));let e=document.createElement("ul");this.messages.forEach((t,n)=>{let i=document.createElement("li");2==this.messages.length&&0==n&&(i.className="fade"),i.title=i.innerText=t,e.appendChild(i)}),this._panelInfo.innerHTML="",this._panelInfo.appendChild(e)}set ranking(t){let e=document.createElement("ul");t.forEach(t=>{let n=document.createElement("li");n.style.color=Object(s.a)(t.color),n.style.backgroundColor=t.color;let i=this.names[t.name]=document.createElement("div");i.className="name",i.title=i.innerText=t.name;let r=document.createElement("div");r.className="score",r.innerText=t.score,n.appendChild(i),n.appendChild(r),e.appendChild(n)}),this._panelRanking.innerHTML="",this._panelRanking.appendChild(e)}set rankingHp(t){for(let e in t)this.names[e].style.background=`linear-gradient(90deg, rgba(0, 0, 0, 0.2) ${t[e]}%, transparent ${t[e]}%)`}set spectators(t){let e=document.createElement("ul");t.forEach((t,n)=>{let i=document.createElement("li");n%2==0&&(i.className="fade"),i.title=i.innerText=t,e.appendChild(i)}),this._panelSpectators.innerHTML="",this._panelSpectators.appendChild(e)}set speed(t){this._panelSpeedInner.style.width=Math.round(t/r.a.MAX_SPEED*100)+"%"}set direction(t){this.compassNeedle.style.transform=`rotate(${90-t}deg)`}set hp(t){this._panelHPInner.style.width=Math.round(t/r.a.MAX_HP*100)+"%"}set fp(t){this._panelFirepowerInner.style.width=Math.round(t/r.a.MAX_FP*100)+"%"}get joinLeaveButton(){return this._joinLeaveButton}get helpButton(){return this._helpButton}set helpScreen(t){this._helpScreen=t,this.helpScreen.className="help-screen",this.helpScreen.innerHTML=`\n        <strong>Arrows</strong><br>\n\n        <strong class="indent">Up</strong> - Accelerate<br>\n\n        <strong class="indent">Down</strong> - Decelerate<br>\n\n        <strong class="indent">Left</strong> - Turn left<br>\n\n        <strong class="indent">Right</strong> - Turn right<br>\n\n        <br>\n\n        <strong>A</strong> - Shoot left<br>\n\n        <strong>D</strong> - Shoot right<br>\n\n        <br>\n\n        <strong>R</strong> - Repair<br>\n\n        <br>\n\n        <strong>M</strong> - Toggle music<br>\n\n        <strong>H</strong> - Toggle this window\n        `,this.helpScreen.onclick=this.toggleHelp.bind(this)}get helpScreen(){return this._helpScreen}set infobox(t){this._infobox=t,this.infobox.id="infobox"}get infobox(){return this._infobox}set ping(t){this._infobox.innerText=`Ping: ${t}ms`}set soundButton(t){this._soundButton=t,this.soundButton.id="sound-button"}get soundButton(){return this._soundButton}keyDown(t,e){let n,i,r=++this.listeners.count;this.listeners[r]={type:"keydown",_function(r){i||null!==t&&r.keyCode!==t||(n=r.keyCode,i=!0,e(r))}},window.addEventListener(this.listeners[r].type,this.listeners[r]._function);let s=++this.listeners.count;return this.listeners[s]={type:"keyup",_function(t){t.keyCode===n&&(i=!1)}},window.addEventListener(this.listeners[s].type,this.listeners[s]._function),[r,s]}keyUp(t,e){let n=++this.listeners.count;return this.listeners[n]={type:"keyup",_function(n){null!==t&&n.keyCode!==t||e(n)}},window.addEventListener(this.listeners[n].type,this.listeners[n]._function),n}unset(t){if(t.length>0)for(let e=0;e<t.length;e++)window.removeEventListener(this.listeners[t[e]].type,this.listeners[t[e]]._function),delete this.listeners[t[e]];else window.removeEventListener(this.listeners[t].type,this.listeners[t]._function),delete this.listeners[t];return!0}spinPlayButton(t=!0){t?this._playButton.classList.add("loading"):this._playButton.classList.remove("loading")}hideErrorMessage(){this._errorMessage.classList.remove("visible"),this._errorMessage.innerText=""}showErrorMessage(t){this._errorMessage.classList.add("visible"),this._errorMessage.innerText=t}updateJoinLeaveButton(t){switch(t){case 0:this._joinLeaveButton.classList.add("disabled"),this._joinLeaveButton.innerText="Join";break;case 1:this._joinLeaveButton.classList.remove("disabled"),this._joinLeaveButton.innerText="Join";break;case 2:this._joinLeaveButton.classList.remove("disabled"),this._joinLeaveButton.innerText="Leave"}}toggleDevices(){this._devices.classList.contains("inactive")?this._devices.classList.remove("inactive"):(this.speed=r.a.MAX_SPEED,this.direction=-90,this.hp=r.a.MAX_HP,this.fp=r.a.MAX_FP,this._devices.classList.add("inactive"))}toggleHelp(){this.gamebox.contains(this.helpScreen)?this.gamebox.removeChild(this.helpScreen):this.gamebox.appendChild(this.helpScreen)}explosion(t,e,n=!1){const i=new Image;i.alt=n?"Ship explosion":"Cannonball explosion",i.src=n?"/images/ship-explosion.gif":"/images/cannonball-explosion.gif",i.className="explosion",i.style.width=2*e+"px",i.style.left=t.x+"px",i.style.top=(n?t.y-130:t.y)+"px",this.gamebox.appendChild(i);let r=n?1200:500;setTimeout(()=>this.gamebox.removeChild(i),r)}audioControls(){this.gamebox.appendChild(this.soundButton)}toggleMute(){this.soundButton.classList.contains("muted")?this.soundButton.classList.remove("muted"):this.soundButton.classList.add("muted")}}e.a=o},function(t,e,n){"use strict";class i{constructor(){this.muted=!1,this.init(),this.cache(["/sounds/bg-music.mp3","/sounds/cannonball-shot.mp3","/sounds/cannonball-explosion.mp3","/sounds/ship-explosion.mp3"])}init(){let t=this.music=new Audio;t.type="audio/mpeg",t.src="/sounds/bg-music.mp3",t.loop=!0,t.muted=!1}cache(t){t.forEach(t=>{let e=new Audio;e.type="audio/mpeg",e.src=t})}play(t){if(this.muted)return;let e=new Audio;e.type="audio/mpeg",e.src=t,e.play()}playMusic(){this.music.play()}toggleMute(){this.muted=!this.muted,this.music.muted=!this.music.muted}}e.a=i},function(t,e,n){"use strict";class i{constructor(t,e="#f00"){this.width=t,this.color=e,this.sailcolor="#efefff",this.init()}init(){const t=this.canvas=document.createElement("canvas");t.width=4*this.width,t.height=4*this.width,t.className="ship";const e=this.ctx=t.getContext("2d");e.beginPath(),e.arc(this.width/2,2*this.width,this.width/2,0,2*Math.PI),e.fillStyle=this.color,e.fill(),e.fillStyle=this.color,e.fillRect(this.width/2,3*this.width/2,3*this.width,this.width),e.beginPath(),e.arc(7*this.width/2,2*this.width,this.width/2,0,2*Math.PI),e.fillStyle=this.color,e.fill(),e.beginPath(),e.arc(7*this.width/3,2*this.width,7*this.width/6,1*-Math.PI/3,1*Math.PI/3),e.fillStyle=this.sailcolor,e.fill(),e.beginPath(),e.arc(10*this.width/9,2*this.width,10*this.width/7,1*-Math.PI/3,1*Math.PI/3),e.fillStyle=this.sailcolor,e.fill(),e.beginPath(),e.arc(this.width/2,2*this.width,8*this.width/9,1*-Math.PI/3,1*Math.PI/3),e.fillStyle=this.sailcolor,e.fill()}set canvas(t){this._canvas=t}get canvas(){return this._canvas}}e.a=i}]);
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 23);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(process) {/**
+ * This is the web browser implementation of `debug()`.
+ *
+ * Expose `debug()` as the module.
+ */
+
+exports = module.exports = __webpack_require__(28);
+exports.log = log;
+exports.formatArgs = formatArgs;
+exports.save = save;
+exports.load = load;
+exports.useColors = useColors;
+exports.storage = 'undefined' != typeof chrome
+               && 'undefined' != typeof chrome.storage
+                  ? chrome.storage.local
+                  : localstorage();
+
+/**
+ * Colors.
+ */
+
+exports.colors = [
+  'lightseagreen',
+  'forestgreen',
+  'goldenrod',
+  'dodgerblue',
+  'darkorchid',
+  'crimson'
+];
+
+/**
+ * Currently only WebKit-based Web Inspectors, Firefox >= v31,
+ * and the Firebug extension (any Firefox version) are known
+ * to support "%c" CSS customizations.
+ *
+ * TODO: add a `localStorage` variable to explicitly enable/disable colors
+ */
+
+function useColors() {
+  // NB: In an Electron preload script, document will be defined but not fully
+  // initialized. Since we know we're in Chrome, we'll just detect this case
+  // explicitly
+  if (window && window.process && window.process.type === 'renderer') {
+    return true;
+  }
+
+  // is webkit? http://stackoverflow.com/a/16459606/376773
+  // document is undefined in react-native: https://github.com/facebook/react-native/pull/1632
+  return (document && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance) ||
+    // is firebug? http://stackoverflow.com/a/398120/376773
+    (window && window.console && (window.console.firebug || (window.console.exception && window.console.table))) ||
+    // is firefox >= v31?
+    // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
+    (navigator && navigator.userAgent && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31) ||
+    // double check webkit in userAgent just in case we are in a worker
+    (navigator && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/));
+}
+
+/**
+ * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
+ */
+
+exports.formatters.j = function(v) {
+  try {
+    return JSON.stringify(v);
+  } catch (err) {
+    return '[UnexpectedJSONParseError]: ' + err.message;
+  }
+};
+
+
+/**
+ * Colorize log arguments if enabled.
+ *
+ * @api public
+ */
+
+function formatArgs(args) {
+  var useColors = this.useColors;
+
+  args[0] = (useColors ? '%c' : '')
+    + this.namespace
+    + (useColors ? ' %c' : ' ')
+    + args[0]
+    + (useColors ? '%c ' : ' ')
+    + '+' + exports.humanize(this.diff);
+
+  if (!useColors) return;
+
+  var c = 'color: ' + this.color;
+  args.splice(1, 0, c, 'color: inherit')
+
+  // the final "%c" is somewhat tricky, because there could be other
+  // arguments passed either before or after the %c, so we need to
+  // figure out the correct index to insert the CSS into
+  var index = 0;
+  var lastC = 0;
+  args[0].replace(/%[a-zA-Z%]/g, function(match) {
+    if ('%%' === match) return;
+    index++;
+    if ('%c' === match) {
+      // we only are interested in the *last* %c
+      // (the user may have provided their own)
+      lastC = index;
+    }
+  });
+
+  args.splice(lastC, 0, c);
+}
+
+/**
+ * Invokes `console.log()` when available.
+ * No-op when `console.log` is not a "function".
+ *
+ * @api public
+ */
+
+function log() {
+  // this hackery is required for IE8/9, where
+  // the `console.log` function doesn't have 'apply'
+  return 'object' === typeof console
+    && console.log
+    && Function.prototype.apply.call(console.log, console, arguments);
+}
+
+/**
+ * Save `namespaces`.
+ *
+ * @param {String} namespaces
+ * @api private
+ */
+
+function save(namespaces) {
+  try {
+    if (null == namespaces) {
+      exports.storage.removeItem('debug');
+    } else {
+      exports.storage.debug = namespaces;
+    }
+  } catch(e) {}
+}
+
+/**
+ * Load `namespaces`.
+ *
+ * @return {String} returns the previously persisted debug modes
+ * @api private
+ */
+
+function load() {
+  var r;
+  try {
+    r = exports.storage.debug;
+  } catch(e) {}
+
+  // If debug isn't set in LS, and we're in Electron, try to load $DEBUG
+  if (!r && typeof process !== 'undefined' && 'env' in process) {
+    r = process.env.DEBUG;
+  }
+
+  return r;
+}
+
+/**
+ * Enable namespaces listed in `localStorage.debug` initially.
+ */
+
+exports.enable(load());
+
+/**
+ * Localstorage attempts to return the localstorage.
+ *
+ * This is necessary because safari throws
+ * when a user disables cookies/localstorage
+ * and you attempt to access it.
+ *
+ * @return {LocalStorage}
+ * @api private
+ */
+
+function localstorage() {
+  try {
+    return window.localStorage;
+  } catch (e) {}
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)))
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+/**
+ * Expose `Emitter`.
+ */
+
+if (true) {
+  module.exports = Emitter;
+}
+
+/**
+ * Initialize a new `Emitter`.
+ *
+ * @api public
+ */
+
+function Emitter(obj) {
+  if (obj) return mixin(obj);
+};
+
+/**
+ * Mixin the emitter properties.
+ *
+ * @param {Object} obj
+ * @return {Object}
+ * @api private
+ */
+
+function mixin(obj) {
+  for (var key in Emitter.prototype) {
+    obj[key] = Emitter.prototype[key];
+  }
+  return obj;
+}
+
+/**
+ * Listen on the given `event` with `fn`.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.on =
+Emitter.prototype.addEventListener = function(event, fn){
+  this._callbacks = this._callbacks || {};
+  (this._callbacks['$' + event] = this._callbacks['$' + event] || [])
+    .push(fn);
+  return this;
+};
+
+/**
+ * Adds an `event` listener that will be invoked a single
+ * time then automatically removed.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.once = function(event, fn){
+  function on() {
+    this.off(event, on);
+    fn.apply(this, arguments);
+  }
+
+  on.fn = fn;
+  this.on(event, on);
+  return this;
+};
+
+/**
+ * Remove the given callback for `event` or all
+ * registered callbacks.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.off =
+Emitter.prototype.removeListener =
+Emitter.prototype.removeAllListeners =
+Emitter.prototype.removeEventListener = function(event, fn){
+  this._callbacks = this._callbacks || {};
+
+  // all
+  if (0 == arguments.length) {
+    this._callbacks = {};
+    return this;
+  }
+
+  // specific event
+  var callbacks = this._callbacks['$' + event];
+  if (!callbacks) return this;
+
+  // remove all handlers
+  if (1 == arguments.length) {
+    delete this._callbacks['$' + event];
+    return this;
+  }
+
+  // remove specific handler
+  var cb;
+  for (var i = 0; i < callbacks.length; i++) {
+    cb = callbacks[i];
+    if (cb === fn || cb.fn === fn) {
+      callbacks.splice(i, 1);
+      break;
+    }
+  }
+  return this;
+};
+
+/**
+ * Emit `event` with the given args.
+ *
+ * @param {String} event
+ * @param {Mixed} ...
+ * @return {Emitter}
+ */
+
+Emitter.prototype.emit = function(event){
+  this._callbacks = this._callbacks || {};
+  var args = [].slice.call(arguments, 1)
+    , callbacks = this._callbacks['$' + event];
+
+  if (callbacks) {
+    callbacks = callbacks.slice(0);
+    for (var i = 0, len = callbacks.length; i < len; ++i) {
+      callbacks[i].apply(this, args);
+    }
+  }
+
+  return this;
+};
+
+/**
+ * Return array of callbacks for `event`.
+ *
+ * @param {String} event
+ * @return {Array}
+ * @api public
+ */
+
+Emitter.prototype.listeners = function(event){
+  this._callbacks = this._callbacks || {};
+  return this._callbacks['$' + event] || [];
+};
+
+/**
+ * Check if this emitter has `event` handlers.
+ *
+ * @param {String} event
+ * @return {Boolean}
+ * @api public
+ */
+
+Emitter.prototype.hasListeners = function(event){
+  return !! this.listeners(event).length;
+};
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {/**
+ * Module dependencies.
+ */
+
+var keys = __webpack_require__(36);
+var hasBinary = __webpack_require__(10);
+var sliceBuffer = __webpack_require__(37);
+var after = __webpack_require__(38);
+var utf8 = __webpack_require__(39);
+
+var base64encoder;
+if (global && global.ArrayBuffer) {
+  base64encoder = __webpack_require__(41);
+}
+
+/**
+ * Check if we are running an android browser. That requires us to use
+ * ArrayBuffer with polling transports...
+ *
+ * http://ghinda.net/jpeg-blob-ajax-android/
+ */
+
+var isAndroid = typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent);
+
+/**
+ * Check if we are running in PhantomJS.
+ * Uploading a Blob with PhantomJS does not work correctly, as reported here:
+ * https://github.com/ariya/phantomjs/issues/11395
+ * @type boolean
+ */
+var isPhantomJS = typeof navigator !== 'undefined' && /PhantomJS/i.test(navigator.userAgent);
+
+/**
+ * When true, avoids using Blobs to encode payloads.
+ * @type boolean
+ */
+var dontSendBlobs = isAndroid || isPhantomJS;
+
+/**
+ * Current protocol version.
+ */
+
+exports.protocol = 3;
+
+/**
+ * Packet types.
+ */
+
+var packets = exports.packets = {
+    open:     0    // non-ws
+  , close:    1    // non-ws
+  , ping:     2
+  , pong:     3
+  , message:  4
+  , upgrade:  5
+  , noop:     6
+};
+
+var packetslist = keys(packets);
+
+/**
+ * Premade error packet.
+ */
+
+var err = { type: 'error', data: 'parser error' };
+
+/**
+ * Create a blob api even for blob builder when vendor prefixes exist
+ */
+
+var Blob = __webpack_require__(42);
+
+/**
+ * Encodes a packet.
+ *
+ *     <packet type id> [ <data> ]
+ *
+ * Example:
+ *
+ *     5hello world
+ *     3
+ *     4
+ *
+ * Binary is encoded in an identical principle
+ *
+ * @api private
+ */
+
+exports.encodePacket = function (packet, supportsBinary, utf8encode, callback) {
+  if (typeof supportsBinary === 'function') {
+    callback = supportsBinary;
+    supportsBinary = false;
+  }
+
+  if (typeof utf8encode === 'function') {
+    callback = utf8encode;
+    utf8encode = null;
+  }
+
+  var data = (packet.data === undefined)
+    ? undefined
+    : packet.data.buffer || packet.data;
+
+  if (global.ArrayBuffer && data instanceof ArrayBuffer) {
+    return encodeArrayBuffer(packet, supportsBinary, callback);
+  } else if (Blob && data instanceof global.Blob) {
+    return encodeBlob(packet, supportsBinary, callback);
+  }
+
+  // might be an object with { base64: true, data: dataAsBase64String }
+  if (data && data.base64) {
+    return encodeBase64Object(packet, callback);
+  }
+
+  // Sending data as a utf-8 string
+  var encoded = packets[packet.type];
+
+  // data fragment is optional
+  if (undefined !== packet.data) {
+    encoded += utf8encode ? utf8.encode(String(packet.data), { strict: false }) : String(packet.data);
+  }
+
+  return callback('' + encoded);
+
+};
+
+function encodeBase64Object(packet, callback) {
+  // packet data is an object { base64: true, data: dataAsBase64String }
+  var message = 'b' + exports.packets[packet.type] + packet.data.data;
+  return callback(message);
+}
+
+/**
+ * Encode packet helpers for binary types
+ */
+
+function encodeArrayBuffer(packet, supportsBinary, callback) {
+  if (!supportsBinary) {
+    return exports.encodeBase64Packet(packet, callback);
+  }
+
+  var data = packet.data;
+  var contentArray = new Uint8Array(data);
+  var resultBuffer = new Uint8Array(1 + data.byteLength);
+
+  resultBuffer[0] = packets[packet.type];
+  for (var i = 0; i < contentArray.length; i++) {
+    resultBuffer[i+1] = contentArray[i];
+  }
+
+  return callback(resultBuffer.buffer);
+}
+
+function encodeBlobAsArrayBuffer(packet, supportsBinary, callback) {
+  if (!supportsBinary) {
+    return exports.encodeBase64Packet(packet, callback);
+  }
+
+  var fr = new FileReader();
+  fr.onload = function() {
+    packet.data = fr.result;
+    exports.encodePacket(packet, supportsBinary, true, callback);
+  };
+  return fr.readAsArrayBuffer(packet.data);
+}
+
+function encodeBlob(packet, supportsBinary, callback) {
+  if (!supportsBinary) {
+    return exports.encodeBase64Packet(packet, callback);
+  }
+
+  if (dontSendBlobs) {
+    return encodeBlobAsArrayBuffer(packet, supportsBinary, callback);
+  }
+
+  var length = new Uint8Array(1);
+  length[0] = packets[packet.type];
+  var blob = new Blob([length.buffer, packet.data]);
+
+  return callback(blob);
+}
+
+/**
+ * Encodes a packet with binary data in a base64 string
+ *
+ * @param {Object} packet, has `type` and `data`
+ * @return {String} base64 encoded message
+ */
+
+exports.encodeBase64Packet = function(packet, callback) {
+  var message = 'b' + exports.packets[packet.type];
+  if (Blob && packet.data instanceof global.Blob) {
+    var fr = new FileReader();
+    fr.onload = function() {
+      var b64 = fr.result.split(',')[1];
+      callback(message + b64);
+    };
+    return fr.readAsDataURL(packet.data);
+  }
+
+  var b64data;
+  try {
+    b64data = String.fromCharCode.apply(null, new Uint8Array(packet.data));
+  } catch (e) {
+    // iPhone Safari doesn't let you apply with typed arrays
+    var typed = new Uint8Array(packet.data);
+    var basic = new Array(typed.length);
+    for (var i = 0; i < typed.length; i++) {
+      basic[i] = typed[i];
+    }
+    b64data = String.fromCharCode.apply(null, basic);
+  }
+  message += global.btoa(b64data);
+  return callback(message);
+};
+
+/**
+ * Decodes a packet. Changes format to Blob if requested.
+ *
+ * @return {Object} with `type` and `data` (if any)
+ * @api private
+ */
+
+exports.decodePacket = function (data, binaryType, utf8decode) {
+  if (data === undefined) {
+    return err;
+  }
+  // String data
+  if (typeof data === 'string') {
+    if (data.charAt(0) === 'b') {
+      return exports.decodeBase64Packet(data.substr(1), binaryType);
+    }
+
+    if (utf8decode) {
+      data = tryDecode(data);
+      if (data === false) {
+        return err;
+      }
+    }
+    var type = data.charAt(0);
+
+    if (Number(type) != type || !packetslist[type]) {
+      return err;
+    }
+
+    if (data.length > 1) {
+      return { type: packetslist[type], data: data.substring(1) };
+    } else {
+      return { type: packetslist[type] };
+    }
+  }
+
+  var asArray = new Uint8Array(data);
+  var type = asArray[0];
+  var rest = sliceBuffer(data, 1);
+  if (Blob && binaryType === 'blob') {
+    rest = new Blob([rest]);
+  }
+  return { type: packetslist[type], data: rest };
+};
+
+function tryDecode(data) {
+  try {
+    data = utf8.decode(data, { strict: false });
+  } catch (e) {
+    return false;
+  }
+  return data;
+}
+
+/**
+ * Decodes a packet encoded in a base64 string
+ *
+ * @param {String} base64 encoded message
+ * @return {Object} with `type` and `data` (if any)
+ */
+
+exports.decodeBase64Packet = function(msg, binaryType) {
+  var type = packetslist[msg.charAt(0)];
+  if (!base64encoder) {
+    return { type: type, data: { base64: true, data: msg.substr(1) } };
+  }
+
+  var data = base64encoder.decode(msg.substr(1));
+
+  if (binaryType === 'blob' && Blob) {
+    data = new Blob([data]);
+  }
+
+  return { type: type, data: data };
+};
+
+/**
+ * Encodes multiple messages (payload).
+ *
+ *     <length>:data
+ *
+ * Example:
+ *
+ *     11:hello world2:hi
+ *
+ * If any contents are binary, they will be encoded as base64 strings. Base64
+ * encoded strings are marked with a b before the length specifier
+ *
+ * @param {Array} packets
+ * @api private
+ */
+
+exports.encodePayload = function (packets, supportsBinary, callback) {
+  if (typeof supportsBinary === 'function') {
+    callback = supportsBinary;
+    supportsBinary = null;
+  }
+
+  var isBinary = hasBinary(packets);
+
+  if (supportsBinary && isBinary) {
+    if (Blob && !dontSendBlobs) {
+      return exports.encodePayloadAsBlob(packets, callback);
+    }
+
+    return exports.encodePayloadAsArrayBuffer(packets, callback);
+  }
+
+  if (!packets.length) {
+    return callback('0:');
+  }
+
+  function setLengthHeader(message) {
+    return message.length + ':' + message;
+  }
+
+  function encodeOne(packet, doneCallback) {
+    exports.encodePacket(packet, !isBinary ? false : supportsBinary, false, function(message) {
+      doneCallback(null, setLengthHeader(message));
+    });
+  }
+
+  map(packets, encodeOne, function(err, results) {
+    return callback(results.join(''));
+  });
+};
+
+/**
+ * Async array map using after
+ */
+
+function map(ary, each, done) {
+  var result = new Array(ary.length);
+  var next = after(ary.length, done);
+
+  var eachWithIndex = function(i, el, cb) {
+    each(el, function(error, msg) {
+      result[i] = msg;
+      cb(error, result);
+    });
+  };
+
+  for (var i = 0; i < ary.length; i++) {
+    eachWithIndex(i, ary[i], next);
+  }
+}
+
+/*
+ * Decodes data when a payload is maybe expected. Possible binary contents are
+ * decoded from their base64 representation
+ *
+ * @param {String} data, callback method
+ * @api public
+ */
+
+exports.decodePayload = function (data, binaryType, callback) {
+  if (typeof data !== 'string') {
+    return exports.decodePayloadAsBinary(data, binaryType, callback);
+  }
+
+  if (typeof binaryType === 'function') {
+    callback = binaryType;
+    binaryType = null;
+  }
+
+  var packet;
+  if (data === '') {
+    // parser error - ignoring payload
+    return callback(err, 0, 1);
+  }
+
+  var length = '', n, msg;
+
+  for (var i = 0, l = data.length; i < l; i++) {
+    var chr = data.charAt(i);
+
+    if (chr !== ':') {
+      length += chr;
+      continue;
+    }
+
+    if (length === '' || (length != (n = Number(length)))) {
+      // parser error - ignoring payload
+      return callback(err, 0, 1);
+    }
+
+    msg = data.substr(i + 1, n);
+
+    if (length != msg.length) {
+      // parser error - ignoring payload
+      return callback(err, 0, 1);
+    }
+
+    if (msg.length) {
+      packet = exports.decodePacket(msg, binaryType, false);
+
+      if (err.type === packet.type && err.data === packet.data) {
+        // parser error in individual packet - ignoring payload
+        return callback(err, 0, 1);
+      }
+
+      var ret = callback(packet, i + n, l);
+      if (false === ret) return;
+    }
+
+    // advance cursor
+    i += n;
+    length = '';
+  }
+
+  if (length !== '') {
+    // parser error - ignoring payload
+    return callback(err, 0, 1);
+  }
+
+};
+
+/**
+ * Encodes multiple messages (payload) as binary.
+ *
+ * <1 = binary, 0 = string><number from 0-9><number from 0-9>[...]<number
+ * 255><data>
+ *
+ * Example:
+ * 1 3 255 1 2 3, if the binary contents are interpreted as 8 bit integers
+ *
+ * @param {Array} packets
+ * @return {ArrayBuffer} encoded payload
+ * @api private
+ */
+
+exports.encodePayloadAsArrayBuffer = function(packets, callback) {
+  if (!packets.length) {
+    return callback(new ArrayBuffer(0));
+  }
+
+  function encodeOne(packet, doneCallback) {
+    exports.encodePacket(packet, true, true, function(data) {
+      return doneCallback(null, data);
+    });
+  }
+
+  map(packets, encodeOne, function(err, encodedPackets) {
+    var totalLength = encodedPackets.reduce(function(acc, p) {
+      var len;
+      if (typeof p === 'string'){
+        len = p.length;
+      } else {
+        len = p.byteLength;
+      }
+      return acc + len.toString().length + len + 2; // string/binary identifier + separator = 2
+    }, 0);
+
+    var resultArray = new Uint8Array(totalLength);
+
+    var bufferIndex = 0;
+    encodedPackets.forEach(function(p) {
+      var isString = typeof p === 'string';
+      var ab = p;
+      if (isString) {
+        var view = new Uint8Array(p.length);
+        for (var i = 0; i < p.length; i++) {
+          view[i] = p.charCodeAt(i);
+        }
+        ab = view.buffer;
+      }
+
+      if (isString) { // not true binary
+        resultArray[bufferIndex++] = 0;
+      } else { // true binary
+        resultArray[bufferIndex++] = 1;
+      }
+
+      var lenStr = ab.byteLength.toString();
+      for (var i = 0; i < lenStr.length; i++) {
+        resultArray[bufferIndex++] = parseInt(lenStr[i]);
+      }
+      resultArray[bufferIndex++] = 255;
+
+      var view = new Uint8Array(ab);
+      for (var i = 0; i < view.length; i++) {
+        resultArray[bufferIndex++] = view[i];
+      }
+    });
+
+    return callback(resultArray.buffer);
+  });
+};
+
+/**
+ * Encode as Blob
+ */
+
+exports.encodePayloadAsBlob = function(packets, callback) {
+  function encodeOne(packet, doneCallback) {
+    exports.encodePacket(packet, true, true, function(encoded) {
+      var binaryIdentifier = new Uint8Array(1);
+      binaryIdentifier[0] = 1;
+      if (typeof encoded === 'string') {
+        var view = new Uint8Array(encoded.length);
+        for (var i = 0; i < encoded.length; i++) {
+          view[i] = encoded.charCodeAt(i);
+        }
+        encoded = view.buffer;
+        binaryIdentifier[0] = 0;
+      }
+
+      var len = (encoded instanceof ArrayBuffer)
+        ? encoded.byteLength
+        : encoded.size;
+
+      var lenStr = len.toString();
+      var lengthAry = new Uint8Array(lenStr.length + 1);
+      for (var i = 0; i < lenStr.length; i++) {
+        lengthAry[i] = parseInt(lenStr[i]);
+      }
+      lengthAry[lenStr.length] = 255;
+
+      if (Blob) {
+        var blob = new Blob([binaryIdentifier.buffer, lengthAry.buffer, encoded]);
+        doneCallback(null, blob);
+      }
+    });
+  }
+
+  map(packets, encodeOne, function(err, results) {
+    return callback(new Blob(results));
+  });
+};
+
+/*
+ * Decodes data when a payload is maybe expected. Strings are decoded by
+ * interpreting each byte as a key code for entries marked to start with 0. See
+ * description of encodePayloadAsBinary
+ *
+ * @param {ArrayBuffer} data, callback method
+ * @api public
+ */
+
+exports.decodePayloadAsBinary = function (data, binaryType, callback) {
+  if (typeof binaryType === 'function') {
+    callback = binaryType;
+    binaryType = null;
+  }
+
+  var bufferTail = data;
+  var buffers = [];
+
+  while (bufferTail.byteLength > 0) {
+    var tailArray = new Uint8Array(bufferTail);
+    var isString = tailArray[0] === 0;
+    var msgLength = '';
+
+    for (var i = 1; ; i++) {
+      if (tailArray[i] === 255) break;
+
+      // 310 = char length of Number.MAX_VALUE
+      if (msgLength.length > 310) {
+        return callback(err, 0, 1);
+      }
+
+      msgLength += tailArray[i];
+    }
+
+    bufferTail = sliceBuffer(bufferTail, 2 + msgLength.length);
+    msgLength = parseInt(msgLength);
+
+    var msg = sliceBuffer(bufferTail, 0, msgLength);
+    if (isString) {
+      try {
+        msg = String.fromCharCode.apply(null, new Uint8Array(msg));
+      } catch (e) {
+        // iPhone Safari doesn't let you apply to typed arrays
+        var typed = new Uint8Array(msg);
+        msg = '';
+        for (var i = 0; i < typed.length; i++) {
+          msg += String.fromCharCode(typed[i]);
+        }
+      }
+    }
+
+    buffers.push(msg);
+    bufferTail = sliceBuffer(bufferTail, msgLength);
+  }
+
+  var total = buffers.length;
+  buffers.forEach(function(buffer, i) {
+    callback(exports.decodePacket(buffer, binaryType, true), i, total);
+  });
+};
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+/**
+ * Compiles a querystring
+ * Returns string representation of the object
+ *
+ * @param {Object}
+ * @api private
+ */
+
+exports.encode = function (obj) {
+  var str = '';
+
+  for (var i in obj) {
+    if (obj.hasOwnProperty(i)) {
+      if (str.length) str += '&';
+      str += encodeURIComponent(i) + '=' + encodeURIComponent(obj[i]);
+    }
+  }
+
+  return str;
+};
+
+/**
+ * Parses a simple querystring into an object
+ *
+ * @param {String} qs
+ * @api private
+ */
+
+exports.decode = function(qs){
+  var qry = {};
+  var pairs = qs.split('&');
+  for (var i = 0, l = pairs.length; i < l; i++) {
+    var pair = pairs[i].split('=');
+    qry[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+  }
+  return qry;
+};
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+
+module.exports = function(a, b){
+  var fn = function(){};
+  fn.prototype = b.prototype;
+  a.prototype = new fn;
+  a.prototype.constructor = a;
+};
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+/**
+ * Module dependencies.
+ */
+
+var debug = __webpack_require__(1)('socket.io-parser');
+var Emitter = __webpack_require__(2);
+var hasBin = __webpack_require__(10);
+var binary = __webpack_require__(30);
+var isBuf = __webpack_require__(12);
+
+/**
+ * Protocol version.
+ *
+ * @api public
+ */
+
+exports.protocol = 4;
+
+/**
+ * Packet types.
+ *
+ * @api public
+ */
+
+exports.types = [
+  'CONNECT',
+  'DISCONNECT',
+  'EVENT',
+  'ACK',
+  'ERROR',
+  'BINARY_EVENT',
+  'BINARY_ACK'
+];
+
+/**
+ * Packet type `connect`.
+ *
+ * @api public
+ */
+
+exports.CONNECT = 0;
+
+/**
+ * Packet type `disconnect`.
+ *
+ * @api public
+ */
+
+exports.DISCONNECT = 1;
+
+/**
+ * Packet type `event`.
+ *
+ * @api public
+ */
+
+exports.EVENT = 2;
+
+/**
+ * Packet type `ack`.
+ *
+ * @api public
+ */
+
+exports.ACK = 3;
+
+/**
+ * Packet type `error`.
+ *
+ * @api public
+ */
+
+exports.ERROR = 4;
+
+/**
+ * Packet type 'binary event'
+ *
+ * @api public
+ */
+
+exports.BINARY_EVENT = 5;
+
+/**
+ * Packet type `binary ack`. For acks with binary arguments.
+ *
+ * @api public
+ */
+
+exports.BINARY_ACK = 6;
+
+/**
+ * Encoder constructor.
+ *
+ * @api public
+ */
+
+exports.Encoder = Encoder;
+
+/**
+ * Decoder constructor.
+ *
+ * @api public
+ */
+
+exports.Decoder = Decoder;
+
+/**
+ * A socket.io Encoder instance
+ *
+ * @api public
+ */
+
+function Encoder() {}
+
+/**
+ * Encode a packet as a single string if non-binary, or as a
+ * buffer sequence, depending on packet type.
+ *
+ * @param {Object} obj - packet object
+ * @param {Function} callback - function to handle encodings (likely engine.write)
+ * @return Calls callback with Array of encodings
+ * @api public
+ */
+
+Encoder.prototype.encode = function(obj, callback){
+  if ((obj.type === exports.EVENT || obj.type === exports.ACK) && hasBin(obj.data)) {
+    obj.type = obj.type === exports.EVENT ? exports.BINARY_EVENT : exports.BINARY_ACK;
+  }
+
+  debug('encoding packet %j', obj);
+
+  if (exports.BINARY_EVENT === obj.type || exports.BINARY_ACK === obj.type) {
+    encodeAsBinary(obj, callback);
+  }
+  else {
+    var encoding = encodeAsString(obj);
+    callback([encoding]);
+  }
+};
+
+/**
+ * Encode packet as string.
+ *
+ * @param {Object} packet
+ * @return {String} encoded
+ * @api private
+ */
+
+function encodeAsString(obj) {
+
+  // first is type
+  var str = '' + obj.type;
+
+  // attachments if we have them
+  if (exports.BINARY_EVENT === obj.type || exports.BINARY_ACK === obj.type) {
+    str += obj.attachments + '-';
+  }
+
+  // if we have a namespace other than `/`
+  // we append it followed by a comma `,`
+  if (obj.nsp && '/' !== obj.nsp) {
+    str += obj.nsp + ',';
+  }
+
+  // immediately followed by the id
+  if (null != obj.id) {
+    str += obj.id;
+  }
+
+  // json data
+  if (null != obj.data) {
+    str += JSON.stringify(obj.data);
+  }
+
+  debug('encoded %j as %s', obj, str);
+  return str;
+}
+
+/**
+ * Encode packet as 'buffer sequence' by removing blobs, and
+ * deconstructing packet into object with placeholders and
+ * a list of buffers.
+ *
+ * @param {Object} packet
+ * @return {Buffer} encoded
+ * @api private
+ */
+
+function encodeAsBinary(obj, callback) {
+
+  function writeEncoding(bloblessData) {
+    var deconstruction = binary.deconstructPacket(bloblessData);
+    var pack = encodeAsString(deconstruction.packet);
+    var buffers = deconstruction.buffers;
+
+    buffers.unshift(pack); // add packet info to beginning of data list
+    callback(buffers); // write all the buffers
+  }
+
+  binary.removeBlobs(obj, writeEncoding);
+}
+
+/**
+ * A socket.io Decoder instance
+ *
+ * @return {Object} decoder
+ * @api public
+ */
+
+function Decoder() {
+  this.reconstructor = null;
+}
+
+/**
+ * Mix in `Emitter` with Decoder.
+ */
+
+Emitter(Decoder.prototype);
+
+/**
+ * Decodes an ecoded packet string into packet JSON.
+ *
+ * @param {String} obj - encoded packet
+ * @return {Object} packet
+ * @api public
+ */
+
+Decoder.prototype.add = function(obj) {
+  var packet;
+  if (typeof obj === 'string') {
+    packet = decodeString(obj);
+    if (exports.BINARY_EVENT === packet.type || exports.BINARY_ACK === packet.type) { // binary packet's json
+      this.reconstructor = new BinaryReconstructor(packet);
+
+      // no attachments, labeled binary but no binary data to follow
+      if (this.reconstructor.reconPack.attachments === 0) {
+        this.emit('decoded', packet);
+      }
+    } else { // non-binary full packet
+      this.emit('decoded', packet);
+    }
+  }
+  else if (isBuf(obj) || obj.base64) { // raw binary data
+    if (!this.reconstructor) {
+      throw new Error('got binary data when not reconstructing a packet');
+    } else {
+      packet = this.reconstructor.takeBinaryData(obj);
+      if (packet) { // received final buffer
+        this.reconstructor = null;
+        this.emit('decoded', packet);
+      }
+    }
+  }
+  else {
+    throw new Error('Unknown type: ' + obj);
+  }
+};
+
+/**
+ * Decode a packet String (JSON data)
+ *
+ * @param {String} str
+ * @return {Object} packet
+ * @api private
+ */
+
+function decodeString(str) {
+  var i = 0;
+  // look up type
+  var p = {
+    type: Number(str.charAt(0))
+  };
+
+  if (null == exports.types[p.type]) return error();
+
+  // look up attachments if type binary
+  if (exports.BINARY_EVENT === p.type || exports.BINARY_ACK === p.type) {
+    var buf = '';
+    while (str.charAt(++i) !== '-') {
+      buf += str.charAt(i);
+      if (i == str.length) break;
+    }
+    if (buf != Number(buf) || str.charAt(i) !== '-') {
+      throw new Error('Illegal attachments');
+    }
+    p.attachments = Number(buf);
+  }
+
+  // look up namespace (if any)
+  if ('/' === str.charAt(i + 1)) {
+    p.nsp = '';
+    while (++i) {
+      var c = str.charAt(i);
+      if (',' === c) break;
+      p.nsp += c;
+      if (i === str.length) break;
+    }
+  } else {
+    p.nsp = '/';
+  }
+
+  // look up id
+  var next = str.charAt(i + 1);
+  if ('' !== next && Number(next) == next) {
+    p.id = '';
+    while (++i) {
+      var c = str.charAt(i);
+      if (null == c || Number(c) != c) {
+        --i;
+        break;
+      }
+      p.id += str.charAt(i);
+      if (i === str.length) break;
+    }
+    p.id = Number(p.id);
+  }
+
+  // look up json data
+  if (str.charAt(++i)) {
+    p = tryParse(p, str.substr(i));
+  }
+
+  debug('decoded %s as %j', str, p);
+  return p;
+}
+
+function tryParse(p, str) {
+  try {
+    p.data = JSON.parse(str);
+  } catch(e){
+    return error();
+  }
+  return p; 
+}
+
+/**
+ * Deallocates a parser's resources
+ *
+ * @api public
+ */
+
+Decoder.prototype.destroy = function() {
+  if (this.reconstructor) {
+    this.reconstructor.finishedReconstruction();
+  }
+};
+
+/**
+ * A manager of a binary event's 'buffer sequence'. Should
+ * be constructed whenever a packet of type BINARY_EVENT is
+ * decoded.
+ *
+ * @param {Object} packet
+ * @return {BinaryReconstructor} initialized reconstructor
+ * @api private
+ */
+
+function BinaryReconstructor(packet) {
+  this.reconPack = packet;
+  this.buffers = [];
+}
+
+/**
+ * Method to be called when binary data received from connection
+ * after a BINARY_EVENT packet.
+ *
+ * @param {Buffer | ArrayBuffer} binData - the raw binary data received
+ * @return {null | Object} returns null if more binary data is expected or
+ *   a reconstructed packet object if all buffers have been received.
+ * @api private
+ */
+
+BinaryReconstructor.prototype.takeBinaryData = function(binData) {
+  this.buffers.push(binData);
+  if (this.buffers.length === this.reconPack.attachments) { // done with buffer list
+    var packet = binary.reconstructPacket(this.reconPack, this.buffers);
+    this.finishedReconstruction();
+    return packet;
+  }
+  return null;
+};
+
+/**
+ * Cleans up binary packet reconstruction variables.
+ *
+ * @api private
+ */
+
+BinaryReconstructor.prototype.finishedReconstruction = function() {
+  this.reconPack = null;
+  this.buffers = [];
+};
+
+function error() {
+  return {
+    type: exports.ERROR,
+    data: 'parser error'
+  };
+}
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {// browser shim for xmlhttprequest module
+
+var hasCORS = __webpack_require__(34);
+
+module.exports = function (opts) {
+  var xdomain = opts.xdomain;
+
+  // scheme must be same when usign XDomainRequest
+  // http://blogs.msdn.com/b/ieinternals/archive/2010/05/13/xdomainrequest-restrictions-limitations-and-workarounds.aspx
+  var xscheme = opts.xscheme;
+
+  // XDomainRequest has a flow of not sending cookie, therefore it should be disabled as a default.
+  // https://github.com/Automattic/engine.io-client/pull/217
+  var enablesXDR = opts.enablesXDR;
+
+  // XMLHttpRequest can be disabled on IE
+  try {
+    if ('undefined' !== typeof XMLHttpRequest && (!xdomain || hasCORS)) {
+      return new XMLHttpRequest();
+    }
+  } catch (e) { }
+
+  // Use XDomainRequest for IE8 if enablesXDR is true
+  // because loading bar keeps flashing when using jsonp-polling
+  // https://github.com/yujiosaka/socke.io-ie8-loading-example
+  try {
+    if ('undefined' !== typeof XDomainRequest && !xscheme && enablesXDR) {
+      return new XDomainRequest();
+    }
+  } catch (e) { }
+
+  if (!xdomain) {
+    try {
+      return new global[['Active'].concat('Object').join('X')]('Microsoft.XMLHTTP');
+    } catch (e) { }
+  }
+};
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * Module dependencies.
+ */
+
+var parser = __webpack_require__(3);
+var Emitter = __webpack_require__(2);
+
+/**
+ * Module exports.
+ */
+
+module.exports = Transport;
+
+/**
+ * Transport abstract constructor.
+ *
+ * @param {Object} options.
+ * @api private
+ */
+
+function Transport (opts) {
+  this.path = opts.path;
+  this.hostname = opts.hostname;
+  this.port = opts.port;
+  this.secure = opts.secure;
+  this.query = opts.query;
+  this.timestampParam = opts.timestampParam;
+  this.timestampRequests = opts.timestampRequests;
+  this.readyState = '';
+  this.agent = opts.agent || false;
+  this.socket = opts.socket;
+  this.enablesXDR = opts.enablesXDR;
+
+  // SSL options for Node.js client
+  this.pfx = opts.pfx;
+  this.key = opts.key;
+  this.passphrase = opts.passphrase;
+  this.cert = opts.cert;
+  this.ca = opts.ca;
+  this.ciphers = opts.ciphers;
+  this.rejectUnauthorized = opts.rejectUnauthorized;
+  this.forceNode = opts.forceNode;
+
+  // other options for Node.js client
+  this.extraHeaders = opts.extraHeaders;
+  this.localAddress = opts.localAddress;
+}
+
+/**
+ * Mix in `Emitter`.
+ */
+
+Emitter(Transport.prototype);
+
+/**
+ * Emits an error.
+ *
+ * @param {String} str
+ * @return {Transport} for chaining
+ * @api public
+ */
+
+Transport.prototype.onError = function (msg, desc) {
+  var err = new Error(msg);
+  err.type = 'TransportError';
+  err.description = desc;
+  this.emit('error', err);
+  return this;
+};
+
+/**
+ * Opens the transport.
+ *
+ * @api public
+ */
+
+Transport.prototype.open = function () {
+  if ('closed' === this.readyState || '' === this.readyState) {
+    this.readyState = 'opening';
+    this.doOpen();
+  }
+
+  return this;
+};
+
+/**
+ * Closes the transport.
+ *
+ * @api private
+ */
+
+Transport.prototype.close = function () {
+  if ('opening' === this.readyState || 'open' === this.readyState) {
+    this.doClose();
+    this.onClose();
+  }
+
+  return this;
+};
+
+/**
+ * Sends multiple packets.
+ *
+ * @param {Array} packets
+ * @api private
+ */
+
+Transport.prototype.send = function (packets) {
+  if ('open' === this.readyState) {
+    this.write(packets);
+  } else {
+    throw new Error('Transport not open');
+  }
+};
+
+/**
+ * Called upon open
+ *
+ * @api private
+ */
+
+Transport.prototype.onOpen = function () {
+  this.readyState = 'open';
+  this.writable = true;
+  this.emit('open');
+};
+
+/**
+ * Called with data.
+ *
+ * @param {String} data
+ * @api private
+ */
+
+Transport.prototype.onData = function (data) {
+  var packet = parser.decodePacket(data, this.socket.binaryType);
+  this.onPacket(packet);
+};
+
+/**
+ * Called with a decoded packet.
+ */
+
+Transport.prototype.onPacket = function (packet) {
+  this.emit('packet', packet);
+};
+
+/**
+ * Called upon close.
+ *
+ * @api private
+ */
+
+Transport.prototype.onClose = function () {
+  this.readyState = 'closed';
+  this.emit('close');
+};
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+/**
+ * Parses an URI
+ *
+ * @author Steven Levithan <stevenlevithan.com> (MIT license)
+ * @api private
+ */
+
+var re = /^(?:(?![^:@]+:[^:@\/]*@)(http|https|ws|wss):\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?((?:[a-f0-9]{0,4}:){2,7}[a-f0-9]{0,4}|[^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/;
+
+var parts = [
+    'source', 'protocol', 'authority', 'userInfo', 'user', 'password', 'host', 'port', 'relative', 'path', 'directory', 'file', 'query', 'anchor'
+];
+
+module.exports = function parseuri(str) {
+    var src = str,
+        b = str.indexOf('['),
+        e = str.indexOf(']');
+
+    if (b != -1 && e != -1) {
+        str = str.substring(0, b) + str.substring(b, e).replace(/:/g, ';') + str.substring(e, str.length);
+    }
+
+    var m = re.exec(str || ''),
+        uri = {},
+        i = 14;
+
+    while (i--) {
+        uri[parts[i]] = m[i] || '';
+    }
+
+    if (b != -1 && e != -1) {
+        uri.source = src;
+        uri.host = uri.host.substring(1, uri.host.length - 1).replace(/;/g, ':');
+        uri.authority = uri.authority.replace('[', '').replace(']', '').replace(/;/g, ':');
+        uri.ipv6uri = true;
+    }
+
+    return uri;
+};
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {/* global Blob File */
+
+/*
+ * Module requirements.
+ */
+
+var isArray = __webpack_require__(11);
+
+var toString = Object.prototype.toString;
+var withNativeBlob = typeof global.Blob === 'function' || toString.call(global.Blob) === '[object BlobConstructor]';
+var withNativeFile = typeof global.File === 'function' || toString.call(global.File) === '[object FileConstructor]';
+
+/**
+ * Module exports.
+ */
+
+module.exports = hasBinary;
+
+/**
+ * Checks for binary data.
+ *
+ * Supports Buffer, ArrayBuffer, Blob and File.
+ *
+ * @param {Object} anything
+ * @api public
+ */
+
+function hasBinary (obj) {
+  if (!obj || typeof obj !== 'object') {
+    return false;
+  }
+
+  if (isArray(obj)) {
+    for (var i = 0, l = obj.length; i < l; i++) {
+      if (hasBinary(obj[i])) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  if ((typeof global.Buffer === 'function' && global.Buffer.isBuffer && global.Buffer.isBuffer(obj)) ||
+     (typeof global.ArrayBuffer === 'function' && obj instanceof ArrayBuffer) ||
+     (withNativeBlob && obj instanceof Blob) ||
+     (withNativeFile && obj instanceof File)
+    ) {
+    return true;
+  }
+
+  // see: https://github.com/Automattic/has-binary/pull/4
+  if (obj.toJSON && typeof obj.toJSON === 'function' && arguments.length === 1) {
+    return hasBinary(obj.toJSON(), true);
+  }
+
+  for (var key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key) && hasBinary(obj[key])) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+var toString = {}.toString;
+
+module.exports = Array.isArray || function (arr) {
+  return toString.call(arr) == '[object Array]';
+};
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {
+module.exports = isBuf;
+
+/**
+ * Returns true if obj is a buffer or an arraybuffer.
+ *
+ * @api private
+ */
+
+function isBuf(obj) {
+  return (global.Buffer && global.Buffer.isBuffer(obj)) ||
+         (global.ArrayBuffer && obj instanceof ArrayBuffer);
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+/**
+ * Module dependencies.
+ */
+
+var eio = __webpack_require__(31);
+var Socket = __webpack_require__(18);
+var Emitter = __webpack_require__(2);
+var parser = __webpack_require__(6);
+var on = __webpack_require__(19);
+var bind = __webpack_require__(20);
+var debug = __webpack_require__(1)('socket.io-client:manager');
+var indexOf = __webpack_require__(17);
+var Backoff = __webpack_require__(48);
+
+/**
+ * IE6+ hasOwnProperty
+ */
+
+var has = Object.prototype.hasOwnProperty;
+
+/**
+ * Module exports
+ */
+
+module.exports = Manager;
+
+/**
+ * `Manager` constructor.
+ *
+ * @param {String} engine instance or engine uri/opts
+ * @param {Object} options
+ * @api public
+ */
+
+function Manager (uri, opts) {
+  if (!(this instanceof Manager)) return new Manager(uri, opts);
+  if (uri && ('object' === typeof uri)) {
+    opts = uri;
+    uri = undefined;
+  }
+  opts = opts || {};
+
+  opts.path = opts.path || '/socket.io';
+  this.nsps = {};
+  this.subs = [];
+  this.opts = opts;
+  this.reconnection(opts.reconnection !== false);
+  this.reconnectionAttempts(opts.reconnectionAttempts || Infinity);
+  this.reconnectionDelay(opts.reconnectionDelay || 1000);
+  this.reconnectionDelayMax(opts.reconnectionDelayMax || 5000);
+  this.randomizationFactor(opts.randomizationFactor || 0.5);
+  this.backoff = new Backoff({
+    min: this.reconnectionDelay(),
+    max: this.reconnectionDelayMax(),
+    jitter: this.randomizationFactor()
+  });
+  this.timeout(null == opts.timeout ? 20000 : opts.timeout);
+  this.readyState = 'closed';
+  this.uri = uri;
+  this.connecting = [];
+  this.lastPing = null;
+  this.encoding = false;
+  this.packetBuffer = [];
+  var _parser = opts.parser || parser;
+  this.encoder = new _parser.Encoder();
+  this.decoder = new _parser.Decoder();
+  this.autoConnect = opts.autoConnect !== false;
+  if (this.autoConnect) this.open();
+}
+
+/**
+ * Propagate given event to sockets and emit on `this`
+ *
+ * @api private
+ */
+
+Manager.prototype.emitAll = function () {
+  this.emit.apply(this, arguments);
+  for (var nsp in this.nsps) {
+    if (has.call(this.nsps, nsp)) {
+      this.nsps[nsp].emit.apply(this.nsps[nsp], arguments);
+    }
+  }
+};
+
+/**
+ * Update `socket.id` of all sockets
+ *
+ * @api private
+ */
+
+Manager.prototype.updateSocketIds = function () {
+  for (var nsp in this.nsps) {
+    if (has.call(this.nsps, nsp)) {
+      this.nsps[nsp].id = this.generateId(nsp);
+    }
+  }
+};
+
+/**
+ * generate `socket.id` for the given `nsp`
+ *
+ * @param {String} nsp
+ * @return {String}
+ * @api private
+ */
+
+Manager.prototype.generateId = function (nsp) {
+  return (nsp === '/' ? '' : (nsp + '#')) + this.engine.id;
+};
+
+/**
+ * Mix in `Emitter`.
+ */
+
+Emitter(Manager.prototype);
+
+/**
+ * Sets the `reconnection` config.
+ *
+ * @param {Boolean} true/false if it should automatically reconnect
+ * @return {Manager} self or value
+ * @api public
+ */
+
+Manager.prototype.reconnection = function (v) {
+  if (!arguments.length) return this._reconnection;
+  this._reconnection = !!v;
+  return this;
+};
+
+/**
+ * Sets the reconnection attempts config.
+ *
+ * @param {Number} max reconnection attempts before giving up
+ * @return {Manager} self or value
+ * @api public
+ */
+
+Manager.prototype.reconnectionAttempts = function (v) {
+  if (!arguments.length) return this._reconnectionAttempts;
+  this._reconnectionAttempts = v;
+  return this;
+};
+
+/**
+ * Sets the delay between reconnections.
+ *
+ * @param {Number} delay
+ * @return {Manager} self or value
+ * @api public
+ */
+
+Manager.prototype.reconnectionDelay = function (v) {
+  if (!arguments.length) return this._reconnectionDelay;
+  this._reconnectionDelay = v;
+  this.backoff && this.backoff.setMin(v);
+  return this;
+};
+
+Manager.prototype.randomizationFactor = function (v) {
+  if (!arguments.length) return this._randomizationFactor;
+  this._randomizationFactor = v;
+  this.backoff && this.backoff.setJitter(v);
+  return this;
+};
+
+/**
+ * Sets the maximum delay between reconnections.
+ *
+ * @param {Number} delay
+ * @return {Manager} self or value
+ * @api public
+ */
+
+Manager.prototype.reconnectionDelayMax = function (v) {
+  if (!arguments.length) return this._reconnectionDelayMax;
+  this._reconnectionDelayMax = v;
+  this.backoff && this.backoff.setMax(v);
+  return this;
+};
+
+/**
+ * Sets the connection timeout. `false` to disable
+ *
+ * @return {Manager} self or value
+ * @api public
+ */
+
+Manager.prototype.timeout = function (v) {
+  if (!arguments.length) return this._timeout;
+  this._timeout = v;
+  return this;
+};
+
+/**
+ * Starts trying to reconnect if reconnection is enabled and we have not
+ * started reconnecting yet
+ *
+ * @api private
+ */
+
+Manager.prototype.maybeReconnectOnOpen = function () {
+  // Only try to reconnect if it's the first time we're connecting
+  if (!this.reconnecting && this._reconnection && this.backoff.attempts === 0) {
+    // keeps reconnection from firing twice for the same reconnection loop
+    this.reconnect();
+  }
+};
+
+/**
+ * Sets the current transport `socket`.
+ *
+ * @param {Function} optional, callback
+ * @return {Manager} self
+ * @api public
+ */
+
+Manager.prototype.open =
+Manager.prototype.connect = function (fn, opts) {
+  debug('readyState %s', this.readyState);
+  if (~this.readyState.indexOf('open')) return this;
+
+  debug('opening %s', this.uri);
+  this.engine = eio(this.uri, this.opts);
+  var socket = this.engine;
+  var self = this;
+  this.readyState = 'opening';
+  this.skipReconnect = false;
+
+  // emit `open`
+  var openSub = on(socket, 'open', function () {
+    self.onopen();
+    fn && fn();
+  });
+
+  // emit `connect_error`
+  var errorSub = on(socket, 'error', function (data) {
+    debug('connect_error');
+    self.cleanup();
+    self.readyState = 'closed';
+    self.emitAll('connect_error', data);
+    if (fn) {
+      var err = new Error('Connection error');
+      err.data = data;
+      fn(err);
+    } else {
+      // Only do this if there is no fn to handle the error
+      self.maybeReconnectOnOpen();
+    }
+  });
+
+  // emit `connect_timeout`
+  if (false !== this._timeout) {
+    var timeout = this._timeout;
+    debug('connect attempt will timeout after %d', timeout);
+
+    // set timer
+    var timer = setTimeout(function () {
+      debug('connect attempt timed out after %d', timeout);
+      openSub.destroy();
+      socket.close();
+      socket.emit('error', 'timeout');
+      self.emitAll('connect_timeout', timeout);
+    }, timeout);
+
+    this.subs.push({
+      destroy: function () {
+        clearTimeout(timer);
+      }
+    });
+  }
+
+  this.subs.push(openSub);
+  this.subs.push(errorSub);
+
+  return this;
+};
+
+/**
+ * Called upon transport open.
+ *
+ * @api private
+ */
+
+Manager.prototype.onopen = function () {
+  debug('open');
+
+  // clear old subs
+  this.cleanup();
+
+  // mark as open
+  this.readyState = 'open';
+  this.emit('open');
+
+  // add new subs
+  var socket = this.engine;
+  this.subs.push(on(socket, 'data', bind(this, 'ondata')));
+  this.subs.push(on(socket, 'ping', bind(this, 'onping')));
+  this.subs.push(on(socket, 'pong', bind(this, 'onpong')));
+  this.subs.push(on(socket, 'error', bind(this, 'onerror')));
+  this.subs.push(on(socket, 'close', bind(this, 'onclose')));
+  this.subs.push(on(this.decoder, 'decoded', bind(this, 'ondecoded')));
+};
+
+/**
+ * Called upon a ping.
+ *
+ * @api private
+ */
+
+Manager.prototype.onping = function () {
+  this.lastPing = new Date();
+  this.emitAll('ping');
+};
+
+/**
+ * Called upon a packet.
+ *
+ * @api private
+ */
+
+Manager.prototype.onpong = function () {
+  this.emitAll('pong', new Date() - this.lastPing);
+};
+
+/**
+ * Called with data.
+ *
+ * @api private
+ */
+
+Manager.prototype.ondata = function (data) {
+  this.decoder.add(data);
+};
+
+/**
+ * Called when parser fully decodes a packet.
+ *
+ * @api private
+ */
+
+Manager.prototype.ondecoded = function (packet) {
+  this.emit('packet', packet);
+};
+
+/**
+ * Called upon socket error.
+ *
+ * @api private
+ */
+
+Manager.prototype.onerror = function (err) {
+  debug('error', err);
+  this.emitAll('error', err);
+};
+
+/**
+ * Creates a new socket for the given `nsp`.
+ *
+ * @return {Socket}
+ * @api public
+ */
+
+Manager.prototype.socket = function (nsp, opts) {
+  var socket = this.nsps[nsp];
+  if (!socket) {
+    socket = new Socket(this, nsp, opts);
+    this.nsps[nsp] = socket;
+    var self = this;
+    socket.on('connecting', onConnecting);
+    socket.on('connect', function () {
+      socket.id = self.generateId(nsp);
+    });
+
+    if (this.autoConnect) {
+      // manually call here since connecting event is fired before listening
+      onConnecting();
+    }
+  }
+
+  function onConnecting () {
+    if (!~indexOf(self.connecting, socket)) {
+      self.connecting.push(socket);
+    }
+  }
+
+  return socket;
+};
+
+/**
+ * Called upon a socket close.
+ *
+ * @param {Socket} socket
+ */
+
+Manager.prototype.destroy = function (socket) {
+  var index = indexOf(this.connecting, socket);
+  if (~index) this.connecting.splice(index, 1);
+  if (this.connecting.length) return;
+
+  this.close();
+};
+
+/**
+ * Writes a packet.
+ *
+ * @param {Object} packet
+ * @api private
+ */
+
+Manager.prototype.packet = function (packet) {
+  debug('writing packet %j', packet);
+  var self = this;
+  if (packet.query && packet.type === 0) packet.nsp += '?' + packet.query;
+
+  if (!self.encoding) {
+    // encode, then write to engine with result
+    self.encoding = true;
+    this.encoder.encode(packet, function (encodedPackets) {
+      for (var i = 0; i < encodedPackets.length; i++) {
+        self.engine.write(encodedPackets[i], packet.options);
+      }
+      self.encoding = false;
+      self.processPacketQueue();
+    });
+  } else { // add packet to the queue
+    self.packetBuffer.push(packet);
+  }
+};
+
+/**
+ * If packet buffer is non-empty, begins encoding the
+ * next packet in line.
+ *
+ * @api private
+ */
+
+Manager.prototype.processPacketQueue = function () {
+  if (this.packetBuffer.length > 0 && !this.encoding) {
+    var pack = this.packetBuffer.shift();
+    this.packet(pack);
+  }
+};
+
+/**
+ * Clean up transport subscriptions and packet buffer.
+ *
+ * @api private
+ */
+
+Manager.prototype.cleanup = function () {
+  debug('cleanup');
+
+  var subsLength = this.subs.length;
+  for (var i = 0; i < subsLength; i++) {
+    var sub = this.subs.shift();
+    sub.destroy();
+  }
+
+  this.packetBuffer = [];
+  this.encoding = false;
+  this.lastPing = null;
+
+  this.decoder.destroy();
+};
+
+/**
+ * Close the current socket.
+ *
+ * @api private
+ */
+
+Manager.prototype.close =
+Manager.prototype.disconnect = function () {
+  debug('disconnect');
+  this.skipReconnect = true;
+  this.reconnecting = false;
+  if ('opening' === this.readyState) {
+    // `onclose` will not fire because
+    // an open event never happened
+    this.cleanup();
+  }
+  this.backoff.reset();
+  this.readyState = 'closed';
+  if (this.engine) this.engine.close();
+};
+
+/**
+ * Called upon engine close.
+ *
+ * @api private
+ */
+
+Manager.prototype.onclose = function (reason) {
+  debug('onclose');
+
+  this.cleanup();
+  this.backoff.reset();
+  this.readyState = 'closed';
+  this.emit('close', reason);
+
+  if (this._reconnection && !this.skipReconnect) {
+    this.reconnect();
+  }
+};
+
+/**
+ * Attempt a reconnection.
+ *
+ * @api private
+ */
+
+Manager.prototype.reconnect = function () {
+  if (this.reconnecting || this.skipReconnect) return this;
+
+  var self = this;
+
+  if (this.backoff.attempts >= this._reconnectionAttempts) {
+    debug('reconnect failed');
+    this.backoff.reset();
+    this.emitAll('reconnect_failed');
+    this.reconnecting = false;
+  } else {
+    var delay = this.backoff.duration();
+    debug('will wait %dms before reconnect attempt', delay);
+
+    this.reconnecting = true;
+    var timer = setTimeout(function () {
+      if (self.skipReconnect) return;
+
+      debug('attempting reconnect');
+      self.emitAll('reconnect_attempt', self.backoff.attempts);
+      self.emitAll('reconnecting', self.backoff.attempts);
+
+      // check again for the case socket closed in above events
+      if (self.skipReconnect) return;
+
+      self.open(function (err) {
+        if (err) {
+          debug('reconnect attempt error');
+          self.reconnecting = false;
+          self.reconnect();
+          self.emitAll('reconnect_error', err.data);
+        } else {
+          debug('reconnect success');
+          self.onreconnect();
+        }
+      });
+    }, delay);
+
+    this.subs.push({
+      destroy: function () {
+        clearTimeout(timer);
+      }
+    });
+  }
+};
+
+/**
+ * Called upon successful reconnect.
+ *
+ * @api private
+ */
+
+Manager.prototype.onreconnect = function () {
+  var attempt = this.backoff.attempts;
+  this.reconnecting = false;
+  this.backoff.reset();
+  this.updateSocketIds();
+  this.emitAll('reconnect', attempt);
+};
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {/**
+ * Module dependencies
+ */
+
+var XMLHttpRequest = __webpack_require__(7);
+var XHR = __webpack_require__(35);
+var JSONP = __webpack_require__(43);
+var websocket = __webpack_require__(44);
+
+/**
+ * Export transports.
+ */
+
+exports.polling = polling;
+exports.websocket = websocket;
+
+/**
+ * Polling transport polymorphic constructor.
+ * Decides on xhr vs jsonp based on feature detection.
+ *
+ * @api private
+ */
+
+function polling (opts) {
+  var xhr;
+  var xd = false;
+  var xs = false;
+  var jsonp = false !== opts.jsonp;
+
+  if (global.location) {
+    var isSSL = 'https:' === location.protocol;
+    var port = location.port;
+
+    // some user agents have empty `location.port`
+    if (!port) {
+      port = isSSL ? 443 : 80;
+    }
+
+    xd = opts.hostname !== location.hostname || port !== opts.port;
+    xs = opts.secure !== isSSL;
+  }
+
+  opts.xdomain = xd;
+  opts.xscheme = xs;
+  xhr = new XMLHttpRequest(opts);
+
+  if ('open' in xhr && !opts.forceJSONP) {
+    return new XHR(opts);
+  } else {
+    if (!jsonp) throw new Error('JSONP disabled');
+    return new JSONP(opts);
+  }
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * Module dependencies.
+ */
+
+var Transport = __webpack_require__(8);
+var parseqs = __webpack_require__(4);
+var parser = __webpack_require__(3);
+var inherit = __webpack_require__(5);
+var yeast = __webpack_require__(16);
+var debug = __webpack_require__(1)('engine.io-client:polling');
+
+/**
+ * Module exports.
+ */
+
+module.exports = Polling;
+
+/**
+ * Is XHR2 supported?
+ */
+
+var hasXHR2 = (function () {
+  var XMLHttpRequest = __webpack_require__(7);
+  var xhr = new XMLHttpRequest({ xdomain: false });
+  return null != xhr.responseType;
+})();
+
+/**
+ * Polling interface.
+ *
+ * @param {Object} opts
+ * @api private
+ */
+
+function Polling (opts) {
+  var forceBase64 = (opts && opts.forceBase64);
+  if (!hasXHR2 || forceBase64) {
+    this.supportsBinary = false;
+  }
+  Transport.call(this, opts);
+}
+
+/**
+ * Inherits from Transport.
+ */
+
+inherit(Polling, Transport);
+
+/**
+ * Transport name.
+ */
+
+Polling.prototype.name = 'polling';
+
+/**
+ * Opens the socket (triggers polling). We write a PING message to determine
+ * when the transport is open.
+ *
+ * @api private
+ */
+
+Polling.prototype.doOpen = function () {
+  this.poll();
+};
+
+/**
+ * Pauses polling.
+ *
+ * @param {Function} callback upon buffers are flushed and transport is paused
+ * @api private
+ */
+
+Polling.prototype.pause = function (onPause) {
+  var self = this;
+
+  this.readyState = 'pausing';
+
+  function pause () {
+    debug('paused');
+    self.readyState = 'paused';
+    onPause();
+  }
+
+  if (this.polling || !this.writable) {
+    var total = 0;
+
+    if (this.polling) {
+      debug('we are currently polling - waiting to pause');
+      total++;
+      this.once('pollComplete', function () {
+        debug('pre-pause polling complete');
+        --total || pause();
+      });
+    }
+
+    if (!this.writable) {
+      debug('we are currently writing - waiting to pause');
+      total++;
+      this.once('drain', function () {
+        debug('pre-pause writing complete');
+        --total || pause();
+      });
+    }
+  } else {
+    pause();
+  }
+};
+
+/**
+ * Starts polling cycle.
+ *
+ * @api public
+ */
+
+Polling.prototype.poll = function () {
+  debug('polling');
+  this.polling = true;
+  this.doPoll();
+  this.emit('poll');
+};
+
+/**
+ * Overloads onData to detect payloads.
+ *
+ * @api private
+ */
+
+Polling.prototype.onData = function (data) {
+  var self = this;
+  debug('polling got data %s', data);
+  var callback = function (packet, index, total) {
+    // if its the first message we consider the transport open
+    if ('opening' === self.readyState) {
+      self.onOpen();
+    }
+
+    // if its a close packet, we close the ongoing requests
+    if ('close' === packet.type) {
+      self.onClose();
+      return false;
+    }
+
+    // otherwise bypass onData and handle the message
+    self.onPacket(packet);
+  };
+
+  // decode payload
+  parser.decodePayload(data, this.socket.binaryType, callback);
+
+  // if an event did not trigger closing
+  if ('closed' !== this.readyState) {
+    // if we got data we're not polling
+    this.polling = false;
+    this.emit('pollComplete');
+
+    if ('open' === this.readyState) {
+      this.poll();
+    } else {
+      debug('ignoring poll - transport state "%s"', this.readyState);
+    }
+  }
+};
+
+/**
+ * For polling, send a close packet.
+ *
+ * @api private
+ */
+
+Polling.prototype.doClose = function () {
+  var self = this;
+
+  function close () {
+    debug('writing close packet');
+    self.write([{ type: 'close' }]);
+  }
+
+  if ('open' === this.readyState) {
+    debug('transport open - closing');
+    close();
+  } else {
+    // in case we're trying to close while
+    // handshaking is in progress (GH-164)
+    debug('transport not open - deferring close');
+    this.once('open', close);
+  }
+};
+
+/**
+ * Writes a packets payload.
+ *
+ * @param {Array} data packets
+ * @param {Function} drain callback
+ * @api private
+ */
+
+Polling.prototype.write = function (packets) {
+  var self = this;
+  this.writable = false;
+  var callbackfn = function () {
+    self.writable = true;
+    self.emit('drain');
+  };
+
+  parser.encodePayload(packets, this.supportsBinary, function (data) {
+    self.doWrite(data, callbackfn);
+  });
+};
+
+/**
+ * Generates uri for connection.
+ *
+ * @api private
+ */
+
+Polling.prototype.uri = function () {
+  var query = this.query || {};
+  var schema = this.secure ? 'https' : 'http';
+  var port = '';
+
+  // cache busting is forced
+  if (false !== this.timestampRequests) {
+    query[this.timestampParam] = yeast();
+  }
+
+  if (!this.supportsBinary && !query.sid) {
+    query.b64 = 1;
+  }
+
+  query = parseqs.encode(query);
+
+  // avoid port if default for schema
+  if (this.port && (('https' === schema && Number(this.port) !== 443) ||
+     ('http' === schema && Number(this.port) !== 80))) {
+    port = ':' + this.port;
+  }
+
+  // prepend ? to query
+  if (query.length) {
+    query = '?' + query;
+  }
+
+  var ipv6 = this.hostname.indexOf(':') !== -1;
+  return schema + '://' + (ipv6 ? '[' + this.hostname + ']' : this.hostname) + port + this.path + query;
+};
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'.split('')
+  , length = 64
+  , map = {}
+  , seed = 0
+  , i = 0
+  , prev;
+
+/**
+ * Return a string representing the specified number.
+ *
+ * @param {Number} num The number to convert.
+ * @returns {String} The string representation of the number.
+ * @api public
+ */
+function encode(num) {
+  var encoded = '';
+
+  do {
+    encoded = alphabet[num % length] + encoded;
+    num = Math.floor(num / length);
+  } while (num > 0);
+
+  return encoded;
+}
+
+/**
+ * Return the integer value specified by the given string.
+ *
+ * @param {String} str The string to convert.
+ * @returns {Number} The integer value represented by the string.
+ * @api public
+ */
+function decode(str) {
+  var decoded = 0;
+
+  for (i = 0; i < str.length; i++) {
+    decoded = decoded * length + map[str.charAt(i)];
+  }
+
+  return decoded;
+}
+
+/**
+ * Yeast: A tiny growing id generator.
+ *
+ * @returns {String} A unique id.
+ * @api public
+ */
+function yeast() {
+  var now = encode(+new Date());
+
+  if (now !== prev) return seed = 0, prev = now;
+  return now +'.'+ encode(seed++);
+}
+
+//
+// Map each character to its index.
+//
+for (; i < length; i++) map[alphabet[i]] = i;
+
+//
+// Expose the `yeast`, `encode` and `decode` functions.
+//
+yeast.encode = encode;
+yeast.decode = decode;
+module.exports = yeast;
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports) {
+
+
+var indexOf = [].indexOf;
+
+module.exports = function(arr, obj){
+  if (indexOf) return arr.indexOf(obj);
+  for (var i = 0; i < arr.length; ++i) {
+    if (arr[i] === obj) return i;
+  }
+  return -1;
+};
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+/**
+ * Module dependencies.
+ */
+
+var parser = __webpack_require__(6);
+var Emitter = __webpack_require__(2);
+var toArray = __webpack_require__(47);
+var on = __webpack_require__(19);
+var bind = __webpack_require__(20);
+var debug = __webpack_require__(1)('socket.io-client:socket');
+var parseqs = __webpack_require__(4);
+
+/**
+ * Module exports.
+ */
+
+module.exports = exports = Socket;
+
+/**
+ * Internal events (blacklisted).
+ * These events can't be emitted by the user.
+ *
+ * @api private
+ */
+
+var events = {
+  connect: 1,
+  connect_error: 1,
+  connect_timeout: 1,
+  connecting: 1,
+  disconnect: 1,
+  error: 1,
+  reconnect: 1,
+  reconnect_attempt: 1,
+  reconnect_failed: 1,
+  reconnect_error: 1,
+  reconnecting: 1,
+  ping: 1,
+  pong: 1
+};
+
+/**
+ * Shortcut to `Emitter#emit`.
+ */
+
+var emit = Emitter.prototype.emit;
+
+/**
+ * `Socket` constructor.
+ *
+ * @api public
+ */
+
+function Socket (io, nsp, opts) {
+  this.io = io;
+  this.nsp = nsp;
+  this.json = this; // compat
+  this.ids = 0;
+  this.acks = {};
+  this.receiveBuffer = [];
+  this.sendBuffer = [];
+  this.connected = false;
+  this.disconnected = true;
+  if (opts && opts.query) {
+    this.query = opts.query;
+  }
+  if (this.io.autoConnect) this.open();
+}
+
+/**
+ * Mix in `Emitter`.
+ */
+
+Emitter(Socket.prototype);
+
+/**
+ * Subscribe to open, close and packet events
+ *
+ * @api private
+ */
+
+Socket.prototype.subEvents = function () {
+  if (this.subs) return;
+
+  var io = this.io;
+  this.subs = [
+    on(io, 'open', bind(this, 'onopen')),
+    on(io, 'packet', bind(this, 'onpacket')),
+    on(io, 'close', bind(this, 'onclose'))
+  ];
+};
+
+/**
+ * "Opens" the socket.
+ *
+ * @api public
+ */
+
+Socket.prototype.open =
+Socket.prototype.connect = function () {
+  if (this.connected) return this;
+
+  this.subEvents();
+  this.io.open(); // ensure open
+  if ('open' === this.io.readyState) this.onopen();
+  this.emit('connecting');
+  return this;
+};
+
+/**
+ * Sends a `message` event.
+ *
+ * @return {Socket} self
+ * @api public
+ */
+
+Socket.prototype.send = function () {
+  var args = toArray(arguments);
+  args.unshift('message');
+  this.emit.apply(this, args);
+  return this;
+};
+
+/**
+ * Override `emit`.
+ * If the event is in `events`, it's emitted normally.
+ *
+ * @param {String} event name
+ * @return {Socket} self
+ * @api public
+ */
+
+Socket.prototype.emit = function (ev) {
+  if (events.hasOwnProperty(ev)) {
+    emit.apply(this, arguments);
+    return this;
+  }
+
+  var args = toArray(arguments);
+  var packet = { type: parser.EVENT, data: args };
+
+  packet.options = {};
+  packet.options.compress = !this.flags || false !== this.flags.compress;
+
+  // event ack callback
+  if ('function' === typeof args[args.length - 1]) {
+    debug('emitting packet with ack id %d', this.ids);
+    this.acks[this.ids] = args.pop();
+    packet.id = this.ids++;
+  }
+
+  if (this.connected) {
+    this.packet(packet);
+  } else {
+    this.sendBuffer.push(packet);
+  }
+
+  delete this.flags;
+
+  return this;
+};
+
+/**
+ * Sends a packet.
+ *
+ * @param {Object} packet
+ * @api private
+ */
+
+Socket.prototype.packet = function (packet) {
+  packet.nsp = this.nsp;
+  this.io.packet(packet);
+};
+
+/**
+ * Called upon engine `open`.
+ *
+ * @api private
+ */
+
+Socket.prototype.onopen = function () {
+  debug('transport is open - connecting');
+
+  // write connect packet if necessary
+  if ('/' !== this.nsp) {
+    if (this.query) {
+      var query = typeof this.query === 'object' ? parseqs.encode(this.query) : this.query;
+      debug('sending connect packet with query %s', query);
+      this.packet({type: parser.CONNECT, query: query});
+    } else {
+      this.packet({type: parser.CONNECT});
+    }
+  }
+};
+
+/**
+ * Called upon engine `close`.
+ *
+ * @param {String} reason
+ * @api private
+ */
+
+Socket.prototype.onclose = function (reason) {
+  debug('close (%s)', reason);
+  this.connected = false;
+  this.disconnected = true;
+  delete this.id;
+  this.emit('disconnect', reason);
+};
+
+/**
+ * Called with socket packet.
+ *
+ * @param {Object} packet
+ * @api private
+ */
+
+Socket.prototype.onpacket = function (packet) {
+  if (packet.nsp !== this.nsp) return;
+
+  switch (packet.type) {
+    case parser.CONNECT:
+      this.onconnect();
+      break;
+
+    case parser.EVENT:
+      this.onevent(packet);
+      break;
+
+    case parser.BINARY_EVENT:
+      this.onevent(packet);
+      break;
+
+    case parser.ACK:
+      this.onack(packet);
+      break;
+
+    case parser.BINARY_ACK:
+      this.onack(packet);
+      break;
+
+    case parser.DISCONNECT:
+      this.ondisconnect();
+      break;
+
+    case parser.ERROR:
+      this.emit('error', packet.data);
+      break;
+  }
+};
+
+/**
+ * Called upon a server event.
+ *
+ * @param {Object} packet
+ * @api private
+ */
+
+Socket.prototype.onevent = function (packet) {
+  var args = packet.data || [];
+  debug('emitting event %j', args);
+
+  if (null != packet.id) {
+    debug('attaching ack callback to event');
+    args.push(this.ack(packet.id));
+  }
+
+  if (this.connected) {
+    emit.apply(this, args);
+  } else {
+    this.receiveBuffer.push(args);
+  }
+};
+
+/**
+ * Produces an ack callback to emit with an event.
+ *
+ * @api private
+ */
+
+Socket.prototype.ack = function (id) {
+  var self = this;
+  var sent = false;
+  return function () {
+    // prevent double callbacks
+    if (sent) return;
+    sent = true;
+    var args = toArray(arguments);
+    debug('sending ack %j', args);
+
+    self.packet({
+      type: parser.ACK,
+      id: id,
+      data: args
+    });
+  };
+};
+
+/**
+ * Called upon a server acknowlegement.
+ *
+ * @param {Object} packet
+ * @api private
+ */
+
+Socket.prototype.onack = function (packet) {
+  var ack = this.acks[packet.id];
+  if ('function' === typeof ack) {
+    debug('calling ack %s with %j', packet.id, packet.data);
+    ack.apply(this, packet.data);
+    delete this.acks[packet.id];
+  } else {
+    debug('bad ack %s', packet.id);
+  }
+};
+
+/**
+ * Called upon server connect.
+ *
+ * @api private
+ */
+
+Socket.prototype.onconnect = function () {
+  this.connected = true;
+  this.disconnected = false;
+  this.emit('connect');
+  this.emitBuffered();
+};
+
+/**
+ * Emit buffered events (received and emitted).
+ *
+ * @api private
+ */
+
+Socket.prototype.emitBuffered = function () {
+  var i;
+  for (i = 0; i < this.receiveBuffer.length; i++) {
+    emit.apply(this, this.receiveBuffer[i]);
+  }
+  this.receiveBuffer = [];
+
+  for (i = 0; i < this.sendBuffer.length; i++) {
+    this.packet(this.sendBuffer[i]);
+  }
+  this.sendBuffer = [];
+};
+
+/**
+ * Called upon server disconnect.
+ *
+ * @api private
+ */
+
+Socket.prototype.ondisconnect = function () {
+  debug('server disconnect (%s)', this.nsp);
+  this.destroy();
+  this.onclose('io server disconnect');
+};
+
+/**
+ * Called upon forced client/server side disconnections,
+ * this method ensures the manager stops tracking us and
+ * that reconnections don't get triggered for this.
+ *
+ * @api private.
+ */
+
+Socket.prototype.destroy = function () {
+  if (this.subs) {
+    // clean subscriptions to avoid reconnections
+    for (var i = 0; i < this.subs.length; i++) {
+      this.subs[i].destroy();
+    }
+    this.subs = null;
+  }
+
+  this.io.destroy(this);
+};
+
+/**
+ * Disconnects the socket manually.
+ *
+ * @return {Socket} self
+ * @api public
+ */
+
+Socket.prototype.close =
+Socket.prototype.disconnect = function () {
+  if (this.connected) {
+    debug('performing disconnect (%s)', this.nsp);
+    this.packet({ type: parser.DISCONNECT });
+  }
+
+  // remove socket from pool
+  this.destroy();
+
+  if (this.connected) {
+    // fire events
+    this.onclose('io client disconnect');
+  }
+  return this;
+};
+
+/**
+ * Sets the compress flag.
+ *
+ * @param {Boolean} if `true`, compresses the sending data
+ * @return {Socket} self
+ * @api public
+ */
+
+Socket.prototype.compress = function (compress) {
+  this.flags = this.flags || {};
+  this.flags.compress = compress;
+  return this;
+};
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports) {
+
+
+/**
+ * Module exports.
+ */
+
+module.exports = on;
+
+/**
+ * Helper for subscriptions.
+ *
+ * @param {Object|EventEmitter} obj with `Emitter` mixin or `EventEmitter`
+ * @param {String} event name
+ * @param {Function} callback
+ * @api public
+ */
+
+function on (obj, ev, fn) {
+  obj.on(ev, fn);
+  return {
+    destroy: function () {
+      obj.removeListener(ev, fn);
+    }
+  };
+}
+
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports) {
+
+/**
+ * Slice reference.
+ */
+
+var slice = [].slice;
+
+/**
+ * Bind `obj` to `fn`.
+ *
+ * @param {Object} obj
+ * @param {Function|String} fn or string
+ * @return {Function}
+ * @api public
+ */
+
+module.exports = function(obj, fn){
+  if ('string' == typeof fn) fn = obj[fn];
+  if ('function' != typeof fn) throw new Error('bind() requires a function');
+  var args = slice.call(arguments, 2);
+  return function(){
+    return fn.apply(obj, args.concat(slice.call(arguments)));
+  }
+};
+
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports) {
+
+/**
+ * @module
+ */
+module.exports = class Config {
+
+    //=======================
+    // Static getters : [
+    //=======================
+
+    /**
+     * @type {number}
+     */
+    static get SEA_WIDTH() {
+
+        return 800
+
+    }
+
+
+    /**
+     * @type {number}
+     */
+    static get SEA_HEIGHT() {
+
+        return 600
+
+    }
+
+
+    /**
+     * @type {number}
+     */
+    static get NAME_MIN_CHARS() {
+
+        return 2
+
+    }
+
+    /**
+     * @type {number}
+     */
+    static get NAME_MAX_CHARS() {
+
+        return 16
+
+    }
+
+    /**
+     * @type {number}
+     */
+    static get MAX_PLAYERS() {
+
+        return 4
+
+    }
+
+    /**
+     * @type {number}
+     */
+    static get SHIP_WIDTH() {
+
+        return 20
+
+    }
+
+    /**
+     * @type {number}
+     */
+    static get MIN_SPEED() {
+
+        return 0
+
+    }
+
+    /**
+     * @type {number}
+     */
+    static get MAX_SPEED() {
+
+        return 3
+
+    }
+
+    /**
+     * @type {number}
+     */
+    static get MIN_HP() {
+
+        return 0
+
+    }
+
+    /**
+     * @type {number}
+     */
+    static get MAX_HP() {
+
+        return 25
+
+    }
+
+    /**
+     * @type {number}
+     */
+    static get MIN_FP() {
+
+        return 0
+
+    }
+
+    /**
+     * @type {number}
+     */
+    static get MAX_FP() {
+
+        return 10
+
+    }
+
+    //=======================
+    // ] : Static getters
+    //=======================
+
+}
+
+/***/ }),
+/* 22 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/**
+ * Calculates contrast color (YIQ).
+ * @param {!string} color - Hex value.
+ * @returns {string} Black or white hex value.
+ */
+function getContrast(color) {
+
+    let r = parseInt(color.substr(1, 2), 16),
+        g = parseInt(color.substr(3, 2), 16),
+        b = parseInt(color.substr(5, 2), 16),
+        yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000
+
+    return (yiq >= 128) ? '#000' : '#fff';
+
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (getContrast);
+
+/***/ }),
+/* 23 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__shipwars_Core__ = __webpack_require__(24);
+
+
+new __WEBPACK_IMPORTED_MODULE_0__shipwars_Core__["a" /* default */]
+
+/***/ }),
+/* 24 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_socket_io_client__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_socket_io_client___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_socket_io_client__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Config__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Config___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__Config__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__UserInterface__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__AudioInterface__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Ship__ = __webpack_require__(51);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_getContrast__ = __webpack_require__(22);
+
+
+
+
+
+
+
+/**
+ * @module
+ */
+class Core {
+
+    /**
+     * Core constructor.
+     * @constructor
+     */
+    constructor() {
+
+            /**
+             * Contains UserInterface instance.
+             * @type {module:UserInterface}
+             */
+            this.ui = new __WEBPACK_IMPORTED_MODULE_2__UserInterface__["a" /* default */]
+
+            /**
+             * Contains AudioInterface instance.
+             * @type {module:AudioInterface}
+             */
+            this.audio = new __WEBPACK_IMPORTED_MODULE_3__AudioInterface__["a" /* default */]
+
+            /**
+             * Contains ships object, key is a player id (from Socket.io).
+             * @type {object}
+             */
+            this.ships = {}
+
+            /**
+             * Contains list of players’ id.
+             * @type {string[]}
+             */
+            this.shipsCreated = []
+
+            /**
+             * Contains cannonballs object, key is an unique autoincremented id.
+             * @type {object}
+             */
+            this.cannonballs = {}
+
+            /**
+             * Contains list of cannonballs’ id.
+             * @type {number[]}
+             */
+            this.cannonballsCreated = []
+
+            /**
+             * Indicates if user is currently in game.
+             * @type {string[]}
+             */
+            this.inGame = false
+
+            // Init game
+            this.init()
+
+    }
+
+    /**
+     * Core initiator.
+     */
+    init() {
+
+        document.body.appendChild(this.ui.gamebox)
+
+        document.body.appendChild(this.ui.infobox)
+
+        // Append start screen, check if user has keyboard
+        this.ui.gamebox.appendChild(this.ui.startScreen)
+
+        let anyListener = this.ui.keyDown(null, () => {
+
+            // Remove the listener
+            this.ui.unset(anyListener)
+
+            // Remove the start screen
+            this.ui.gamebox.removeChild(this.ui.startScreen)
+
+            // Show the login box
+            this.ui.gamebox.appendChild(this.ui.loginScreen)
+
+            // Listen for the input
+            this.ui.playButton.onclick = tryLogin.bind(this)
+
+            // Local function for the listener
+            function tryLogin() {
+
+                this.login(this.ui.nickname)
+                .then(() => {
+
+                    this.ui.hideErrorMessage()
+
+                    // Remove the login box
+                    this.ui.gamebox.removeChild(this.ui.loginScreen)
+
+                    // Append aside panel
+                    this.ui.gamebox.appendChild(this.ui.asidePanel)
+
+                    // Listen for the server emits
+                    this.listen()
+
+                    // Listen for the user interface interaction
+                    this.userInterfaceListen()
+
+                    // Play background music
+                    this.audio.playMusic()
+
+                })
+                .catch((error) => this.ui.showErrorMessage(error))
+
+            }
+        })
+
+    }
+
+    //=============================================
+    // ] : Setters & Getters ::: Class methods : [
+    //=============================================
+
+    /**
+     * Join spectators.
+     * @param {!string} nickname - Player’s nickname.
+     * @returns {Promise}
+     */
+    login(nickname) {
+
+        return new Promise((resolve, reject) => {
+
+            if (nickname.length < __WEBPACK_IMPORTED_MODULE_1__Config___default.a.NAME_MIN_CHARS) {
+
+                reject(`Your nickname is too short (min ${ __WEBPACK_IMPORTED_MODULE_1__Config___default.a.NAME_MIN_CHARS } char${ __WEBPACK_IMPORTED_MODULE_1__Config___default.a.NAME_MIN_CHARS > 1 ? 's' : '' })`)
+
+            } else if (nickname.length > __WEBPACK_IMPORTED_MODULE_1__Config___default.a.NAME_MAX_CHARS) {
+
+                reject(`Your nickname is too long (max ${ __WEBPACK_IMPORTED_MODULE_1__Config___default.a.NAME_MAX_CHARS } char${ __WEBPACK_IMPORTED_MODULE_1__Config___default.a.NAME_MAX_CHARS > 1 ? 's' : '' })`)
+
+            } else {
+
+                // Begin async...
+                this.ui.spinPlayButton()
+
+                /**
+                 * Contains Socket.io instance,
+                 * available only after successful login.
+                 */
+                this.socket = __WEBPACK_IMPORTED_MODULE_0_socket_io_client___default()({
+                    transports: ['websocket']
+                })
+
+                this.socket.emit('login', nickname, (data) => {
+
+                    // End async
+                    this.ui.spinPlayButton(false)
+
+                    if (! data) {
+                        reject('This nickname is taken')
+                    }
+
+                    resolve()
+
+                })
+
+            }
+
+        })        
+
+    }
+
+    /**
+     * Inits Socket.io listeners.
+     */
+    listen() {
+
+        // Ping pong
+        function ping() {
+
+            let pingTime = Date.now()
+
+            this.socket.emit('pingpong', () => {
+
+                let pongTime = Date.now()
+
+                this.ui.ping = pongTime - pingTime
+            
+            })
+
+            setTimeout(ping.bind(this), 1000)
+
+        }
+
+        ping.call(this)
+
+        // Messagebox
+        this.socket.on('info', (message) => this.ui.message = message)
+
+        // Ranking
+        this.socket.on('ranking', (list) => {
+
+            let ranking = []
+
+            let members = list.filter((foo, index) => {
+
+                if (index % 2 == 0) {
+
+                    return true
+                
+                }
+
+                return false
+
+            })
+
+            this.socket.emit('getColors', members, (colors) => {
+            
+                let i = 0
+
+                for (let j = 0; j < list.length; j += 2) {
+
+                    ranking.push({ name: list[j], score: list[j + 1], color: colors[i++] })
+
+                }
+
+                this.ui.ranking = ranking
+
+            })
+
+        })
+
+        // Spectators
+        this.socket.on('spectators', (spectators) => this.ui.spectators = spectators)
+
+        // Frame
+        this.socket.on('frame', (data) => {
+
+            // Declare object with hp statuses
+            let rankingHp = {} 
+
+            // Loop the ships
+            let ships = data.ships
+
+            for (let id in ships) {
+
+                if (this.shipsCreated.indexOf(id) < 0) {
+
+                    const ship = new __WEBPACK_IMPORTED_MODULE_4__Ship__["a" /* default */](__WEBPACK_IMPORTED_MODULE_1__Config___default.a.SHIP_WIDTH, ships[id].color)
+                    ship.canvas.style.left = Math.round(ships[id].x) + 'px'
+                    ship.canvas.top = Math.round(ships[id].y) + 'px'
+                    this.ui.gamebox.appendChild(ship.canvas)
+
+                    this.ships[id] = ship
+
+                    this.shipsCreated.push(id)
+
+                } else {
+
+                    this.ships[id].canvas.style.left = Math.round(ships[id].x) + 'px'
+                    this.ships[id].canvas.style.top = Math.round(ships[id].y) + 'px'
+                    this.ships[id].canvas.style.transform = `translate(-50%, -50%) rotate(${ -Math.round(ships[id].angle) }deg)`
+
+                }
+
+                rankingHp[ships[id].name] = Math.round(ships[id].hp / __WEBPACK_IMPORTED_MODULE_1__Config___default.a.MAX_HP * 100)
+
+            }
+
+            // Update ranking hp bars
+            this.ui.rankingHp = rankingHp
+
+            // Delete ship of user who left the game
+            this.shipsCreated = this.shipsCreated.filter((id) => {
+
+                if (! ships.hasOwnProperty(id)) {
+
+                    this.ui.gamebox.removeChild(this.ships[id].canvas)
+                    delete this.ships[id]
+
+                    return false
+                }
+
+                return true
+
+            })
+
+            // Loop the cannonballs
+            let cannonballs = data.cannonballs
+
+            for (let id in cannonballs) {
+
+                if (this.cannonballsCreated.indexOf(id) < 0) {
+
+                    let cannonball = document.createElement('div')
+                    cannonball.className = 'cannonball'
+                    cannonball.style.fontSize = cannonballs[id].diameter + 'px'
+                    cannonball.style.backgroundColor = cannonballs[id].color
+                    cannonball.style.left = Math.round(cannonballs[id].x) + 'px'
+                    cannonball.style.top = Math.round(cannonballs[id].y) + 'px'
+                    cannonball.style.color = Object(__WEBPACK_IMPORTED_MODULE_5__utils_getContrast__["a" /* default */])(cannonballs[id].color)
+                    cannonball.dataset.power = cannonballs[id].power
+                    this.ui.gamebox.appendChild(cannonball)
+
+                    this.cannonballs[id] = cannonball
+
+                    this.cannonballsCreated.push(id)
+
+                } else {
+
+                    this.cannonballs[id].style.left = Math.round(cannonballs[id].x) + 'px'
+                    this.cannonballs[id].style.top = Math.round(cannonballs[id].y) + 'px'
+
+                }
+
+            }
+
+            // Delete destroyed cannonballs
+            this.cannonballsCreated = this.cannonballsCreated.filter((id) => {
+
+                if (! cannonballs.hasOwnProperty(id)) {
+
+                    this.ui.gamebox.removeChild(this.cannonballs[id])
+                    delete this.cannonballs[id]
+
+                    return false
+                }
+
+                return true
+
+            })
+
+            // Progress bars
+            if (typeof ships[this.socket.id] != 'undefined') {
+
+                const ship = ships[this.socket.id]
+
+                // Update speedometer
+                this.ui.speed = ship.speed
+
+                // Update compass
+                this.ui.direction = ship.angle
+
+                // Update hitpoints
+                this.ui.hp = ship.hp
+
+                // Update firepower meter
+                this.ui.fp = ship.fp
+
+            }
+
+            
+        })
+
+        // Update button state
+        this.socket.on('canjoin', (state) => this.ui.updateJoinLeaveButton(state))
+
+        // Write a message from server in the browser console
+        this.socket.on('console', (message) => console.log(message))
+
+        // Explosions
+        this.socket.on('shipExplosion', (coords) => {
+
+            this.ui.explosion(coords, 100, true)
+            this.audio.play('/sounds/ship-explosion.mp3')
+        
+        })
+
+        this.socket.on('cannonballShot', () => {
+        
+            this.audio.play('/sounds/cannonball-shot.mp3')
+
+        })
+
+        this.socket.on('cannonballExplosion', (coords, diameter) => {
+        
+            this.ui.explosion(coords, diameter)
+            this.audio.play('/sounds/cannonball-explosion.mp3')
+
+        })
+        
+    }
+        
+
+    /**
+     * Inits UI listeners.
+     */
+    userInterfaceListen() {
+
+        // Join / Leave button
+        this.ui.joinLeaveButton.onclick = () => {
+
+            if (this.inGame) {
+
+                this.socket.emit('leave')
+
+                this.inGame = false
+
+                this.ui.toggleDevices()
+
+            } else {
+
+                this.socket.emit('join', (success) => {
+
+                    if (success) {
+
+                        this.ui.updateJoinLeaveButton(2)
+
+                        this.inGame = true
+
+                        this.ui.toggleDevices()
+
+                    }
+
+                })
+
+            }
+            
+        }
+
+        // Steerage
+
+        // Accelerate
+        this.ui.keyDown(38, () => {
+
+            // keyDown : Up
+            this.socket.emit('action', 1)
+
+        })
+
+        this.ui.keyUp(38, () => {
+
+            // keyUp : Up
+            this.socket.emit('action', 10)
+
+        })
+
+        // Decelerate
+        this.ui.keyDown(40, () => {
+
+            // keyDown : Down
+            this.socket.emit('action', 2)
+
+        })
+
+        this.ui.keyUp(40, () => {
+
+            // keyUp : Down
+            this.socket.emit('action', 20)
+
+        })
+
+        // Turn left
+        this.ui.keyDown(37, () => {
+
+            // keyDown : Left
+            this.socket.emit('action', 3)
+
+        })
+
+        this.ui.keyUp(37, () => {
+
+            // keyUp : Left
+            this.socket.emit('action', 30)
+
+        })
+
+        // Turn right
+        this.ui.keyDown(39, () => {
+
+            // keyDown : Right
+            this.socket.emit('action', 4)
+
+        })
+
+        this.ui.keyUp(39, () => {
+
+            // keyUp : Right
+            this.socket.emit('action', 40)
+
+        })
+
+        // Shoot left
+        this.ui.keyDown(65, () => {
+
+            // keyDown : A
+            this.socket.emit('action', 5)
+
+        })
+
+        this.ui.keyUp(65, () => {
+
+            // keyUp : A
+            this.socket.emit('action', 50)
+
+        })
+
+        // Shoot right
+        this.ui.keyDown(68, () => {
+
+            // keyDown : D
+            this.socket.emit('action', 6)
+
+        })
+
+        this.ui.keyUp(68, () => {
+
+            // keyUp : D
+            this.socket.emit('action', 60)
+
+        })
+
+        // Repair
+        this.ui.keyDown(82, () => {
+
+            // keyDown : R
+            this.socket.emit('action', 7)
+
+        })
+
+        this.ui.keyUp(82, () => {
+
+            // keyUp : R
+            this.socket.emit('action', 70)
+
+        })
+
+         // Toggle help screen
+
+        // Help button
+        this.ui.helpButton.onclick = this.ui.toggleHelp.bind(this.ui)
+
+        this.ui.keyDown(72, this.ui.toggleHelp.bind(this.ui))
+
+        // Toggle sound
+        this.ui.audioControls()
+
+        this.ui.soundButton.onclick = toggleMute.bind(this)
+
+        this.ui.keyDown(77, toggleMute.bind(this))
+
+        function toggleMute() {
+
+            this.audio.toggleMute()
+            this.ui.toggleMute()
+
+        }
+
+    }
+
+    //===================
+    // ] : Class methods
+    //===================
+
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = Core;
+
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+/**
+ * Module dependencies.
+ */
+
+var url = __webpack_require__(26);
+var parser = __webpack_require__(6);
+var Manager = __webpack_require__(13);
+var debug = __webpack_require__(1)('socket.io-client');
+
+/**
+ * Module exports.
+ */
+
+module.exports = exports = lookup;
+
+/**
+ * Managers cache.
+ */
+
+var cache = exports.managers = {};
+
+/**
+ * Looks up an existing `Manager` for multiplexing.
+ * If the user summons:
+ *
+ *   `io('http://localhost/a');`
+ *   `io('http://localhost/b');`
+ *
+ * We reuse the existing instance based on same scheme/port/host,
+ * and we initialize sockets for each namespace.
+ *
+ * @api public
+ */
+
+function lookup (uri, opts) {
+  if (typeof uri === 'object') {
+    opts = uri;
+    uri = undefined;
+  }
+
+  opts = opts || {};
+
+  var parsed = url(uri);
+  var source = parsed.source;
+  var id = parsed.id;
+  var path = parsed.path;
+  var sameNamespace = cache[id] && path in cache[id].nsps;
+  var newConnection = opts.forceNew || opts['force new connection'] ||
+                      false === opts.multiplex || sameNamespace;
+
+  var io;
+
+  if (newConnection) {
+    debug('ignoring socket cache for %s', source);
+    io = Manager(source, opts);
+  } else {
+    if (!cache[id]) {
+      debug('new io instance for %s', source);
+      cache[id] = Manager(source, opts);
+    }
+    io = cache[id];
+  }
+  if (parsed.query && !opts.query) {
+    opts.query = parsed.query;
+  }
+  return io.socket(parsed.path, opts);
+}
+
+/**
+ * Protocol version.
+ *
+ * @api public
+ */
+
+exports.protocol = parser.protocol;
+
+/**
+ * `connect`.
+ *
+ * @param {String} uri
+ * @api public
+ */
+
+exports.connect = lookup;
+
+/**
+ * Expose constructors for standalone build.
+ *
+ * @api public
+ */
+
+exports.Manager = __webpack_require__(13);
+exports.Socket = __webpack_require__(18);
+
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {
+/**
+ * Module dependencies.
+ */
+
+var parseuri = __webpack_require__(9);
+var debug = __webpack_require__(1)('socket.io-client:url');
+
+/**
+ * Module exports.
+ */
+
+module.exports = url;
+
+/**
+ * URL parser.
+ *
+ * @param {String} url
+ * @param {Object} An object meant to mimic window.location.
+ *                 Defaults to window.location.
+ * @api public
+ */
+
+function url (uri, loc) {
+  var obj = uri;
+
+  // default to window.location
+  loc = loc || global.location;
+  if (null == uri) uri = loc.protocol + '//' + loc.host;
+
+  // relative path support
+  if ('string' === typeof uri) {
+    if ('/' === uri.charAt(0)) {
+      if ('/' === uri.charAt(1)) {
+        uri = loc.protocol + uri;
+      } else {
+        uri = loc.host + uri;
+      }
+    }
+
+    if (!/^(https?|wss?):\/\//.test(uri)) {
+      debug('protocol-less url %s', uri);
+      if ('undefined' !== typeof loc) {
+        uri = loc.protocol + '//' + uri;
+      } else {
+        uri = 'https://' + uri;
+      }
+    }
+
+    // parse
+    debug('parse %s', uri);
+    obj = parseuri(uri);
+  }
+
+  // make sure we treat `localhost:80` and `localhost` equally
+  if (!obj.port) {
+    if (/^(http|ws)$/.test(obj.protocol)) {
+      obj.port = '80';
+    } else if (/^(http|ws)s$/.test(obj.protocol)) {
+      obj.port = '443';
+    }
+  }
+
+  obj.path = obj.path || '/';
+
+  var ipv6 = obj.host.indexOf(':') !== -1;
+  var host = ipv6 ? '[' + obj.host + ']' : obj.host;
+
+  // define unique id
+  obj.id = obj.protocol + '://' + host + ':' + obj.port;
+  // define href
+  obj.href = obj.protocol + '://' + host + (loc && loc.port === obj.port ? '' : (':' + obj.port));
+
+  return obj;
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports) {
+
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+/**
+ * This is the common logic for both the Node.js and web browser
+ * implementations of `debug()`.
+ *
+ * Expose `debug()` as the module.
+ */
+
+exports = module.exports = createDebug.debug = createDebug['default'] = createDebug;
+exports.coerce = coerce;
+exports.disable = disable;
+exports.enable = enable;
+exports.enabled = enabled;
+exports.humanize = __webpack_require__(29);
+
+/**
+ * The currently active debug mode names, and names to skip.
+ */
+
+exports.names = [];
+exports.skips = [];
+
+/**
+ * Map of special "%n" handling functions, for the debug "format" argument.
+ *
+ * Valid key names are a single, lower or upper-case letter, i.e. "n" and "N".
+ */
+
+exports.formatters = {};
+
+/**
+ * Previous log timestamp.
+ */
+
+var prevTime;
+
+/**
+ * Select a color.
+ * @param {String} namespace
+ * @return {Number}
+ * @api private
+ */
+
+function selectColor(namespace) {
+  var hash = 0, i;
+
+  for (i in namespace) {
+    hash  = ((hash << 5) - hash) + namespace.charCodeAt(i);
+    hash |= 0; // Convert to 32bit integer
+  }
+
+  return exports.colors[Math.abs(hash) % exports.colors.length];
+}
+
+/**
+ * Create a debugger with the given `namespace`.
+ *
+ * @param {String} namespace
+ * @return {Function}
+ * @api public
+ */
+
+function createDebug(namespace) {
+
+  function debug() {
+    // disabled?
+    if (!debug.enabled) return;
+
+    var self = debug;
+
+    // set `diff` timestamp
+    var curr = +new Date();
+    var ms = curr - (prevTime || curr);
+    self.diff = ms;
+    self.prev = prevTime;
+    self.curr = curr;
+    prevTime = curr;
+
+    // turn the `arguments` into a proper Array
+    var args = new Array(arguments.length);
+    for (var i = 0; i < args.length; i++) {
+      args[i] = arguments[i];
+    }
+
+    args[0] = exports.coerce(args[0]);
+
+    if ('string' !== typeof args[0]) {
+      // anything else let's inspect with %O
+      args.unshift('%O');
+    }
+
+    // apply any `formatters` transformations
+    var index = 0;
+    args[0] = args[0].replace(/%([a-zA-Z%])/g, function(match, format) {
+      // if we encounter an escaped % then don't increase the array index
+      if (match === '%%') return match;
+      index++;
+      var formatter = exports.formatters[format];
+      if ('function' === typeof formatter) {
+        var val = args[index];
+        match = formatter.call(self, val);
+
+        // now we need to remove `args[index]` since it's inlined in the `format`
+        args.splice(index, 1);
+        index--;
+      }
+      return match;
+    });
+
+    // apply env-specific formatting (colors, etc.)
+    exports.formatArgs.call(self, args);
+
+    var logFn = debug.log || exports.log || console.log.bind(console);
+    logFn.apply(self, args);
+  }
+
+  debug.namespace = namespace;
+  debug.enabled = exports.enabled(namespace);
+  debug.useColors = exports.useColors();
+  debug.color = selectColor(namespace);
+
+  // env-specific initialization logic for debug instances
+  if ('function' === typeof exports.init) {
+    exports.init(debug);
+  }
+
+  return debug;
+}
+
+/**
+ * Enables a debug mode by namespaces. This can include modes
+ * separated by a colon and wildcards.
+ *
+ * @param {String} namespaces
+ * @api public
+ */
+
+function enable(namespaces) {
+  exports.save(namespaces);
+
+  exports.names = [];
+  exports.skips = [];
+
+  var split = (typeof namespaces === 'string' ? namespaces : '').split(/[\s,]+/);
+  var len = split.length;
+
+  for (var i = 0; i < len; i++) {
+    if (!split[i]) continue; // ignore empty strings
+    namespaces = split[i].replace(/\*/g, '.*?');
+    if (namespaces[0] === '-') {
+      exports.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
+    } else {
+      exports.names.push(new RegExp('^' + namespaces + '$'));
+    }
+  }
+}
+
+/**
+ * Disable debug output.
+ *
+ * @api public
+ */
+
+function disable() {
+  exports.enable('');
+}
+
+/**
+ * Returns true if the given mode name is enabled, false otherwise.
+ *
+ * @param {String} name
+ * @return {Boolean}
+ * @api public
+ */
+
+function enabled(name) {
+  var i, len;
+  for (i = 0, len = exports.skips.length; i < len; i++) {
+    if (exports.skips[i].test(name)) {
+      return false;
+    }
+  }
+  for (i = 0, len = exports.names.length; i < len; i++) {
+    if (exports.names[i].test(name)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Coerce `val`.
+ *
+ * @param {Mixed} val
+ * @return {Mixed}
+ * @api private
+ */
+
+function coerce(val) {
+  if (val instanceof Error) return val.stack || val.message;
+  return val;
+}
+
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports) {
+
+/**
+ * Helpers.
+ */
+
+var s = 1000;
+var m = s * 60;
+var h = m * 60;
+var d = h * 24;
+var y = d * 365.25;
+
+/**
+ * Parse or format the given `val`.
+ *
+ * Options:
+ *
+ *  - `long` verbose formatting [false]
+ *
+ * @param {String|Number} val
+ * @param {Object} [options]
+ * @throws {Error} throw an error if val is not a non-empty string or a number
+ * @return {String|Number}
+ * @api public
+ */
+
+module.exports = function(val, options) {
+  options = options || {};
+  var type = typeof val;
+  if (type === 'string' && val.length > 0) {
+    return parse(val);
+  } else if (type === 'number' && isNaN(val) === false) {
+    return options.long ? fmtLong(val) : fmtShort(val);
+  }
+  throw new Error(
+    'val is not a non-empty string or a valid number. val=' +
+      JSON.stringify(val)
+  );
+};
+
+/**
+ * Parse the given `str` and return milliseconds.
+ *
+ * @param {String} str
+ * @return {Number}
+ * @api private
+ */
+
+function parse(str) {
+  str = String(str);
+  if (str.length > 100) {
+    return;
+  }
+  var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(
+    str
+  );
+  if (!match) {
+    return;
+  }
+  var n = parseFloat(match[1]);
+  var type = (match[2] || 'ms').toLowerCase();
+  switch (type) {
+    case 'years':
+    case 'year':
+    case 'yrs':
+    case 'yr':
+    case 'y':
+      return n * y;
+    case 'days':
+    case 'day':
+    case 'd':
+      return n * d;
+    case 'hours':
+    case 'hour':
+    case 'hrs':
+    case 'hr':
+    case 'h':
+      return n * h;
+    case 'minutes':
+    case 'minute':
+    case 'mins':
+    case 'min':
+    case 'm':
+      return n * m;
+    case 'seconds':
+    case 'second':
+    case 'secs':
+    case 'sec':
+    case 's':
+      return n * s;
+    case 'milliseconds':
+    case 'millisecond':
+    case 'msecs':
+    case 'msec':
+    case 'ms':
+      return n;
+    default:
+      return undefined;
+  }
+}
+
+/**
+ * Short format for `ms`.
+ *
+ * @param {Number} ms
+ * @return {String}
+ * @api private
+ */
+
+function fmtShort(ms) {
+  if (ms >= d) {
+    return Math.round(ms / d) + 'd';
+  }
+  if (ms >= h) {
+    return Math.round(ms / h) + 'h';
+  }
+  if (ms >= m) {
+    return Math.round(ms / m) + 'm';
+  }
+  if (ms >= s) {
+    return Math.round(ms / s) + 's';
+  }
+  return ms + 'ms';
+}
+
+/**
+ * Long format for `ms`.
+ *
+ * @param {Number} ms
+ * @return {String}
+ * @api private
+ */
+
+function fmtLong(ms) {
+  return plural(ms, d, 'day') ||
+    plural(ms, h, 'hour') ||
+    plural(ms, m, 'minute') ||
+    plural(ms, s, 'second') ||
+    ms + ' ms';
+}
+
+/**
+ * Pluralization helper.
+ */
+
+function plural(ms, n, name) {
+  if (ms < n) {
+    return;
+  }
+  if (ms < n * 1.5) {
+    return Math.floor(ms / n) + ' ' + name;
+  }
+  return Math.ceil(ms / n) + ' ' + name + 's';
+}
+
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {/*global Blob,File*/
+
+/**
+ * Module requirements
+ */
+
+var isArray = __webpack_require__(11);
+var isBuf = __webpack_require__(12);
+var toString = Object.prototype.toString;
+var withNativeBlob = typeof global.Blob === 'function' || toString.call(global.Blob) === '[object BlobConstructor]';
+var withNativeFile = typeof global.File === 'function' || toString.call(global.File) === '[object FileConstructor]';
+
+/**
+ * Replaces every Buffer | ArrayBuffer in packet with a numbered placeholder.
+ * Anything with blobs or files should be fed through removeBlobs before coming
+ * here.
+ *
+ * @param {Object} packet - socket.io event packet
+ * @return {Object} with deconstructed packet and list of buffers
+ * @api public
+ */
+
+exports.deconstructPacket = function(packet) {
+  var buffers = [];
+  var packetData = packet.data;
+  var pack = packet;
+  pack.data = _deconstructPacket(packetData, buffers);
+  pack.attachments = buffers.length; // number of binary 'attachments'
+  return {packet: pack, buffers: buffers};
+};
+
+function _deconstructPacket(data, buffers) {
+  if (!data) return data;
+
+  if (isBuf(data)) {
+    var placeholder = { _placeholder: true, num: buffers.length };
+    buffers.push(data);
+    return placeholder;
+  } else if (isArray(data)) {
+    var newData = new Array(data.length);
+    for (var i = 0; i < data.length; i++) {
+      newData[i] = _deconstructPacket(data[i], buffers);
+    }
+    return newData;
+  } else if (typeof data === 'object' && !(data instanceof Date)) {
+    var newData = {};
+    for (var key in data) {
+      newData[key] = _deconstructPacket(data[key], buffers);
+    }
+    return newData;
+  }
+  return data;
+}
+
+/**
+ * Reconstructs a binary packet from its placeholder packet and buffers
+ *
+ * @param {Object} packet - event packet with placeholders
+ * @param {Array} buffers - binary buffers to put in placeholder positions
+ * @return {Object} reconstructed packet
+ * @api public
+ */
+
+exports.reconstructPacket = function(packet, buffers) {
+  packet.data = _reconstructPacket(packet.data, buffers);
+  packet.attachments = undefined; // no longer useful
+  return packet;
+};
+
+function _reconstructPacket(data, buffers) {
+  if (!data) return data;
+
+  if (data && data._placeholder) {
+    return buffers[data.num]; // appropriate buffer (should be natural order anyway)
+  } else if (isArray(data)) {
+    for (var i = 0; i < data.length; i++) {
+      data[i] = _reconstructPacket(data[i], buffers);
+    }
+  } else if (typeof data === 'object') {
+    for (var key in data) {
+      data[key] = _reconstructPacket(data[key], buffers);
+    }
+  }
+
+  return data;
+}
+
+/**
+ * Asynchronously removes Blobs or Files from data via
+ * FileReader's readAsArrayBuffer method. Used before encoding
+ * data as msgpack. Calls callback with the blobless data.
+ *
+ * @param {Object} data
+ * @param {Function} callback
+ * @api private
+ */
+
+exports.removeBlobs = function(data, callback) {
+  function _removeBlobs(obj, curKey, containingObject) {
+    if (!obj) return obj;
+
+    // convert any blob
+    if ((withNativeBlob && obj instanceof Blob) ||
+        (withNativeFile && obj instanceof File)) {
+      pendingBlobs++;
+
+      // async filereader
+      var fileReader = new FileReader();
+      fileReader.onload = function() { // this.result == arraybuffer
+        if (containingObject) {
+          containingObject[curKey] = this.result;
+        }
+        else {
+          bloblessData = this.result;
+        }
+
+        // if nothing pending its callback time
+        if(! --pendingBlobs) {
+          callback(bloblessData);
+        }
+      };
+
+      fileReader.readAsArrayBuffer(obj); // blob -> arraybuffer
+    } else if (isArray(obj)) { // handle array
+      for (var i = 0; i < obj.length; i++) {
+        _removeBlobs(obj[i], i, obj);
+      }
+    } else if (typeof obj === 'object' && !isBuf(obj)) { // and object
+      for (var key in obj) {
+        _removeBlobs(obj[key], key, obj);
+      }
+    }
+  }
+
+  var pendingBlobs = 0;
+  var bloblessData = data;
+  _removeBlobs(bloblessData);
+  if (!pendingBlobs) {
+    callback(bloblessData);
+  }
+};
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+module.exports = __webpack_require__(32);
+
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+module.exports = __webpack_require__(33);
+
+/**
+ * Exports parser
+ *
+ * @api public
+ *
+ */
+module.exports.parser = __webpack_require__(3);
+
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {/**
+ * Module dependencies.
+ */
+
+var transports = __webpack_require__(14);
+var Emitter = __webpack_require__(2);
+var debug = __webpack_require__(1)('engine.io-client:socket');
+var index = __webpack_require__(17);
+var parser = __webpack_require__(3);
+var parseuri = __webpack_require__(9);
+var parsejson = __webpack_require__(46);
+var parseqs = __webpack_require__(4);
+
+/**
+ * Module exports.
+ */
+
+module.exports = Socket;
+
+/**
+ * Socket constructor.
+ *
+ * @param {String|Object} uri or options
+ * @param {Object} options
+ * @api public
+ */
+
+function Socket (uri, opts) {
+  if (!(this instanceof Socket)) return new Socket(uri, opts);
+
+  opts = opts || {};
+
+  if (uri && 'object' === typeof uri) {
+    opts = uri;
+    uri = null;
+  }
+
+  if (uri) {
+    uri = parseuri(uri);
+    opts.hostname = uri.host;
+    opts.secure = uri.protocol === 'https' || uri.protocol === 'wss';
+    opts.port = uri.port;
+    if (uri.query) opts.query = uri.query;
+  } else if (opts.host) {
+    opts.hostname = parseuri(opts.host).host;
+  }
+
+  this.secure = null != opts.secure ? opts.secure
+    : (global.location && 'https:' === location.protocol);
+
+  if (opts.hostname && !opts.port) {
+    // if no port is specified manually, use the protocol default
+    opts.port = this.secure ? '443' : '80';
+  }
+
+  this.agent = opts.agent || false;
+  this.hostname = opts.hostname ||
+    (global.location ? location.hostname : 'localhost');
+  this.port = opts.port || (global.location && location.port
+      ? location.port
+      : (this.secure ? 443 : 80));
+  this.query = opts.query || {};
+  if ('string' === typeof this.query) this.query = parseqs.decode(this.query);
+  this.upgrade = false !== opts.upgrade;
+  this.path = (opts.path || '/engine.io').replace(/\/$/, '') + '/';
+  this.forceJSONP = !!opts.forceJSONP;
+  this.jsonp = false !== opts.jsonp;
+  this.forceBase64 = !!opts.forceBase64;
+  this.enablesXDR = !!opts.enablesXDR;
+  this.timestampParam = opts.timestampParam || 't';
+  this.timestampRequests = opts.timestampRequests;
+  this.transports = opts.transports || ['polling', 'websocket'];
+  this.transportOptions = opts.transportOptions || {};
+  this.readyState = '';
+  this.writeBuffer = [];
+  this.prevBufferLen = 0;
+  this.policyPort = opts.policyPort || 843;
+  this.rememberUpgrade = opts.rememberUpgrade || false;
+  this.binaryType = null;
+  this.onlyBinaryUpgrades = opts.onlyBinaryUpgrades;
+  this.perMessageDeflate = false !== opts.perMessageDeflate ? (opts.perMessageDeflate || {}) : false;
+
+  if (true === this.perMessageDeflate) this.perMessageDeflate = {};
+  if (this.perMessageDeflate && null == this.perMessageDeflate.threshold) {
+    this.perMessageDeflate.threshold = 1024;
+  }
+
+  // SSL options for Node.js client
+  this.pfx = opts.pfx || null;
+  this.key = opts.key || null;
+  this.passphrase = opts.passphrase || null;
+  this.cert = opts.cert || null;
+  this.ca = opts.ca || null;
+  this.ciphers = opts.ciphers || null;
+  this.rejectUnauthorized = opts.rejectUnauthorized === undefined ? true : opts.rejectUnauthorized;
+  this.forceNode = !!opts.forceNode;
+
+  // other options for Node.js client
+  var freeGlobal = typeof global === 'object' && global;
+  if (freeGlobal.global === freeGlobal) {
+    if (opts.extraHeaders && Object.keys(opts.extraHeaders).length > 0) {
+      this.extraHeaders = opts.extraHeaders;
+    }
+
+    if (opts.localAddress) {
+      this.localAddress = opts.localAddress;
+    }
+  }
+
+  // set on handshake
+  this.id = null;
+  this.upgrades = null;
+  this.pingInterval = null;
+  this.pingTimeout = null;
+
+  // set on heartbeat
+  this.pingIntervalTimer = null;
+  this.pingTimeoutTimer = null;
+
+  this.open();
+}
+
+Socket.priorWebsocketSuccess = false;
+
+/**
+ * Mix in `Emitter`.
+ */
+
+Emitter(Socket.prototype);
+
+/**
+ * Protocol version.
+ *
+ * @api public
+ */
+
+Socket.protocol = parser.protocol; // this is an int
+
+/**
+ * Expose deps for legacy compatibility
+ * and standalone browser access.
+ */
+
+Socket.Socket = Socket;
+Socket.Transport = __webpack_require__(8);
+Socket.transports = __webpack_require__(14);
+Socket.parser = __webpack_require__(3);
+
+/**
+ * Creates transport of the given type.
+ *
+ * @param {String} transport name
+ * @return {Transport}
+ * @api private
+ */
+
+Socket.prototype.createTransport = function (name) {
+  debug('creating transport "%s"', name);
+  var query = clone(this.query);
+
+  // append engine.io protocol identifier
+  query.EIO = parser.protocol;
+
+  // transport name
+  query.transport = name;
+
+  // per-transport options
+  var options = this.transportOptions[name] || {};
+
+  // session id if we already have one
+  if (this.id) query.sid = this.id;
+
+  var transport = new transports[name]({
+    query: query,
+    socket: this,
+    agent: options.agent || this.agent,
+    hostname: options.hostname || this.hostname,
+    port: options.port || this.port,
+    secure: options.secure || this.secure,
+    path: options.path || this.path,
+    forceJSONP: options.forceJSONP || this.forceJSONP,
+    jsonp: options.jsonp || this.jsonp,
+    forceBase64: options.forceBase64 || this.forceBase64,
+    enablesXDR: options.enablesXDR || this.enablesXDR,
+    timestampRequests: options.timestampRequests || this.timestampRequests,
+    timestampParam: options.timestampParam || this.timestampParam,
+    policyPort: options.policyPort || this.policyPort,
+    pfx: options.pfx || this.pfx,
+    key: options.key || this.key,
+    passphrase: options.passphrase || this.passphrase,
+    cert: options.cert || this.cert,
+    ca: options.ca || this.ca,
+    ciphers: options.ciphers || this.ciphers,
+    rejectUnauthorized: options.rejectUnauthorized || this.rejectUnauthorized,
+    perMessageDeflate: options.perMessageDeflate || this.perMessageDeflate,
+    extraHeaders: options.extraHeaders || this.extraHeaders,
+    forceNode: options.forceNode || this.forceNode,
+    localAddress: options.localAddress || this.localAddress,
+    requestTimeout: options.requestTimeout || this.requestTimeout,
+    protocols: options.protocols || void (0)
+  });
+
+  return transport;
+};
+
+function clone (obj) {
+  var o = {};
+  for (var i in obj) {
+    if (obj.hasOwnProperty(i)) {
+      o[i] = obj[i];
+    }
+  }
+  return o;
+}
+
+/**
+ * Initializes transport to use and starts probe.
+ *
+ * @api private
+ */
+Socket.prototype.open = function () {
+  var transport;
+  if (this.rememberUpgrade && Socket.priorWebsocketSuccess && this.transports.indexOf('websocket') !== -1) {
+    transport = 'websocket';
+  } else if (0 === this.transports.length) {
+    // Emit error on next tick so it can be listened to
+    var self = this;
+    setTimeout(function () {
+      self.emit('error', 'No transports available');
+    }, 0);
+    return;
+  } else {
+    transport = this.transports[0];
+  }
+  this.readyState = 'opening';
+
+  // Retry with the next transport if the transport is disabled (jsonp: false)
+  try {
+    transport = this.createTransport(transport);
+  } catch (e) {
+    this.transports.shift();
+    this.open();
+    return;
+  }
+
+  transport.open();
+  this.setTransport(transport);
+};
+
+/**
+ * Sets the current transport. Disables the existing one (if any).
+ *
+ * @api private
+ */
+
+Socket.prototype.setTransport = function (transport) {
+  debug('setting transport %s', transport.name);
+  var self = this;
+
+  if (this.transport) {
+    debug('clearing existing transport %s', this.transport.name);
+    this.transport.removeAllListeners();
+  }
+
+  // set up transport
+  this.transport = transport;
+
+  // set up transport listeners
+  transport
+  .on('drain', function () {
+    self.onDrain();
+  })
+  .on('packet', function (packet) {
+    self.onPacket(packet);
+  })
+  .on('error', function (e) {
+    self.onError(e);
+  })
+  .on('close', function () {
+    self.onClose('transport close');
+  });
+};
+
+/**
+ * Probes a transport.
+ *
+ * @param {String} transport name
+ * @api private
+ */
+
+Socket.prototype.probe = function (name) {
+  debug('probing transport "%s"', name);
+  var transport = this.createTransport(name, { probe: 1 });
+  var failed = false;
+  var self = this;
+
+  Socket.priorWebsocketSuccess = false;
+
+  function onTransportOpen () {
+    if (self.onlyBinaryUpgrades) {
+      var upgradeLosesBinary = !this.supportsBinary && self.transport.supportsBinary;
+      failed = failed || upgradeLosesBinary;
+    }
+    if (failed) return;
+
+    debug('probe transport "%s" opened', name);
+    transport.send([{ type: 'ping', data: 'probe' }]);
+    transport.once('packet', function (msg) {
+      if (failed) return;
+      if ('pong' === msg.type && 'probe' === msg.data) {
+        debug('probe transport "%s" pong', name);
+        self.upgrading = true;
+        self.emit('upgrading', transport);
+        if (!transport) return;
+        Socket.priorWebsocketSuccess = 'websocket' === transport.name;
+
+        debug('pausing current transport "%s"', self.transport.name);
+        self.transport.pause(function () {
+          if (failed) return;
+          if ('closed' === self.readyState) return;
+          debug('changing transport and sending upgrade packet');
+
+          cleanup();
+
+          self.setTransport(transport);
+          transport.send([{ type: 'upgrade' }]);
+          self.emit('upgrade', transport);
+          transport = null;
+          self.upgrading = false;
+          self.flush();
+        });
+      } else {
+        debug('probe transport "%s" failed', name);
+        var err = new Error('probe error');
+        err.transport = transport.name;
+        self.emit('upgradeError', err);
+      }
+    });
+  }
+
+  function freezeTransport () {
+    if (failed) return;
+
+    // Any callback called by transport should be ignored since now
+    failed = true;
+
+    cleanup();
+
+    transport.close();
+    transport = null;
+  }
+
+  // Handle any error that happens while probing
+  function onerror (err) {
+    var error = new Error('probe error: ' + err);
+    error.transport = transport.name;
+
+    freezeTransport();
+
+    debug('probe transport "%s" failed because of error: %s', name, err);
+
+    self.emit('upgradeError', error);
+  }
+
+  function onTransportClose () {
+    onerror('transport closed');
+  }
+
+  // When the socket is closed while we're probing
+  function onclose () {
+    onerror('socket closed');
+  }
+
+  // When the socket is upgraded while we're probing
+  function onupgrade (to) {
+    if (transport && to.name !== transport.name) {
+      debug('"%s" works - aborting "%s"', to.name, transport.name);
+      freezeTransport();
+    }
+  }
+
+  // Remove all listeners on the transport and on self
+  function cleanup () {
+    transport.removeListener('open', onTransportOpen);
+    transport.removeListener('error', onerror);
+    transport.removeListener('close', onTransportClose);
+    self.removeListener('close', onclose);
+    self.removeListener('upgrading', onupgrade);
+  }
+
+  transport.once('open', onTransportOpen);
+  transport.once('error', onerror);
+  transport.once('close', onTransportClose);
+
+  this.once('close', onclose);
+  this.once('upgrading', onupgrade);
+
+  transport.open();
+};
+
+/**
+ * Called when connection is deemed open.
+ *
+ * @api public
+ */
+
+Socket.prototype.onOpen = function () {
+  debug('socket open');
+  this.readyState = 'open';
+  Socket.priorWebsocketSuccess = 'websocket' === this.transport.name;
+  this.emit('open');
+  this.flush();
+
+  // we check for `readyState` in case an `open`
+  // listener already closed the socket
+  if ('open' === this.readyState && this.upgrade && this.transport.pause) {
+    debug('starting upgrade probes');
+    for (var i = 0, l = this.upgrades.length; i < l; i++) {
+      this.probe(this.upgrades[i]);
+    }
+  }
+};
+
+/**
+ * Handles a packet.
+ *
+ * @api private
+ */
+
+Socket.prototype.onPacket = function (packet) {
+  if ('opening' === this.readyState || 'open' === this.readyState ||
+      'closing' === this.readyState) {
+    debug('socket receive: type "%s", data "%s"', packet.type, packet.data);
+
+    this.emit('packet', packet);
+
+    // Socket is live - any packet counts
+    this.emit('heartbeat');
+
+    switch (packet.type) {
+      case 'open':
+        this.onHandshake(parsejson(packet.data));
+        break;
+
+      case 'pong':
+        this.setPing();
+        this.emit('pong');
+        break;
+
+      case 'error':
+        var err = new Error('server error');
+        err.code = packet.data;
+        this.onError(err);
+        break;
+
+      case 'message':
+        this.emit('data', packet.data);
+        this.emit('message', packet.data);
+        break;
+    }
+  } else {
+    debug('packet received with socket readyState "%s"', this.readyState);
+  }
+};
+
+/**
+ * Called upon handshake completion.
+ *
+ * @param {Object} handshake obj
+ * @api private
+ */
+
+Socket.prototype.onHandshake = function (data) {
+  this.emit('handshake', data);
+  this.id = data.sid;
+  this.transport.query.sid = data.sid;
+  this.upgrades = this.filterUpgrades(data.upgrades);
+  this.pingInterval = data.pingInterval;
+  this.pingTimeout = data.pingTimeout;
+  this.onOpen();
+  // In case open handler closes socket
+  if ('closed' === this.readyState) return;
+  this.setPing();
+
+  // Prolong liveness of socket on heartbeat
+  this.removeListener('heartbeat', this.onHeartbeat);
+  this.on('heartbeat', this.onHeartbeat);
+};
+
+/**
+ * Resets ping timeout.
+ *
+ * @api private
+ */
+
+Socket.prototype.onHeartbeat = function (timeout) {
+  clearTimeout(this.pingTimeoutTimer);
+  var self = this;
+  self.pingTimeoutTimer = setTimeout(function () {
+    if ('closed' === self.readyState) return;
+    self.onClose('ping timeout');
+  }, timeout || (self.pingInterval + self.pingTimeout));
+};
+
+/**
+ * Pings server every `this.pingInterval` and expects response
+ * within `this.pingTimeout` or closes connection.
+ *
+ * @api private
+ */
+
+Socket.prototype.setPing = function () {
+  var self = this;
+  clearTimeout(self.pingIntervalTimer);
+  self.pingIntervalTimer = setTimeout(function () {
+    debug('writing ping packet - expecting pong within %sms', self.pingTimeout);
+    self.ping();
+    self.onHeartbeat(self.pingTimeout);
+  }, self.pingInterval);
+};
+
+/**
+* Sends a ping packet.
+*
+* @api private
+*/
+
+Socket.prototype.ping = function () {
+  var self = this;
+  this.sendPacket('ping', function () {
+    self.emit('ping');
+  });
+};
+
+/**
+ * Called on `drain` event
+ *
+ * @api private
+ */
+
+Socket.prototype.onDrain = function () {
+  this.writeBuffer.splice(0, this.prevBufferLen);
+
+  // setting prevBufferLen = 0 is very important
+  // for example, when upgrading, upgrade packet is sent over,
+  // and a nonzero prevBufferLen could cause problems on `drain`
+  this.prevBufferLen = 0;
+
+  if (0 === this.writeBuffer.length) {
+    this.emit('drain');
+  } else {
+    this.flush();
+  }
+};
+
+/**
+ * Flush write buffers.
+ *
+ * @api private
+ */
+
+Socket.prototype.flush = function () {
+  if ('closed' !== this.readyState && this.transport.writable &&
+    !this.upgrading && this.writeBuffer.length) {
+    debug('flushing %d packets in socket', this.writeBuffer.length);
+    this.transport.send(this.writeBuffer);
+    // keep track of current length of writeBuffer
+    // splice writeBuffer and callbackBuffer on `drain`
+    this.prevBufferLen = this.writeBuffer.length;
+    this.emit('flush');
+  }
+};
+
+/**
+ * Sends a message.
+ *
+ * @param {String} message.
+ * @param {Function} callback function.
+ * @param {Object} options.
+ * @return {Socket} for chaining.
+ * @api public
+ */
+
+Socket.prototype.write =
+Socket.prototype.send = function (msg, options, fn) {
+  this.sendPacket('message', msg, options, fn);
+  return this;
+};
+
+/**
+ * Sends a packet.
+ *
+ * @param {String} packet type.
+ * @param {String} data.
+ * @param {Object} options.
+ * @param {Function} callback function.
+ * @api private
+ */
+
+Socket.prototype.sendPacket = function (type, data, options, fn) {
+  if ('function' === typeof data) {
+    fn = data;
+    data = undefined;
+  }
+
+  if ('function' === typeof options) {
+    fn = options;
+    options = null;
+  }
+
+  if ('closing' === this.readyState || 'closed' === this.readyState) {
+    return;
+  }
+
+  options = options || {};
+  options.compress = false !== options.compress;
+
+  var packet = {
+    type: type,
+    data: data,
+    options: options
+  };
+  this.emit('packetCreate', packet);
+  this.writeBuffer.push(packet);
+  if (fn) this.once('flush', fn);
+  this.flush();
+};
+
+/**
+ * Closes the connection.
+ *
+ * @api private
+ */
+
+Socket.prototype.close = function () {
+  if ('opening' === this.readyState || 'open' === this.readyState) {
+    this.readyState = 'closing';
+
+    var self = this;
+
+    if (this.writeBuffer.length) {
+      this.once('drain', function () {
+        if (this.upgrading) {
+          waitForUpgrade();
+        } else {
+          close();
+        }
+      });
+    } else if (this.upgrading) {
+      waitForUpgrade();
+    } else {
+      close();
+    }
+  }
+
+  function close () {
+    self.onClose('forced close');
+    debug('socket closing - telling transport to close');
+    self.transport.close();
+  }
+
+  function cleanupAndClose () {
+    self.removeListener('upgrade', cleanupAndClose);
+    self.removeListener('upgradeError', cleanupAndClose);
+    close();
+  }
+
+  function waitForUpgrade () {
+    // wait for upgrade to finish since we can't send packets while pausing a transport
+    self.once('upgrade', cleanupAndClose);
+    self.once('upgradeError', cleanupAndClose);
+  }
+
+  return this;
+};
+
+/**
+ * Called upon transport error
+ *
+ * @api private
+ */
+
+Socket.prototype.onError = function (err) {
+  debug('socket error %j', err);
+  Socket.priorWebsocketSuccess = false;
+  this.emit('error', err);
+  this.onClose('transport error', err);
+};
+
+/**
+ * Called upon transport close.
+ *
+ * @api private
+ */
+
+Socket.prototype.onClose = function (reason, desc) {
+  if ('opening' === this.readyState || 'open' === this.readyState || 'closing' === this.readyState) {
+    debug('socket close with reason: "%s"', reason);
+    var self = this;
+
+    // clear timers
+    clearTimeout(this.pingIntervalTimer);
+    clearTimeout(this.pingTimeoutTimer);
+
+    // stop event from firing again for transport
+    this.transport.removeAllListeners('close');
+
+    // ensure transport won't stay open
+    this.transport.close();
+
+    // ignore further transport communication
+    this.transport.removeAllListeners();
+
+    // set ready state
+    this.readyState = 'closed';
+
+    // clear session id
+    this.id = null;
+
+    // emit close event
+    this.emit('close', reason, desc);
+
+    // clean buffers after, so users can still
+    // grab the buffers on `close` event
+    self.writeBuffer = [];
+    self.prevBufferLen = 0;
+  }
+};
+
+/**
+ * Filters upgrades, returning only those matching client transports.
+ *
+ * @param {Array} server upgrades
+ * @api private
+ *
+ */
+
+Socket.prototype.filterUpgrades = function (upgrades) {
+  var filteredUpgrades = [];
+  for (var i = 0, j = upgrades.length; i < j; i++) {
+    if (~index(this.transports, upgrades[i])) filteredUpgrades.push(upgrades[i]);
+  }
+  return filteredUpgrades;
+};
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports) {
+
+
+/**
+ * Module exports.
+ *
+ * Logic borrowed from Modernizr:
+ *
+ *   - https://github.com/Modernizr/Modernizr/blob/master/feature-detects/cors.js
+ */
+
+try {
+  module.exports = typeof XMLHttpRequest !== 'undefined' &&
+    'withCredentials' in new XMLHttpRequest();
+} catch (err) {
+  // if XMLHttp support is disabled in IE then it will throw
+  // when trying to create
+  module.exports = false;
+}
+
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {/**
+ * Module requirements.
+ */
+
+var XMLHttpRequest = __webpack_require__(7);
+var Polling = __webpack_require__(15);
+var Emitter = __webpack_require__(2);
+var inherit = __webpack_require__(5);
+var debug = __webpack_require__(1)('engine.io-client:polling-xhr');
+
+/**
+ * Module exports.
+ */
+
+module.exports = XHR;
+module.exports.Request = Request;
+
+/**
+ * Empty function
+ */
+
+function empty () {}
+
+/**
+ * XHR Polling constructor.
+ *
+ * @param {Object} opts
+ * @api public
+ */
+
+function XHR (opts) {
+  Polling.call(this, opts);
+  this.requestTimeout = opts.requestTimeout;
+  this.extraHeaders = opts.extraHeaders;
+
+  if (global.location) {
+    var isSSL = 'https:' === location.protocol;
+    var port = location.port;
+
+    // some user agents have empty `location.port`
+    if (!port) {
+      port = isSSL ? 443 : 80;
+    }
+
+    this.xd = opts.hostname !== global.location.hostname ||
+      port !== opts.port;
+    this.xs = opts.secure !== isSSL;
+  }
+}
+
+/**
+ * Inherits from Polling.
+ */
+
+inherit(XHR, Polling);
+
+/**
+ * XHR supports binary
+ */
+
+XHR.prototype.supportsBinary = true;
+
+/**
+ * Creates a request.
+ *
+ * @param {String} method
+ * @api private
+ */
+
+XHR.prototype.request = function (opts) {
+  opts = opts || {};
+  opts.uri = this.uri();
+  opts.xd = this.xd;
+  opts.xs = this.xs;
+  opts.agent = this.agent || false;
+  opts.supportsBinary = this.supportsBinary;
+  opts.enablesXDR = this.enablesXDR;
+
+  // SSL options for Node.js client
+  opts.pfx = this.pfx;
+  opts.key = this.key;
+  opts.passphrase = this.passphrase;
+  opts.cert = this.cert;
+  opts.ca = this.ca;
+  opts.ciphers = this.ciphers;
+  opts.rejectUnauthorized = this.rejectUnauthorized;
+  opts.requestTimeout = this.requestTimeout;
+
+  // other options for Node.js client
+  opts.extraHeaders = this.extraHeaders;
+
+  return new Request(opts);
+};
+
+/**
+ * Sends data.
+ *
+ * @param {String} data to send.
+ * @param {Function} called upon flush.
+ * @api private
+ */
+
+XHR.prototype.doWrite = function (data, fn) {
+  var isBinary = typeof data !== 'string' && data !== undefined;
+  var req = this.request({ method: 'POST', data: data, isBinary: isBinary });
+  var self = this;
+  req.on('success', fn);
+  req.on('error', function (err) {
+    self.onError('xhr post error', err);
+  });
+  this.sendXhr = req;
+};
+
+/**
+ * Starts a poll cycle.
+ *
+ * @api private
+ */
+
+XHR.prototype.doPoll = function () {
+  debug('xhr poll');
+  var req = this.request();
+  var self = this;
+  req.on('data', function (data) {
+    self.onData(data);
+  });
+  req.on('error', function (err) {
+    self.onError('xhr poll error', err);
+  });
+  this.pollXhr = req;
+};
+
+/**
+ * Request constructor
+ *
+ * @param {Object} options
+ * @api public
+ */
+
+function Request (opts) {
+  this.method = opts.method || 'GET';
+  this.uri = opts.uri;
+  this.xd = !!opts.xd;
+  this.xs = !!opts.xs;
+  this.async = false !== opts.async;
+  this.data = undefined !== opts.data ? opts.data : null;
+  this.agent = opts.agent;
+  this.isBinary = opts.isBinary;
+  this.supportsBinary = opts.supportsBinary;
+  this.enablesXDR = opts.enablesXDR;
+  this.requestTimeout = opts.requestTimeout;
+
+  // SSL options for Node.js client
+  this.pfx = opts.pfx;
+  this.key = opts.key;
+  this.passphrase = opts.passphrase;
+  this.cert = opts.cert;
+  this.ca = opts.ca;
+  this.ciphers = opts.ciphers;
+  this.rejectUnauthorized = opts.rejectUnauthorized;
+
+  // other options for Node.js client
+  this.extraHeaders = opts.extraHeaders;
+
+  this.create();
+}
+
+/**
+ * Mix in `Emitter`.
+ */
+
+Emitter(Request.prototype);
+
+/**
+ * Creates the XHR object and sends the request.
+ *
+ * @api private
+ */
+
+Request.prototype.create = function () {
+  var opts = { agent: this.agent, xdomain: this.xd, xscheme: this.xs, enablesXDR: this.enablesXDR };
+
+  // SSL options for Node.js client
+  opts.pfx = this.pfx;
+  opts.key = this.key;
+  opts.passphrase = this.passphrase;
+  opts.cert = this.cert;
+  opts.ca = this.ca;
+  opts.ciphers = this.ciphers;
+  opts.rejectUnauthorized = this.rejectUnauthorized;
+
+  var xhr = this.xhr = new XMLHttpRequest(opts);
+  var self = this;
+
+  try {
+    debug('xhr open %s: %s', this.method, this.uri);
+    xhr.open(this.method, this.uri, this.async);
+    try {
+      if (this.extraHeaders) {
+        xhr.setDisableHeaderCheck && xhr.setDisableHeaderCheck(true);
+        for (var i in this.extraHeaders) {
+          if (this.extraHeaders.hasOwnProperty(i)) {
+            xhr.setRequestHeader(i, this.extraHeaders[i]);
+          }
+        }
+      }
+    } catch (e) {}
+
+    if ('POST' === this.method) {
+      try {
+        if (this.isBinary) {
+          xhr.setRequestHeader('Content-type', 'application/octet-stream');
+        } else {
+          xhr.setRequestHeader('Content-type', 'text/plain;charset=UTF-8');
+        }
+      } catch (e) {}
+    }
+
+    try {
+      xhr.setRequestHeader('Accept', '*/*');
+    } catch (e) {}
+
+    // ie6 check
+    if ('withCredentials' in xhr) {
+      xhr.withCredentials = true;
+    }
+
+    if (this.requestTimeout) {
+      xhr.timeout = this.requestTimeout;
+    }
+
+    if (this.hasXDR()) {
+      xhr.onload = function () {
+        self.onLoad();
+      };
+      xhr.onerror = function () {
+        self.onError(xhr.responseText);
+      };
+    } else {
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 2) {
+          var contentType;
+          try {
+            contentType = xhr.getResponseHeader('Content-Type');
+          } catch (e) {}
+          if (contentType === 'application/octet-stream') {
+            xhr.responseType = 'arraybuffer';
+          }
+        }
+        if (4 !== xhr.readyState) return;
+        if (200 === xhr.status || 1223 === xhr.status) {
+          self.onLoad();
+        } else {
+          // make sure the `error` event handler that's user-set
+          // does not throw in the same tick and gets caught here
+          setTimeout(function () {
+            self.onError(xhr.status);
+          }, 0);
+        }
+      };
+    }
+
+    debug('xhr data %s', this.data);
+    xhr.send(this.data);
+  } catch (e) {
+    // Need to defer since .create() is called directly fhrom the constructor
+    // and thus the 'error' event can only be only bound *after* this exception
+    // occurs.  Therefore, also, we cannot throw here at all.
+    setTimeout(function () {
+      self.onError(e);
+    }, 0);
+    return;
+  }
+
+  if (global.document) {
+    this.index = Request.requestsCount++;
+    Request.requests[this.index] = this;
+  }
+};
+
+/**
+ * Called upon successful response.
+ *
+ * @api private
+ */
+
+Request.prototype.onSuccess = function () {
+  this.emit('success');
+  this.cleanup();
+};
+
+/**
+ * Called if we have data.
+ *
+ * @api private
+ */
+
+Request.prototype.onData = function (data) {
+  this.emit('data', data);
+  this.onSuccess();
+};
+
+/**
+ * Called upon error.
+ *
+ * @api private
+ */
+
+Request.prototype.onError = function (err) {
+  this.emit('error', err);
+  this.cleanup(true);
+};
+
+/**
+ * Cleans up house.
+ *
+ * @api private
+ */
+
+Request.prototype.cleanup = function (fromError) {
+  if ('undefined' === typeof this.xhr || null === this.xhr) {
+    return;
+  }
+  // xmlhttprequest
+  if (this.hasXDR()) {
+    this.xhr.onload = this.xhr.onerror = empty;
+  } else {
+    this.xhr.onreadystatechange = empty;
+  }
+
+  if (fromError) {
+    try {
+      this.xhr.abort();
+    } catch (e) {}
+  }
+
+  if (global.document) {
+    delete Request.requests[this.index];
+  }
+
+  this.xhr = null;
+};
+
+/**
+ * Called upon load.
+ *
+ * @api private
+ */
+
+Request.prototype.onLoad = function () {
+  var data;
+  try {
+    var contentType;
+    try {
+      contentType = this.xhr.getResponseHeader('Content-Type');
+    } catch (e) {}
+    if (contentType === 'application/octet-stream') {
+      data = this.xhr.response || this.xhr.responseText;
+    } else {
+      data = this.xhr.responseText;
+    }
+  } catch (e) {
+    this.onError(e);
+  }
+  if (null != data) {
+    this.onData(data);
+  }
+};
+
+/**
+ * Check if it has XDomainRequest.
+ *
+ * @api private
+ */
+
+Request.prototype.hasXDR = function () {
+  return 'undefined' !== typeof global.XDomainRequest && !this.xs && this.enablesXDR;
+};
+
+/**
+ * Aborts the request.
+ *
+ * @api public
+ */
+
+Request.prototype.abort = function () {
+  this.cleanup();
+};
+
+/**
+ * Aborts pending requests when unloading the window. This is needed to prevent
+ * memory leaks (e.g. when using IE) and to ensure that no spurious error is
+ * emitted.
+ */
+
+Request.requestsCount = 0;
+Request.requests = {};
+
+if (global.document) {
+  if (global.attachEvent) {
+    global.attachEvent('onunload', unloadHandler);
+  } else if (global.addEventListener) {
+    global.addEventListener('beforeunload', unloadHandler, false);
+  }
+}
+
+function unloadHandler () {
+  for (var i in Request.requests) {
+    if (Request.requests.hasOwnProperty(i)) {
+      Request.requests[i].abort();
+    }
+  }
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports) {
+
+
+/**
+ * Gets the keys for an object.
+ *
+ * @return {Array} keys
+ * @api private
+ */
+
+module.exports = Object.keys || function keys (obj){
+  var arr = [];
+  var has = Object.prototype.hasOwnProperty;
+
+  for (var i in obj) {
+    if (has.call(obj, i)) {
+      arr.push(i);
+    }
+  }
+  return arr;
+};
+
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports) {
+
+/**
+ * An abstraction for slicing an arraybuffer even when
+ * ArrayBuffer.prototype.slice is not supported
+ *
+ * @api public
+ */
+
+module.exports = function(arraybuffer, start, end) {
+  var bytes = arraybuffer.byteLength;
+  start = start || 0;
+  end = end || bytes;
+
+  if (arraybuffer.slice) { return arraybuffer.slice(start, end); }
+
+  if (start < 0) { start += bytes; }
+  if (end < 0) { end += bytes; }
+  if (end > bytes) { end = bytes; }
+
+  if (start >= bytes || start >= end || bytes === 0) {
+    return new ArrayBuffer(0);
+  }
+
+  var abv = new Uint8Array(arraybuffer);
+  var result = new Uint8Array(end - start);
+  for (var i = start, ii = 0; i < end; i++, ii++) {
+    result[ii] = abv[i];
+  }
+  return result.buffer;
+};
+
+
+/***/ }),
+/* 38 */
+/***/ (function(module, exports) {
+
+module.exports = after
+
+function after(count, callback, err_cb) {
+    var bail = false
+    err_cb = err_cb || noop
+    proxy.count = count
+
+    return (count === 0) ? callback() : proxy
+
+    function proxy(err, result) {
+        if (proxy.count <= 0) {
+            throw new Error('after called too many times')
+        }
+        --proxy.count
+
+        // after first error, rest are passed to err_cb
+        if (err) {
+            bail = true
+            callback(err)
+            // future error callbacks will go to error handler
+            callback = err_cb
+        } else if (proxy.count === 0 && !bail) {
+            callback(null, result)
+        }
+    }
+}
+
+function noop() {}
+
+
+/***/ }),
+/* 39 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(module, global) {var __WEBPACK_AMD_DEFINE_RESULT__;/*! https://mths.be/utf8js v2.1.2 by @mathias */
+;(function(root) {
+
+	// Detect free variables `exports`
+	var freeExports = typeof exports == 'object' && exports;
+
+	// Detect free variable `module`
+	var freeModule = typeof module == 'object' && module &&
+		module.exports == freeExports && module;
+
+	// Detect free variable `global`, from Node.js or Browserified code,
+	// and use it as `root`
+	var freeGlobal = typeof global == 'object' && global;
+	if (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal) {
+		root = freeGlobal;
+	}
+
+	/*--------------------------------------------------------------------------*/
+
+	var stringFromCharCode = String.fromCharCode;
+
+	// Taken from https://mths.be/punycode
+	function ucs2decode(string) {
+		var output = [];
+		var counter = 0;
+		var length = string.length;
+		var value;
+		var extra;
+		while (counter < length) {
+			value = string.charCodeAt(counter++);
+			if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
+				// high surrogate, and there is a next character
+				extra = string.charCodeAt(counter++);
+				if ((extra & 0xFC00) == 0xDC00) { // low surrogate
+					output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
+				} else {
+					// unmatched surrogate; only append this code unit, in case the next
+					// code unit is the high surrogate of a surrogate pair
+					output.push(value);
+					counter--;
+				}
+			} else {
+				output.push(value);
+			}
+		}
+		return output;
+	}
+
+	// Taken from https://mths.be/punycode
+	function ucs2encode(array) {
+		var length = array.length;
+		var index = -1;
+		var value;
+		var output = '';
+		while (++index < length) {
+			value = array[index];
+			if (value > 0xFFFF) {
+				value -= 0x10000;
+				output += stringFromCharCode(value >>> 10 & 0x3FF | 0xD800);
+				value = 0xDC00 | value & 0x3FF;
+			}
+			output += stringFromCharCode(value);
+		}
+		return output;
+	}
+
+	function checkScalarValue(codePoint, strict) {
+		if (codePoint >= 0xD800 && codePoint <= 0xDFFF) {
+			if (strict) {
+				throw Error(
+					'Lone surrogate U+' + codePoint.toString(16).toUpperCase() +
+					' is not a scalar value'
+				);
+			}
+			return false;
+		}
+		return true;
+	}
+	/*--------------------------------------------------------------------------*/
+
+	function createByte(codePoint, shift) {
+		return stringFromCharCode(((codePoint >> shift) & 0x3F) | 0x80);
+	}
+
+	function encodeCodePoint(codePoint, strict) {
+		if ((codePoint & 0xFFFFFF80) == 0) { // 1-byte sequence
+			return stringFromCharCode(codePoint);
+		}
+		var symbol = '';
+		if ((codePoint & 0xFFFFF800) == 0) { // 2-byte sequence
+			symbol = stringFromCharCode(((codePoint >> 6) & 0x1F) | 0xC0);
+		}
+		else if ((codePoint & 0xFFFF0000) == 0) { // 3-byte sequence
+			if (!checkScalarValue(codePoint, strict)) {
+				codePoint = 0xFFFD;
+			}
+			symbol = stringFromCharCode(((codePoint >> 12) & 0x0F) | 0xE0);
+			symbol += createByte(codePoint, 6);
+		}
+		else if ((codePoint & 0xFFE00000) == 0) { // 4-byte sequence
+			symbol = stringFromCharCode(((codePoint >> 18) & 0x07) | 0xF0);
+			symbol += createByte(codePoint, 12);
+			symbol += createByte(codePoint, 6);
+		}
+		symbol += stringFromCharCode((codePoint & 0x3F) | 0x80);
+		return symbol;
+	}
+
+	function utf8encode(string, opts) {
+		opts = opts || {};
+		var strict = false !== opts.strict;
+
+		var codePoints = ucs2decode(string);
+		var length = codePoints.length;
+		var index = -1;
+		var codePoint;
+		var byteString = '';
+		while (++index < length) {
+			codePoint = codePoints[index];
+			byteString += encodeCodePoint(codePoint, strict);
+		}
+		return byteString;
+	}
+
+	/*--------------------------------------------------------------------------*/
+
+	function readContinuationByte() {
+		if (byteIndex >= byteCount) {
+			throw Error('Invalid byte index');
+		}
+
+		var continuationByte = byteArray[byteIndex] & 0xFF;
+		byteIndex++;
+
+		if ((continuationByte & 0xC0) == 0x80) {
+			return continuationByte & 0x3F;
+		}
+
+		// If we end up here, it’s not a continuation byte
+		throw Error('Invalid continuation byte');
+	}
+
+	function decodeSymbol(strict) {
+		var byte1;
+		var byte2;
+		var byte3;
+		var byte4;
+		var codePoint;
+
+		if (byteIndex > byteCount) {
+			throw Error('Invalid byte index');
+		}
+
+		if (byteIndex == byteCount) {
+			return false;
+		}
+
+		// Read first byte
+		byte1 = byteArray[byteIndex] & 0xFF;
+		byteIndex++;
+
+		// 1-byte sequence (no continuation bytes)
+		if ((byte1 & 0x80) == 0) {
+			return byte1;
+		}
+
+		// 2-byte sequence
+		if ((byte1 & 0xE0) == 0xC0) {
+			byte2 = readContinuationByte();
+			codePoint = ((byte1 & 0x1F) << 6) | byte2;
+			if (codePoint >= 0x80) {
+				return codePoint;
+			} else {
+				throw Error('Invalid continuation byte');
+			}
+		}
+
+		// 3-byte sequence (may include unpaired surrogates)
+		if ((byte1 & 0xF0) == 0xE0) {
+			byte2 = readContinuationByte();
+			byte3 = readContinuationByte();
+			codePoint = ((byte1 & 0x0F) << 12) | (byte2 << 6) | byte3;
+			if (codePoint >= 0x0800) {
+				return checkScalarValue(codePoint, strict) ? codePoint : 0xFFFD;
+			} else {
+				throw Error('Invalid continuation byte');
+			}
+		}
+
+		// 4-byte sequence
+		if ((byte1 & 0xF8) == 0xF0) {
+			byte2 = readContinuationByte();
+			byte3 = readContinuationByte();
+			byte4 = readContinuationByte();
+			codePoint = ((byte1 & 0x07) << 0x12) | (byte2 << 0x0C) |
+				(byte3 << 0x06) | byte4;
+			if (codePoint >= 0x010000 && codePoint <= 0x10FFFF) {
+				return codePoint;
+			}
+		}
+
+		throw Error('Invalid UTF-8 detected');
+	}
+
+	var byteArray;
+	var byteCount;
+	var byteIndex;
+	function utf8decode(byteString, opts) {
+		opts = opts || {};
+		var strict = false !== opts.strict;
+
+		byteArray = ucs2decode(byteString);
+		byteCount = byteArray.length;
+		byteIndex = 0;
+		var codePoints = [];
+		var tmp;
+		while ((tmp = decodeSymbol(strict)) !== false) {
+			codePoints.push(tmp);
+		}
+		return ucs2encode(codePoints);
+	}
+
+	/*--------------------------------------------------------------------------*/
+
+	var utf8 = {
+		'version': '2.1.2',
+		'encode': utf8encode,
+		'decode': utf8decode
+	};
+
+	// Some AMD build optimizers, like r.js, check for specific condition patterns
+	// like the following:
+	if (
+		true
+	) {
+		!(__WEBPACK_AMD_DEFINE_RESULT__ = function() {
+			return utf8;
+		}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	}	else if (freeExports && !freeExports.nodeType) {
+		if (freeModule) { // in Node.js or RingoJS v0.8.0+
+			freeModule.exports = utf8;
+		} else { // in Narwhal or RingoJS v0.7.0-
+			var object = {};
+			var hasOwnProperty = object.hasOwnProperty;
+			for (var key in utf8) {
+				hasOwnProperty.call(utf8, key) && (freeExports[key] = utf8[key]);
+			}
+		}
+	} else { // in Rhino or a web browser
+		root.utf8 = utf8;
+	}
+
+}(this));
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(40)(module), __webpack_require__(0)))
+
+/***/ }),
+/* 40 */
+/***/ (function(module, exports) {
+
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
+
+/***/ }),
+/* 41 */
+/***/ (function(module, exports) {
+
+/*
+ * base64-arraybuffer
+ * https://github.com/niklasvh/base64-arraybuffer
+ *
+ * Copyright (c) 2012 Niklas von Hertzen
+ * Licensed under the MIT license.
+ */
+(function(){
+  "use strict";
+
+  var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+  // Use a lookup table to find the index.
+  var lookup = new Uint8Array(256);
+  for (var i = 0; i < chars.length; i++) {
+    lookup[chars.charCodeAt(i)] = i;
+  }
+
+  exports.encode = function(arraybuffer) {
+    var bytes = new Uint8Array(arraybuffer),
+    i, len = bytes.length, base64 = "";
+
+    for (i = 0; i < len; i+=3) {
+      base64 += chars[bytes[i] >> 2];
+      base64 += chars[((bytes[i] & 3) << 4) | (bytes[i + 1] >> 4)];
+      base64 += chars[((bytes[i + 1] & 15) << 2) | (bytes[i + 2] >> 6)];
+      base64 += chars[bytes[i + 2] & 63];
+    }
+
+    if ((len % 3) === 2) {
+      base64 = base64.substring(0, base64.length - 1) + "=";
+    } else if (len % 3 === 1) {
+      base64 = base64.substring(0, base64.length - 2) + "==";
+    }
+
+    return base64;
+  };
+
+  exports.decode =  function(base64) {
+    var bufferLength = base64.length * 0.75,
+    len = base64.length, i, p = 0,
+    encoded1, encoded2, encoded3, encoded4;
+
+    if (base64[base64.length - 1] === "=") {
+      bufferLength--;
+      if (base64[base64.length - 2] === "=") {
+        bufferLength--;
+      }
+    }
+
+    var arraybuffer = new ArrayBuffer(bufferLength),
+    bytes = new Uint8Array(arraybuffer);
+
+    for (i = 0; i < len; i+=4) {
+      encoded1 = lookup[base64.charCodeAt(i)];
+      encoded2 = lookup[base64.charCodeAt(i+1)];
+      encoded3 = lookup[base64.charCodeAt(i+2)];
+      encoded4 = lookup[base64.charCodeAt(i+3)];
+
+      bytes[p++] = (encoded1 << 2) | (encoded2 >> 4);
+      bytes[p++] = ((encoded2 & 15) << 4) | (encoded3 >> 2);
+      bytes[p++] = ((encoded3 & 3) << 6) | (encoded4 & 63);
+    }
+
+    return arraybuffer;
+  };
+})();
+
+
+/***/ }),
+/* 42 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {/**
+ * Create a blob builder even when vendor prefixes exist
+ */
+
+var BlobBuilder = global.BlobBuilder
+  || global.WebKitBlobBuilder
+  || global.MSBlobBuilder
+  || global.MozBlobBuilder;
+
+/**
+ * Check if Blob constructor is supported
+ */
+
+var blobSupported = (function() {
+  try {
+    var a = new Blob(['hi']);
+    return a.size === 2;
+  } catch(e) {
+    return false;
+  }
+})();
+
+/**
+ * Check if Blob constructor supports ArrayBufferViews
+ * Fails in Safari 6, so we need to map to ArrayBuffers there.
+ */
+
+var blobSupportsArrayBufferView = blobSupported && (function() {
+  try {
+    var b = new Blob([new Uint8Array([1,2])]);
+    return b.size === 2;
+  } catch(e) {
+    return false;
+  }
+})();
+
+/**
+ * Check if BlobBuilder is supported
+ */
+
+var blobBuilderSupported = BlobBuilder
+  && BlobBuilder.prototype.append
+  && BlobBuilder.prototype.getBlob;
+
+/**
+ * Helper function that maps ArrayBufferViews to ArrayBuffers
+ * Used by BlobBuilder constructor and old browsers that didn't
+ * support it in the Blob constructor.
+ */
+
+function mapArrayBufferViews(ary) {
+  for (var i = 0; i < ary.length; i++) {
+    var chunk = ary[i];
+    if (chunk.buffer instanceof ArrayBuffer) {
+      var buf = chunk.buffer;
+
+      // if this is a subarray, make a copy so we only
+      // include the subarray region from the underlying buffer
+      if (chunk.byteLength !== buf.byteLength) {
+        var copy = new Uint8Array(chunk.byteLength);
+        copy.set(new Uint8Array(buf, chunk.byteOffset, chunk.byteLength));
+        buf = copy.buffer;
+      }
+
+      ary[i] = buf;
+    }
+  }
+}
+
+function BlobBuilderConstructor(ary, options) {
+  options = options || {};
+
+  var bb = new BlobBuilder();
+  mapArrayBufferViews(ary);
+
+  for (var i = 0; i < ary.length; i++) {
+    bb.append(ary[i]);
+  }
+
+  return (options.type) ? bb.getBlob(options.type) : bb.getBlob();
+};
+
+function BlobConstructor(ary, options) {
+  mapArrayBufferViews(ary);
+  return new Blob(ary, options || {});
+};
+
+module.exports = (function() {
+  if (blobSupported) {
+    return blobSupportsArrayBufferView ? global.Blob : BlobConstructor;
+  } else if (blobBuilderSupported) {
+    return BlobBuilderConstructor;
+  } else {
+    return undefined;
+  }
+})();
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 43 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {
+/**
+ * Module requirements.
+ */
+
+var Polling = __webpack_require__(15);
+var inherit = __webpack_require__(5);
+
+/**
+ * Module exports.
+ */
+
+module.exports = JSONPPolling;
+
+/**
+ * Cached regular expressions.
+ */
+
+var rNewline = /\n/g;
+var rEscapedNewline = /\\n/g;
+
+/**
+ * Global JSONP callbacks.
+ */
+
+var callbacks;
+
+/**
+ * Noop.
+ */
+
+function empty () { }
+
+/**
+ * JSONP Polling constructor.
+ *
+ * @param {Object} opts.
+ * @api public
+ */
+
+function JSONPPolling (opts) {
+  Polling.call(this, opts);
+
+  this.query = this.query || {};
+
+  // define global callbacks array if not present
+  // we do this here (lazily) to avoid unneeded global pollution
+  if (!callbacks) {
+    // we need to consider multiple engines in the same page
+    if (!global.___eio) global.___eio = [];
+    callbacks = global.___eio;
+  }
+
+  // callback identifier
+  this.index = callbacks.length;
+
+  // add callback to jsonp global
+  var self = this;
+  callbacks.push(function (msg) {
+    self.onData(msg);
+  });
+
+  // append to query string
+  this.query.j = this.index;
+
+  // prevent spurious errors from being emitted when the window is unloaded
+  if (global.document && global.addEventListener) {
+    global.addEventListener('beforeunload', function () {
+      if (self.script) self.script.onerror = empty;
+    }, false);
+  }
+}
+
+/**
+ * Inherits from Polling.
+ */
+
+inherit(JSONPPolling, Polling);
+
+/*
+ * JSONP only supports binary as base64 encoded strings
+ */
+
+JSONPPolling.prototype.supportsBinary = false;
+
+/**
+ * Closes the socket.
+ *
+ * @api private
+ */
+
+JSONPPolling.prototype.doClose = function () {
+  if (this.script) {
+    this.script.parentNode.removeChild(this.script);
+    this.script = null;
+  }
+
+  if (this.form) {
+    this.form.parentNode.removeChild(this.form);
+    this.form = null;
+    this.iframe = null;
+  }
+
+  Polling.prototype.doClose.call(this);
+};
+
+/**
+ * Starts a poll cycle.
+ *
+ * @api private
+ */
+
+JSONPPolling.prototype.doPoll = function () {
+  var self = this;
+  var script = document.createElement('script');
+
+  if (this.script) {
+    this.script.parentNode.removeChild(this.script);
+    this.script = null;
+  }
+
+  script.async = true;
+  script.src = this.uri();
+  script.onerror = function (e) {
+    self.onError('jsonp poll error', e);
+  };
+
+  var insertAt = document.getElementsByTagName('script')[0];
+  if (insertAt) {
+    insertAt.parentNode.insertBefore(script, insertAt);
+  } else {
+    (document.head || document.body).appendChild(script);
+  }
+  this.script = script;
+
+  var isUAgecko = 'undefined' !== typeof navigator && /gecko/i.test(navigator.userAgent);
+
+  if (isUAgecko) {
+    setTimeout(function () {
+      var iframe = document.createElement('iframe');
+      document.body.appendChild(iframe);
+      document.body.removeChild(iframe);
+    }, 100);
+  }
+};
+
+/**
+ * Writes with a hidden iframe.
+ *
+ * @param {String} data to send
+ * @param {Function} called upon flush.
+ * @api private
+ */
+
+JSONPPolling.prototype.doWrite = function (data, fn) {
+  var self = this;
+
+  if (!this.form) {
+    var form = document.createElement('form');
+    var area = document.createElement('textarea');
+    var id = this.iframeId = 'eio_iframe_' + this.index;
+    var iframe;
+
+    form.className = 'socketio';
+    form.style.position = 'absolute';
+    form.style.top = '-1000px';
+    form.style.left = '-1000px';
+    form.target = id;
+    form.method = 'POST';
+    form.setAttribute('accept-charset', 'utf-8');
+    area.name = 'd';
+    form.appendChild(area);
+    document.body.appendChild(form);
+
+    this.form = form;
+    this.area = area;
+  }
+
+  this.form.action = this.uri();
+
+  function complete () {
+    initIframe();
+    fn();
+  }
+
+  function initIframe () {
+    if (self.iframe) {
+      try {
+        self.form.removeChild(self.iframe);
+      } catch (e) {
+        self.onError('jsonp polling iframe removal error', e);
+      }
+    }
+
+    try {
+      // ie6 dynamic iframes with target="" support (thanks Chris Lambacher)
+      var html = '<iframe src="javascript:0" name="' + self.iframeId + '">';
+      iframe = document.createElement(html);
+    } catch (e) {
+      iframe = document.createElement('iframe');
+      iframe.name = self.iframeId;
+      iframe.src = 'javascript:0';
+    }
+
+    iframe.id = self.iframeId;
+
+    self.form.appendChild(iframe);
+    self.iframe = iframe;
+  }
+
+  initIframe();
+
+  // escape \n to prevent it from being converted into \r\n by some UAs
+  // double escaping is required for escaped new lines because unescaping of new lines can be done safely on server-side
+  data = data.replace(rEscapedNewline, '\\\n');
+  this.area.value = data.replace(rNewline, '\\n');
+
+  try {
+    this.form.submit();
+  } catch (e) {}
+
+  if (this.iframe.attachEvent) {
+    this.iframe.onreadystatechange = function () {
+      if (self.iframe.readyState === 'complete') {
+        complete();
+      }
+    };
+  } else {
+    this.iframe.onload = complete;
+  }
+};
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {/**
+ * Module dependencies.
+ */
+
+var Transport = __webpack_require__(8);
+var parser = __webpack_require__(3);
+var parseqs = __webpack_require__(4);
+var inherit = __webpack_require__(5);
+var yeast = __webpack_require__(16);
+var debug = __webpack_require__(1)('engine.io-client:websocket');
+var BrowserWebSocket = global.WebSocket || global.MozWebSocket;
+var NodeWebSocket;
+if (typeof window === 'undefined') {
+  try {
+    NodeWebSocket = __webpack_require__(45);
+  } catch (e) { }
+}
+
+/**
+ * Get either the `WebSocket` or `MozWebSocket` globals
+ * in the browser or try to resolve WebSocket-compatible
+ * interface exposed by `ws` for Node-like environment.
+ */
+
+var WebSocket = BrowserWebSocket;
+if (!WebSocket && typeof window === 'undefined') {
+  WebSocket = NodeWebSocket;
+}
+
+/**
+ * Module exports.
+ */
+
+module.exports = WS;
+
+/**
+ * WebSocket transport constructor.
+ *
+ * @api {Object} connection options
+ * @api public
+ */
+
+function WS (opts) {
+  var forceBase64 = (opts && opts.forceBase64);
+  if (forceBase64) {
+    this.supportsBinary = false;
+  }
+  this.perMessageDeflate = opts.perMessageDeflate;
+  this.usingBrowserWebSocket = BrowserWebSocket && !opts.forceNode;
+  this.protocols = opts.protocols;
+  if (!this.usingBrowserWebSocket) {
+    WebSocket = NodeWebSocket;
+  }
+  Transport.call(this, opts);
+}
+
+/**
+ * Inherits from Transport.
+ */
+
+inherit(WS, Transport);
+
+/**
+ * Transport name.
+ *
+ * @api public
+ */
+
+WS.prototype.name = 'websocket';
+
+/*
+ * WebSockets support binary
+ */
+
+WS.prototype.supportsBinary = true;
+
+/**
+ * Opens socket.
+ *
+ * @api private
+ */
+
+WS.prototype.doOpen = function () {
+  if (!this.check()) {
+    // let probe timeout
+    return;
+  }
+
+  var uri = this.uri();
+  var protocols = this.protocols;
+  var opts = {
+    agent: this.agent,
+    perMessageDeflate: this.perMessageDeflate
+  };
+
+  // SSL options for Node.js client
+  opts.pfx = this.pfx;
+  opts.key = this.key;
+  opts.passphrase = this.passphrase;
+  opts.cert = this.cert;
+  opts.ca = this.ca;
+  opts.ciphers = this.ciphers;
+  opts.rejectUnauthorized = this.rejectUnauthorized;
+  if (this.extraHeaders) {
+    opts.headers = this.extraHeaders;
+  }
+  if (this.localAddress) {
+    opts.localAddress = this.localAddress;
+  }
+
+  try {
+    this.ws = this.usingBrowserWebSocket ? (protocols ? new WebSocket(uri, protocols) : new WebSocket(uri)) : new WebSocket(uri, protocols, opts);
+  } catch (err) {
+    return this.emit('error', err);
+  }
+
+  if (this.ws.binaryType === undefined) {
+    this.supportsBinary = false;
+  }
+
+  if (this.ws.supports && this.ws.supports.binary) {
+    this.supportsBinary = true;
+    this.ws.binaryType = 'nodebuffer';
+  } else {
+    this.ws.binaryType = 'arraybuffer';
+  }
+
+  this.addEventListeners();
+};
+
+/**
+ * Adds event listeners to the socket
+ *
+ * @api private
+ */
+
+WS.prototype.addEventListeners = function () {
+  var self = this;
+
+  this.ws.onopen = function () {
+    self.onOpen();
+  };
+  this.ws.onclose = function () {
+    self.onClose();
+  };
+  this.ws.onmessage = function (ev) {
+    self.onData(ev.data);
+  };
+  this.ws.onerror = function (e) {
+    self.onError('websocket error', e);
+  };
+};
+
+/**
+ * Writes data to socket.
+ *
+ * @param {Array} array of packets.
+ * @api private
+ */
+
+WS.prototype.write = function (packets) {
+  var self = this;
+  this.writable = false;
+
+  // encodePacket efficient as it uses WS framing
+  // no need for encodePayload
+  var total = packets.length;
+  for (var i = 0, l = total; i < l; i++) {
+    (function (packet) {
+      parser.encodePacket(packet, self.supportsBinary, function (data) {
+        if (!self.usingBrowserWebSocket) {
+          // always create a new object (GH-437)
+          var opts = {};
+          if (packet.options) {
+            opts.compress = packet.options.compress;
+          }
+
+          if (self.perMessageDeflate) {
+            var len = 'string' === typeof data ? global.Buffer.byteLength(data) : data.length;
+            if (len < self.perMessageDeflate.threshold) {
+              opts.compress = false;
+            }
+          }
+        }
+
+        // Sometimes the websocket has already been closed but the browser didn't
+        // have a chance of informing us about it yet, in that case send will
+        // throw an error
+        try {
+          if (self.usingBrowserWebSocket) {
+            // TypeError is thrown when passing the second argument on Safari
+            self.ws.send(data);
+          } else {
+            self.ws.send(data, opts);
+          }
+        } catch (e) {
+          debug('websocket closed before onclose event');
+        }
+
+        --total || done();
+      });
+    })(packets[i]);
+  }
+
+  function done () {
+    self.emit('flush');
+
+    // fake drain
+    // defer to next tick to allow Socket to clear writeBuffer
+    setTimeout(function () {
+      self.writable = true;
+      self.emit('drain');
+    }, 0);
+  }
+};
+
+/**
+ * Called upon close
+ *
+ * @api private
+ */
+
+WS.prototype.onClose = function () {
+  Transport.prototype.onClose.call(this);
+};
+
+/**
+ * Closes socket.
+ *
+ * @api private
+ */
+
+WS.prototype.doClose = function () {
+  if (typeof this.ws !== 'undefined') {
+    this.ws.close();
+  }
+};
+
+/**
+ * Generates uri for connection.
+ *
+ * @api private
+ */
+
+WS.prototype.uri = function () {
+  var query = this.query || {};
+  var schema = this.secure ? 'wss' : 'ws';
+  var port = '';
+
+  // avoid port if default for schema
+  if (this.port && (('wss' === schema && Number(this.port) !== 443) ||
+    ('ws' === schema && Number(this.port) !== 80))) {
+    port = ':' + this.port;
+  }
+
+  // append timestamp to URI
+  if (this.timestampRequests) {
+    query[this.timestampParam] = yeast();
+  }
+
+  // communicate binary support capabilities
+  if (!this.supportsBinary) {
+    query.b64 = 1;
+  }
+
+  query = parseqs.encode(query);
+
+  // prepend ? to query
+  if (query.length) {
+    query = '?' + query;
+  }
+
+  var ipv6 = this.hostname.indexOf(':') !== -1;
+  return schema + '://' + (ipv6 ? '[' + this.hostname + ']' : this.hostname) + port + this.path + query;
+};
+
+/**
+ * Feature detection for WebSocket.
+ *
+ * @return {Boolean} whether this transport is available.
+ * @api public
+ */
+
+WS.prototype.check = function () {
+  return !!WebSocket && !('__initialize' in WebSocket && this.name === WS.prototype.name);
+};
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 45 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+/* 46 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {/**
+ * JSON parse.
+ *
+ * @see Based on jQuery#parseJSON (MIT) and JSON2
+ * @api private
+ */
+
+var rvalidchars = /^[\],:{}\s]*$/;
+var rvalidescape = /\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g;
+var rvalidtokens = /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g;
+var rvalidbraces = /(?:^|:|,)(?:\s*\[)+/g;
+var rtrimLeft = /^\s+/;
+var rtrimRight = /\s+$/;
+
+module.exports = function parsejson(data) {
+  if ('string' != typeof data || !data) {
+    return null;
+  }
+
+  data = data.replace(rtrimLeft, '').replace(rtrimRight, '');
+
+  // Attempt to parse using the native JSON parser first
+  if (global.JSON && JSON.parse) {
+    return JSON.parse(data);
+  }
+
+  if (rvalidchars.test(data.replace(rvalidescape, '@')
+      .replace(rvalidtokens, ']')
+      .replace(rvalidbraces, ''))) {
+    return (new Function('return ' + data))();
+  }
+};
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports) {
+
+module.exports = toArray
+
+function toArray(list, index) {
+    var array = []
+
+    index = index || 0
+
+    for (var i = index || 0; i < list.length; i++) {
+        array[i - index] = list[i]
+    }
+
+    return array
+}
+
+
+/***/ }),
+/* 48 */
+/***/ (function(module, exports) {
+
+
+/**
+ * Expose `Backoff`.
+ */
+
+module.exports = Backoff;
+
+/**
+ * Initialize backoff timer with `opts`.
+ *
+ * - `min` initial timeout in milliseconds [100]
+ * - `max` max timeout [10000]
+ * - `jitter` [0]
+ * - `factor` [2]
+ *
+ * @param {Object} opts
+ * @api public
+ */
+
+function Backoff(opts) {
+  opts = opts || {};
+  this.ms = opts.min || 100;
+  this.max = opts.max || 10000;
+  this.factor = opts.factor || 2;
+  this.jitter = opts.jitter > 0 && opts.jitter <= 1 ? opts.jitter : 0;
+  this.attempts = 0;
+}
+
+/**
+ * Return the backoff duration.
+ *
+ * @return {Number}
+ * @api public
+ */
+
+Backoff.prototype.duration = function(){
+  var ms = this.ms * Math.pow(this.factor, this.attempts++);
+  if (this.jitter) {
+    var rand =  Math.random();
+    var deviation = Math.floor(rand * this.jitter * ms);
+    ms = (Math.floor(rand * 10) & 1) == 0  ? ms - deviation : ms + deviation;
+  }
+  return Math.min(ms, this.max) | 0;
+};
+
+/**
+ * Reset the number of attempts.
+ *
+ * @api public
+ */
+
+Backoff.prototype.reset = function(){
+  this.attempts = 0;
+};
+
+/**
+ * Set the minimum duration
+ *
+ * @api public
+ */
+
+Backoff.prototype.setMin = function(min){
+  this.ms = min;
+};
+
+/**
+ * Set the maximum duration
+ *
+ * @api public
+ */
+
+Backoff.prototype.setMax = function(max){
+  this.max = max;
+};
+
+/**
+ * Set the jitter
+ *
+ * @api public
+ */
+
+Backoff.prototype.setJitter = function(jitter){
+  this.jitter = jitter;
+};
+
+
+
+/***/ }),
+/* 49 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Config__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Config___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Config__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_getContrast__ = __webpack_require__(22);
+
+
+
+/**
+ * @module
+ */
+class UserInterface {
+
+    /** 
+     * User interface constructor.
+     * @constructor
+     */
+    constructor() {
+
+        /**
+         * Object containing custom objects with listener type and function,
+         * helpful when you want to unset a listener.<br>Also has a 'count' 
+         * member which works like auto increment field in database.
+         * @type {object}
+         */
+        this.listeners = {
+            count: 0 // Doesn’t represent number of listeners!
+        }
+
+        /**
+         * Array containing messages for infobox.
+         * @type {string[]}
+         */
+        this.messages = []
+
+        /**
+         * Array containing divs with names in the ranking box.
+         * @type {Node[]}
+         */
+        this.names = []
+
+        this.init()
+
+        this.cache([
+            '/images/cannonball-explosion.gif',
+            '/images/ship-explosion.gif'
+        ])
+
+    }
+
+    /** 
+     * User interface initiator.
+     */
+    init() {
+
+        this.gamebox = document.createElement('div')
+
+        this.startScreen = document.createElement('div')
+
+        this.loginScreen = document.createElement('div')
+
+        this.asidePanel = document.createElement('aside')
+
+        this.helpScreen = document.createElement('div')
+
+        this.infobox = document.createElement('div')
+
+        this.soundButton = document.createElement('div')
+
+    }
+
+    /** 
+     * Caches images.
+     * @param {!string[]} images - Contains array of urls to cache.
+     */
+    cache(images) {
+
+        images.forEach(src => {
+
+            let image = new Image
+            image.alt = 'cache'
+            image.src = src
+
+        })
+        
+    }
+
+    //=======================
+    // Setters & Getters : [
+    //=======================
+
+    /**
+     * @type {Node}
+     */
+    set gamebox(node) {
+        
+        this._gamebox = node
+        this.gamebox.id = 'sea'
+
+    }
+
+    get gamebox() {
+        
+        return this._gamebox
+
+    }
+
+    /**
+     * @type {Node}
+     */
+    set startScreen(node) {
+        
+        this._startScreen = node
+        this.startScreen.className = 'start-screen'
+
+    }
+
+    get startScreen() {
+        
+        return this._startScreen
+
+    }
+
+    /**
+     * @type {Node}
+     */
+    set loginScreen(node) {
+        
+        this._loginScreen = node
+        this.loginScreen.className = 'nickname-screen'
+
+        let wrapper = document.createElement('div')
+        wrapper.className = 'wrapper'
+        this.loginScreen.appendChild(wrapper)
+
+        let header = document.createElement('h2')
+        header.innerText = 'Enter your name, pirate!'
+        wrapper.appendChild(header)
+
+        let input = this._nameInput = document.createElement('input')
+        input.autofocus = 'autofocus'
+        wrapper.appendChild(input)
+
+        let message = this._errorMessage = document.createElement('div')
+        message.className = 'error-message'
+        wrapper.appendChild(message)
+
+        let button = this._playButton = document.createElement('div')
+        button.className = 'play-button'
+        wrapper.appendChild(button)
+
+    }
+
+    get loginScreen() {
+        
+        return this._loginScreen
+
+    }
+
+    /**
+     * @type {Node}
+     */
+    get playButton() {
+        
+        return this._playButton
+
+    }
+
+    /**
+     * @type {string}
+     */
+    get nickname() {
+        
+        return this._nameInput.value.trim()
+
+    }
+
+    /**
+     * @type {Node}
+     */
+    set asidePanel(node) {
+        
+        this._asidePanel = node
+        this.asidePanel.className = 'aside-panel'
+
+        // Info
+        let panelInfo = this._panelInfo = document.createElement('div')
+        panelInfo.className = 'info'
+        this.asidePanel.appendChild(panelInfo)
+
+        // Ranking
+        let panelRanking = this._panelRanking = document.createElement('div')
+        panelRanking.className = 'ranking scrollable'
+        this.asidePanel.appendChild(panelRanking)
+
+        // Spectators
+        let panelSpectators = this._panelSpectators = document.createElement('div')
+        panelSpectators.className = 'spectators scrollable'
+        this.asidePanel.appendChild(panelSpectators)
+
+        // Join / Leave Button
+        let panelJoinLeaveBtn = document.createElement('div')
+        panelJoinLeaveBtn.className = 'btn'
+
+        let joinLeaveButton = this._joinLeaveButton = document.createElement('div')
+        joinLeaveButton.innerText = 'Join'
+
+        panelJoinLeaveBtn.appendChild(joinLeaveButton)
+        this.asidePanel.appendChild(panelJoinLeaveBtn)
+
+        // Help button
+        let panelHelpBtn = document.createElement('div')
+        panelHelpBtn.className = 'btn'
+
+        let helpButton = this._helpButton = document.createElement('div')
+        helpButton.innerText = 'Help'
+        
+        panelHelpBtn.appendChild(helpButton)
+        this.asidePanel.appendChild(panelHelpBtn)
+
+        // Indicating devices
+        let devices = this._devices = document.createElement('div')
+        devices.className = 'devices inactive'
+
+        // Speedometer
+        let panelSpeed = document.createElement('div')
+        panelSpeed.className = 'speed progress'
+        panelSpeed.title = 'Speed'
+
+        let panelSpeedOuter = document.createElement('div')
+        panelSpeedOuter.className = 'outer'
+
+        let panelSpeedInner = this._panelSpeedInner = document.createElement('div')
+        panelSpeedInner.className = 'inner'
+
+        panelSpeedOuter.appendChild(panelSpeedInner)
+        panelSpeed.appendChild(panelSpeedOuter)
+        devices.appendChild(panelSpeed)
+
+        // Compass
+        let panelCompass = document.createElement('div')
+        panelCompass.className = 'compass'
+        panelCompass.title = 'Direction'
+        
+        const xhr = new XMLHttpRequest()
+        xhr.open('GET', '../images/compass.svg')
+        xhr.send(null)
+
+        xhr.onload = () => {
+
+            this.compassNeedle = xhr.responseXML.documentElement.getElementById('needle')
+            panelCompass.appendChild(xhr.responseXML.documentElement)
+
+
+        }
+
+        devices.appendChild(panelCompass)
+
+        // Hit points
+        let panelHP = document.createElement('div')
+        panelHP.className = 'hp progress'
+        panelHP.title = 'Hit points'
+        
+        let panelHPOuter = document.createElement('div')
+        panelHPOuter.className = 'outer'
+        
+        let panelHPInner = this._panelHPInner = document.createElement('div')
+        panelHPInner.className = 'inner'
+
+        panelHPOuter.appendChild(panelHPInner)
+        panelHP.appendChild(panelHPOuter)
+        devices.appendChild(panelHP)
+
+        // Firepower
+        let panelFirepower = document.createElement('div')
+        panelFirepower.className = 'fp progress'
+        panelFirepower.title = 'Firepower'
+        
+        let panelFirepowerOuter = document.createElement('div')
+        panelFirepowerOuter.className = 'outer'
+        
+        let panelFirepowerInner = this._panelFirepowerInner = document.createElement('div')
+        panelFirepowerInner.className = 'inner'
+
+        panelFirepowerOuter.appendChild(panelFirepowerInner)
+        panelFirepower.appendChild(panelFirepowerOuter)
+        devices.appendChild(panelFirepower)
+
+        // Append all devices
+        this.asidePanel.appendChild(devices)
+
+    }
+
+    get asidePanel() {
+
+        return this._asidePanel
+
+    }
+
+    /**
+     * @type {string}
+     */
+    set message(message) {
+
+        if (this.messages.length < 2) {
+
+            this.messages.push(message)
+
+        } else {
+
+            this.messages.shift()
+            this.messages.push(message)
+
+        }
+
+        let list = document.createElement('ul')
+
+        this.messages.forEach((message, index) => {
+
+            let item = document.createElement('li')
+
+            if (this.messages.length == 2 && index == 0) {
+            
+                item.className = 'fade'
+
+            }
+
+            item.title = item.innerText = message
+
+            list.appendChild(item)
+
+        })
+
+        this._panelInfo.innerHTML = ''
+        this._panelInfo.appendChild(list)
+
+    }
+
+    /**
+     * @type {array}
+     */
+    set ranking(ranking) {
+
+        let list = document.createElement('ul')
+
+        ranking.forEach((player) => {
+
+            let item = document.createElement('li')
+
+            item.style.color = Object(__WEBPACK_IMPORTED_MODULE_1__utils_getContrast__["a" /* default */])(player.color)
+            item.style.backgroundColor = player.color
+
+            let name = this.names[player.name] = document.createElement('div')
+            name.className = 'name'
+            name.title = name.innerText = player.name
+
+            let score = document.createElement('div')
+            score.className = 'score'
+            score.innerText = player.score
+
+            item.appendChild(name)
+            item.appendChild(score)
+            
+            list.appendChild(item)
+
+        })
+
+        this._panelRanking.innerHTML = ''
+        this._panelRanking.appendChild(list)
+
+    }
+
+    /**
+     * @type {object}
+     */
+    set rankingHp(rankingHp) {
+
+        for (let name in rankingHp) {
+
+            this.names[name].style.background =
+                `linear-gradient(90deg, rgba(0, 0, 0, 0.2) ${ rankingHp[name] }%, transparent ${ rankingHp[name] }%)`
+
+        }
+
+    }
+
+    /**
+     * @type {array}
+     */
+    set spectators(spectators) {
+
+        let list = document.createElement('ul')
+
+        spectators.forEach((spectator, index) => {
+
+            let item = document.createElement('li')
+
+            if (index % 2 == 0) {
+            
+                item.className = 'fade'
+
+            }
+
+            item.title = item.innerText = spectator
+
+            list.appendChild(item)
+
+        })
+
+        this._panelSpectators.innerHTML = ''
+        this._panelSpectators.appendChild(list)
+
+    }
+
+    /**
+     * @type {number}
+     */
+    set speed(speed) {
+
+        this._panelSpeedInner.style.width = Math.round(speed / __WEBPACK_IMPORTED_MODULE_0__Config___default.a.MAX_SPEED * 100) + '%'
+
+    }
+
+    /**
+     * @type {number}
+     */
+    set direction(direction) {
+
+        this.compassNeedle.style.transform = `rotate(${ -direction + 90 }deg)`
+
+    }
+
+    /**
+     * @type {number}
+     */
+    set hp(hp) {
+
+        this._panelHPInner.style.width = Math.round(hp / __WEBPACK_IMPORTED_MODULE_0__Config___default.a.MAX_HP * 100) + '%'
+
+    }
+
+    /**
+     * @type {number}
+     */
+    set fp(fp) {
+
+        this._panelFirepowerInner.style.width = Math.round(fp / __WEBPACK_IMPORTED_MODULE_0__Config___default.a.MAX_FP * 100) + '%'
+
+    }
+
+    /**
+     * @type {Node}
+     */
+    get joinLeaveButton() {
+
+        return this._joinLeaveButton
+
+    }
+
+    /**
+     * @type {Node}
+     */
+    get helpButton() {
+
+        return this._helpButton
+
+    }
+
+    /**
+     * @type {Node}
+     */
+    set helpScreen(node) {
+        
+        this._helpScreen = node
+        this.helpScreen.className = 'help-screen'
+
+        this.helpScreen.innerHTML = 
+        `
+        <strong>Arrows</strong><br>\n
+        <strong class="indent">Up</strong> - Accelerate<br>\n
+        <strong class="indent">Down</strong> - Decelerate<br>\n
+        <strong class="indent">Left</strong> - Turn left<br>\n
+        <strong class="indent">Right</strong> - Turn right<br>\n
+        <br>\n
+        <strong>A</strong> - Shoot left<br>\n
+        <strong>D</strong> - Shoot right<br>\n
+        <br>\n
+        <strong>R</strong> - Repair<br>\n
+        <br>\n
+        <strong>M</strong> - Toggle music<br>\n
+        <strong>H</strong> - Toggle this window
+        `
+
+        this.helpScreen.onclick = this.toggleHelp.bind(this)
+
+
+    }
+
+    get helpScreen() {
+
+        return this._helpScreen
+
+    }
+
+    /**
+     * @type {Node}
+     */
+    set infobox(node) {
+        
+        this._infobox = node
+        this.infobox.id = 'infobox'
+
+    }
+
+    get infobox() {
+        
+        return this._infobox
+
+    }
+
+    /**
+     * @type {number}
+     */
+    set ping(ping) {
+
+        this._infobox.innerText = `Ping: ${ ping }ms`
+
+    }
+
+    /**
+     * @type {Node}
+     */
+    set soundButton(node) {
+        
+        this._soundButton = node
+        this.soundButton.id = 'sound-button'
+
+    }
+
+    get soundButton() {
+        
+        return this._soundButton
+
+    }
+
+    //=============================================
+    // ] : Setters & Getters ::: Class methods : [
+    //=============================================
+
+    /**
+     * Adds a listener for key down,
+     * won’t trigger more than once if the key is being held down.
+     * @param {?number} - keyCode Set to null if you want to listen for any key.
+     * @param {!keyboardEventCallback} callback - Function to execute.
+     * @returns {array} Returns an array of added listeners’ id.
+     */
+    keyDown(keyCode, callback) {
+
+        let code, fired
+
+        let down = ++this.listeners.count
+
+        this.listeners[down] = {
+
+            type: 'keydown',
+
+            _function(e) {
+
+                if (fired || (keyCode !== null && e.keyCode !== keyCode)) return
+
+                code = e.keyCode
+
+                fired = true
+
+                callback(e)
+
+            }
+        }
+
+        window.addEventListener(this.listeners[down].type, this.listeners[down]._function)
+
+        // Blocks triggering callback until key is released.
+        let up = ++this.listeners.count
+
+        this.listeners[up] = {
+
+            type: 'keyup',
+
+            _function(e) {
+
+                if (e.keyCode === code) {
+
+                    fired = false
+
+                }
+
+            }
+
+        }
+
+        window.addEventListener(this.listeners[up].type, this.listeners[up]._function)
+
+        return [down, up]
+
+    }
+
+    /**
+     * Adds a listener for key up.
+     * @param {?number} keyCode - Set to null if you want to listen for any key.
+     * @param {!keyboardEventCallback} callback - Function to execute.
+     * @returns {number} Returns added listener’s id.
+     */
+    keyUp(keyCode, callback) {
+
+        let up = ++this.listeners.count
+
+        this.listeners[up] = {
+
+            type: 'keyup',
+
+            _function(e) {
+
+                if (keyCode !== null && e.keyCode !== keyCode) return
+
+                callback(e)
+
+            }
+
+        }
+
+        window.addEventListener(this.listeners[up].type, this.listeners[up]._function)
+
+        return up
+
+    }
+
+    /**
+     * Unsets existing listener.
+     * @param {!(number|number[])} id - Id or an array of ids of the listeners you want to remove.
+     * @return {boolean} Returns true on success.
+     */
+    unset(id) {
+
+        if (id.length > 0) {
+
+            for (let i = 0; i < id.length; i++) {
+
+                window.removeEventListener(this.listeners[id[i]].type, this.listeners[id[i]]._function)
+                delete this.listeners[id[i]]
+
+            }
+
+        } else {
+
+            window.removeEventListener(this.listeners[id].type, this.listeners[id]._function)
+            delete this.listeners[id]
+
+        }
+
+        return true
+
+    }
+
+    /**
+     * Changes play button to infinity radial progress.
+     * @param {boolean=} spin - If set to false loader disappears.
+     */
+    spinPlayButton(spin = true) {
+
+        if (spin) {
+
+            this._playButton.classList.add('loading')
+
+        } else {
+
+            this._playButton.classList.remove('loading')
+
+        }
+
+    }
+
+    /**
+     * Hides login error message.
+     */
+    hideErrorMessage() {
+
+        this._errorMessage.classList.remove('visible')
+        this._errorMessage.innerText = ''
+
+    }
+
+    /**
+     * Shows login error message.
+     * @param {!string} message - Text to display.
+     */
+    showErrorMessage(message) {
+
+        this._errorMessage.classList.add('visible')
+        this._errorMessage.innerText = message
+
+    }
+
+    /**
+     * Updates join / leave button.
+     * @param {!string} message - Text to display.
+     */
+    updateJoinLeaveButton(state) {
+
+        switch (state) {
+
+            case 0:
+
+                this._joinLeaveButton.classList.add('disabled')
+                this._joinLeaveButton.innerText = 'Join'
+
+                break
+
+            case 1:
+
+                this._joinLeaveButton.classList.remove('disabled')
+                this._joinLeaveButton.innerText = 'Join'
+
+                break
+
+            case 2:
+
+                this._joinLeaveButton.classList.remove('disabled')
+                this._joinLeaveButton.innerText = 'Leave'
+
+                break
+
+            default:
+
+        }
+
+    }
+
+    /**
+     * Toggles indicating devices.
+     */
+    toggleDevices() {
+
+        if (this._devices.classList.contains('inactive')) {
+        
+            this._devices.classList.remove('inactive')
+        
+        } else {
+
+            this.speed = __WEBPACK_IMPORTED_MODULE_0__Config___default.a.MAX_SPEED
+            this.direction = -90
+            this.hp = __WEBPACK_IMPORTED_MODULE_0__Config___default.a.MAX_HP
+            this.fp = __WEBPACK_IMPORTED_MODULE_0__Config___default.a.MAX_FP
+            this._devices.classList.add('inactive')
+            
+        }
+
+    }
+
+    /**
+     * Toggles help screen.
+     */
+    toggleHelp() {
+
+        if (this.gamebox.contains(this.helpScreen)) {
+        
+            this.gamebox.removeChild(this.helpScreen)
+        
+        } else {
+
+            this.gamebox.appendChild(this.helpScreen)
+            
+        }
+
+    }
+
+    /**
+     * Makes explosion effect.
+     * @param {!object} coords - Explosion coordinates.
+     * @param {!number} diameter - Determines explosion power.
+     * @param {boolean=} ship - Set to true if you want to get huge explosion.
+     */
+    explosion(coords, diameter, ship = false) {
+
+        const boom = new Image
+        boom.alt = ship ? 'Ship explosion' : 'Cannonball explosion'
+        boom.src = ship ? '/images/ship-explosion.gif' : '/images/cannonball-explosion.gif'
+        boom.className = 'explosion'
+        boom.style.width = diameter * 2 + 'px'
+        boom.style.left = coords.x + 'px'
+        boom.style.top = (ship ? coords.y - 130 : coords.y) + 'px'
+
+        this.gamebox.appendChild(boom)
+
+        let lasting = ship ? 1200 : 500
+
+        setTimeout(() => this.gamebox.removeChild(boom), lasting)
+
+    }
+
+    /**
+     * Shows mute button.
+     */
+    audioControls() {
+
+        this.gamebox.appendChild(this.soundButton)
+
+    }
+
+    /**
+     * Toggles sound icon.
+     */
+    toggleMute() {
+
+        if (this.soundButton.classList.contains('muted')) {
+        
+            this.soundButton.classList.remove('muted')
+        
+        } else {
+
+            this.soundButton.classList.add('muted')
+            
+        }
+
+    }
+
+    //===================
+    // ] : Class methods
+    //===================
+
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = UserInterface;
+
+
+/***/ }),
+/* 50 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/**
+ * @module
+ */
+class AudioInterface {
+
+    /** 
+     * Audio constructor.
+     * @constructor
+     */
+    constructor() {
+
+        /**
+         * If this variable is set to true any sound will not be played.
+         * @type {boolean}
+         */
+        this.muted = false
+
+        this.init()
+
+        this.cache([
+            '/sounds/bg-music.mp3',
+            '/sounds/cannonball-shot.mp3',
+            '/sounds/cannonball-explosion.mp3',
+            '/sounds/ship-explosion.mp3'
+        ])
+
+    }
+
+    /** 
+     * Audio initiator.
+     */
+    init() {
+
+        let music = this.music = new Audio
+        music.type = 'audio/mpeg'
+        music.src = '/sounds/bg-music.mp3'
+        music.loop = true
+        music.muted = false
+
+    }
+
+    /** 
+     * Caches sounds.
+     * @param {!string[]} sounds - Contains array of urls to cache.
+     */
+    cache(sounds) {
+
+        sounds.forEach(src => {
+
+            let audio = new Audio
+            audio.type = 'audio/mpeg'
+            audio.src = src
+
+        })
+        
+    }
+
+    //=============================================
+    // Class methods : [
+    //=============================================
+
+    /**
+     * Plays audio.
+     * @param {!string} src - Source to audio.
+     */
+    play(src) {
+
+        if (this.muted) return
+
+        let audio = new Audio
+        audio.type = 'audio/mpeg'
+        audio.src = src
+        audio.play()
+
+    }
+
+    /**
+     * Plays background music.
+     * @param {!string} src - Source to audio.
+     */
+    playMusic() {
+
+        this.music.play()
+
+    }
+
+    /**
+     * Mutes / unmutes audio.
+     */
+    toggleMute() {
+
+        this.muted = ! this.muted
+        this.music.muted = ! this.music.muted
+
+    }
+
+    //===================
+    // ] : Class methods
+    //===================
+
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = AudioInterface;
+
+
+/***/ }),
+/* 51 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/**
+ * @module
+ */
+class Ship {
+
+    /** 
+     * Ship constructor.
+     * @constructor
+     */
+    constructor(width, color = '#f00') {
+
+        /**
+         * Contains ship width in px.
+         * @type {number}
+         */
+        this.width = width
+
+        /**
+         * Contains ship color in HTML notation.
+         * @type {string}
+         */
+        this.color = color
+
+        /**
+         * Contains sail color in HTML notation.
+         * @type {string}
+         */
+        this.sailcolor = '#efefff'
+
+        this.init()
+
+    }
+
+    /** 
+     * Ship initiator.
+     */
+    init() {
+
+        const canvas = this.canvas = document.createElement('canvas')
+        canvas.width = this.width * 4
+        canvas.height = this.width * 4
+        canvas.className = 'ship'
+
+        const ctx = this.ctx = canvas.getContext('2d')
+
+        // Rear
+        ctx.beginPath()
+        ctx.arc(this.width / 2, this.width * 2, this.width / 2, 0, 2 * Math.PI)
+        ctx.fillStyle = this.color
+        ctx.fill()
+        
+        // Center
+        ctx.fillStyle = this.color
+        ctx.fillRect(this.width / 2, this.width * 3 / 2, this.width * 3, this.width)
+
+        // Front
+        ctx.beginPath();
+        ctx.arc(this.width * 7 / 2, this.width * 2, this.width / 2, 0, 2 * Math.PI)
+        ctx.fillStyle = this.color
+        ctx.fill()
+
+        // Foremast
+        ctx.beginPath()
+        ctx.arc(this.width * 7 / 3, this.width * 2, this.width * 7 / 6, - Math.PI * 1 / 3, Math.PI * 1 / 3)
+        ctx.fillStyle = this.sailcolor
+        ctx.fill()
+
+        // Main mast
+        ctx.beginPath()
+        ctx.arc(this.width * 10 / 9, this.width * 2, this.width * 10 / 7, - Math.PI * 1 / 3, Math.PI * 1 / 3)
+        ctx.fillStyle = this.sailcolor
+        ctx.fill()
+
+        // Mizenmast
+        ctx.beginPath()
+        ctx.arc(this.width / 2, this.width * 2, this.width * 8 / 9, - Math.PI * 1 / 3, Math.PI * 1 / 3)
+        ctx.fillStyle = this.sailcolor
+        ctx.fill()
+
+    }
+
+    //=============================================
+    // Setters & Getters : [
+    //=============================================
+
+    /**
+     * @type {Node}
+     */
+    set canvas(node) {
+        
+        this._canvas = node
+
+    }
+
+    get canvas() {
+        
+        return this._canvas
+
+    }
+
+    //===================
+    // ] : Setters & Getters
+    //===================
+
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = Ship;
+
+
+/***/ })
+/******/ ]);
