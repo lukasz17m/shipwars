@@ -1,9 +1,9 @@
 {
   "name": "shipwars",
-  "version": "0.1.11",
+  "version": "1.0.0",
   "description": "Pirate Ship Wars game over network using Socket.io",
   "main": "app.js",
-  "private": true,
+  "private": false,
   "scripts": {
     "dev": "npm  run development",
     "development": "webpack --progress --hide-modules --config webpack.config.js",
@@ -28,6 +28,8 @@
   },
   "devDependencies": {
     "jsdoc": "^3.5.3",
+    "uglify-js": "^2.8.29",
+    "uglifyjs-webpack-plugin": "^1.0.0-beta.2",
     "webpack": "^3.3.0"
   }
 }

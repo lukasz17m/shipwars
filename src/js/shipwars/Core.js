@@ -239,18 +239,15 @@ export default class Core {
         // Frame
         this.socket.on('frame', (data) => {
 
+            // Declare object with hp statuses
+            let rankingHp = {} 
+
             // Loop the ships
             let ships = data.ships
 
             for (let id in ships) {
 
                 if (this.shipsCreated.indexOf(id) < 0) {
-
-                    // let ship = document.createElement('div')
-                    // ship.className = 'ship'
-                    // ship.style.backgroundColor = ships[id].color
-                    // ship.style.left = Math.round(ships[id].x) + 'px'
-                    // ship.style.top = Math.round(ships[id].y) + 'px'
 
                     const ship = new Ship(Config.SHIP_WIDTH, ships[id].color)
                     ship.canvas.style.left = Math.round(ships[id].x) + 'px'
@@ -269,7 +266,12 @@ export default class Core {
 
                 }
 
+                rankingHp[ships[id].name] = Math.round(ships[id].hp / Config.MAX_HP * 100)
+
             }
+
+            // Update ranking hp bars
+            this.ui.rankingHp = rankingHp
 
             // Delete ship of user who left the game
             this.shipsCreated = this.shipsCreated.filter((id) => {
@@ -356,7 +358,7 @@ export default class Core {
         // Update button state
         this.socket.on('canjoin', (state) => this.ui.updateJoinLeaveButton(state))
 
-        // Update button state
+        // Write a message from server in the browser console
         this.socket.on('console', (message) => console.log(message))
 
         // Explosions
@@ -388,10 +390,6 @@ export default class Core {
      */
     userInterfaceListen() {
 
-        // temp
-        // let cShip = new Ship(25)
-        // this.ui.gamebox.appendChild(cShip.canvas)
-
         // Join / Leave button
         this.ui.joinLeaveButton.onclick = () => {
 
@@ -400,6 +398,8 @@ export default class Core {
                 this.socket.emit('leave')
 
                 this.inGame = false
+
+                this.ui.toggleDevices()
 
             } else {
 
@@ -411,17 +411,14 @@ export default class Core {
 
                         this.inGame = true
 
+                        this.ui.toggleDevices()
+
                     }
 
                 })
 
             }
             
-        }
-
-        // Help button
-        this.ui.helpButton.onclick = () => {
-            console.log('Help')
         }
 
         // Steerage
@@ -530,6 +527,13 @@ export default class Core {
             this.socket.emit('action', 70)
 
         })
+
+         // Toggle help screen
+
+        // Help button
+        this.ui.helpButton.onclick = this.ui.toggleHelp.bind(this.ui)
+
+        this.ui.keyDown(72, this.ui.toggleHelp.bind(this.ui))
 
         // Toggle sound
         this.ui.audioControls()

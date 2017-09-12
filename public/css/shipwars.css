@@ -7,6 +7,7 @@
 html {
     height: 100%;
     font-family: sans-serif;
+    user-select: none;
 }
 
 body {
@@ -37,7 +38,7 @@ body {
     height: 600px;
     box-sizing: content-box;
     position: relative;
-    border: 10px solid;
+    border: 10px solid #741;
     background-color: #182838;
     background: linear-gradient(to top left, #123, #234);
 }
@@ -182,7 +183,6 @@ body {
     border: 10px solid #741;
     border-left: none;
     background-color: #a74;
-    user-select: none;
 }
 
 .aside-panel div {
@@ -226,7 +226,6 @@ body {
 .aside-panel .scrollable li {
     height: 20px;
     line-height: 20px;
-    padding-left: 2px;
     font-size: 12px;
 }
 
@@ -260,6 +259,8 @@ body {
 
 .aside-panel .ranking .name {
     width: calc(100% - 2em);
+    padding-left: 2px;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.2) 100%, transparent 100%);
 }
 
 .aside-panel .ranking .score {
@@ -291,6 +292,7 @@ body {
 
 .aside-panel .spectators li {
     color: #fc9;
+    padding-left: 2px;
 }
 
 .aside-panel .spectators li.fade {
@@ -334,19 +336,28 @@ body {
     pointer-events: none;
 }
 
+/* Devices */
+.aside-panel .devices {
+    height: initial;
+}
+
+.aside-panel .devices.inactive {
+    filter: blur(1px) sepia();
+}
+
 /* Speedometer */
 .aside-panel .speed {
     height: 40px;
 }
 
 .aside-panel .speed .inner {
-    background-color: #9acbde;
+    background-color: #0bb;
 }
 
 /* Compass */
 .aside-panel .compass {
     height: 160px;
-    background-color: #c29970;
+    background-color: #a74;
 }
 
 .aside-panel .compass svg {
@@ -364,7 +375,7 @@ body {
 }
 
 .aside-panel .hp .inner {
-    background-color: #01b003;
+    background-color: #0b0;
 }
 
 /* Firepower */
@@ -373,7 +384,7 @@ body {
 }
 
 .aside-panel .fp .inner {
-    background-color: #000;
+    background-color: #bb0;
 }
 
 /* Progress */
@@ -396,8 +407,24 @@ body {
     height: 100%;
 }
 
-/* Sound button */
+/* Help screen */
+.help-screen {
+    height: 90%;
+    width: 90%;
+    margin: auto;
+    padding: 2em;
+    font-size: 1.2em;
+    color: #fb8;
+    background-color: #663300;
+    box-shadow: #000 0.5em 0.5em 0.5em;
+    z-index: 3;
+}
 
+.help-screen strong.indent {
+    padding-left: 1em;
+}
+
+/* Sound button */
 #sound-button {
     position: absolute;
     width: 1.7rem;
@@ -418,52 +445,14 @@ body {
     content: '\1f507'
 }
 
-/* Ships */
-
+/* Ship */
 .ship {
     position: absolute;
     transform: translate(-50%, -50%);
     z-index: 2;
 }
 
-/*
- * Old
- *
- *** 
-.ship {
-    font-size: 25px;
-    width: 2em;
-    height: 1em;
-    position: absolute;
-    background-color: #808080;
-    transform: translate(-50%, -50%);
-    z-index: 2;
-}
-
-.ship::before {
-    content: '';
-    width: 1em;
-    height: 1em;
-    position: absolute;
-    top: 0;
-    left: -1em;
-    background-color: inherit;
-    border-radius: 50% 0 0 50%;
-
-}
-
-.ship::after {
-    content: '';
-    width: 1em;
-    height: 1em;
-    position: absolute;
-    top: 0;
-    right: -1em;
-    background-color: inherit;
-    border-radius: 0 50% 50% 0;
-}*/
-
-/* Cannonballs */
+/* Cannonball */
 .cannonball {
     box-sizing: border-box;
     font-size: 20px;

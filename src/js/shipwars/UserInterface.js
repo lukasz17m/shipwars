@@ -19,7 +19,7 @@ export default class UserInterface {
          * @type {object}
          */
         this.listeners = {
-            count: 0 // Doesn’t show number of listeners!
+            count: 0 // Doesn’t represent number of listeners!
         }
 
         /**
@@ -27,6 +27,12 @@ export default class UserInterface {
          * @type {string[]}
          */
         this.messages = []
+
+        /**
+         * Array containing divs with names in the ranking box.
+         * @type {Node[]}
+         */
+        this.names = []
 
         this.init()
 
@@ -49,6 +55,8 @@ export default class UserInterface {
         this.loginScreen = document.createElement('div')
 
         this.asidePanel = document.createElement('aside')
+
+        this.helpScreen = document.createElement('div')
 
         this.infobox = document.createElement('div')
 
@@ -205,9 +213,14 @@ export default class UserInterface {
         panelHelpBtn.appendChild(helpButton)
         this.asidePanel.appendChild(panelHelpBtn)
 
+        // Indicating devices
+        let devices = this._devices = document.createElement('div')
+        devices.className = 'devices inactive'
+
         // Speedometer
         let panelSpeed = document.createElement('div')
         panelSpeed.className = 'speed progress'
+        panelSpeed.title = 'Speed'
 
         let panelSpeedOuter = document.createElement('div')
         panelSpeedOuter.className = 'outer'
@@ -217,27 +230,31 @@ export default class UserInterface {
 
         panelSpeedOuter.appendChild(panelSpeedInner)
         panelSpeed.appendChild(panelSpeedOuter)
-        this.asidePanel.appendChild(panelSpeed)
+        devices.appendChild(panelSpeed)
 
         // Compass
         let panelCompass = document.createElement('div')
         panelCompass.className = 'compass'
+        panelCompass.title = 'Direction'
         
         const xhr = new XMLHttpRequest()
         xhr.open('GET', '../images/compass.svg')
         xhr.send(null)
 
         xhr.onload = () => {
+
             this.compassNeedle = xhr.responseXML.documentElement.getElementById('needle')
             panelCompass.appendChild(xhr.responseXML.documentElement)
 
+
         }
 
-        this.asidePanel.appendChild(panelCompass)
+        devices.appendChild(panelCompass)
 
         // Hit points
         let panelHP = document.createElement('div')
         panelHP.className = 'hp progress'
+        panelHP.title = 'Hit points'
         
         let panelHPOuter = document.createElement('div')
         panelHPOuter.className = 'outer'
@@ -247,11 +264,12 @@ export default class UserInterface {
 
         panelHPOuter.appendChild(panelHPInner)
         panelHP.appendChild(panelHPOuter)
-        this.asidePanel.appendChild(panelHP)
+        devices.appendChild(panelHP)
 
         // Firepower
         let panelFirepower = document.createElement('div')
         panelFirepower.className = 'fp progress'
+        panelFirepower.title = 'Firepower'
         
         let panelFirepowerOuter = document.createElement('div')
         panelFirepowerOuter.className = 'outer'
@@ -261,7 +279,10 @@ export default class UserInterface {
 
         panelFirepowerOuter.appendChild(panelFirepowerInner)
         panelFirepower.appendChild(panelFirepowerOuter)
-        this.asidePanel.appendChild(panelFirepower)
+        devices.appendChild(panelFirepower)
+
+        // Append all devices
+        this.asidePanel.appendChild(devices)
 
     }
 
@@ -324,7 +345,7 @@ export default class UserInterface {
             item.style.color = getContrast(player.color)
             item.style.backgroundColor = player.color
 
-            let name = document.createElement('div')
+            let name = this.names[player.name] = document.createElement('div')
             name.className = 'name'
             name.title = name.innerText = player.name
 
@@ -341,6 +362,20 @@ export default class UserInterface {
 
         this._panelRanking.innerHTML = ''
         this._panelRanking.appendChild(list)
+
+    }
+
+    /**
+     * @type {object}
+     */
+    set rankingHp(rankingHp) {
+
+        for (let name in rankingHp) {
+
+            this.names[name].style.background =
+                `linear-gradient(90deg, rgba(0, 0, 0, 0.2) ${ rankingHp[name] }%, transparent ${ rankingHp[name] }%)`
+
+        }
 
     }
 
@@ -423,6 +458,42 @@ export default class UserInterface {
     get helpButton() {
 
         return this._helpButton
+
+    }
+
+    /**
+     * @type {Node}
+     */
+    set helpScreen(node) {
+        
+        this._helpScreen = node
+        this.helpScreen.className = 'help-screen'
+
+        this.helpScreen.innerHTML = 
+        `
+        <strong>Arrows</strong><br>\n
+        <strong class="indent">Up</strong> - Accelerate<br>\n
+        <strong class="indent">Down</strong> - Decelerate<br>\n
+        <strong class="indent">Left</strong> - Turn left<br>\n
+        <strong class="indent">Right</strong> - Turn right<br>\n
+        <br>\n
+        <strong>A</strong> - Shoot left<br>\n
+        <strong>D</strong> - Shoot right<br>\n
+        <br>\n
+        <strong>R</strong> - Repair<br>\n
+        <br>\n
+        <strong>M</strong> - Toggle music<br>\n
+        <strong>H</strong> - Toggle this window
+        `
+
+        this.helpScreen.onclick = this.toggleHelp.bind(this)
+
+
+    }
+
+    get helpScreen() {
+
+        return this._helpScreen
 
     }
 
@@ -655,6 +726,44 @@ export default class UserInterface {
 
             default:
 
+        }
+
+    }
+
+    /**
+     * Toggles indicating devices.
+     */
+    toggleDevices() {
+
+        if (this._devices.classList.contains('inactive')) {
+        
+            this._devices.classList.remove('inactive')
+        
+        } else {
+
+            this.speed = Config.MAX_SPEED
+            this.direction = -90
+            this.hp = Config.MAX_HP
+            this.fp = Config.MAX_FP
+            this._devices.classList.add('inactive')
+            
+        }
+
+    }
+
+    /**
+     * Toggles help screen.
+     */
+    toggleHelp() {
+
+        if (this.gamebox.contains(this.helpScreen)) {
+        
+            this.gamebox.removeChild(this.helpScreen)
+        
+        } else {
+
+            this.gamebox.appendChild(this.helpScreen)
+            
         }
 
     }

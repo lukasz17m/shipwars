@@ -1,19 +1,12 @@
+const Uglify = require('uglifyjs-webpack-plugin')
+
 module.exports = {
     entry: './src/js/shipwars.js',
     output: {
         path: __dirname + '/public/js',
         filename: 'shipwars.js'
     },
-    module:{
-        loaders: [
-            // { 
-            //     test: /\.js$/, 
-            //     loader: 'babel-loader',
-            //     exclude: /node_modules/,
-            //     query: { 
-            //         presets: ['es2015'] 
-            //     }
-            // }
-        ]
-    }
+    plugins: [
+        new Uglify()
+    ]
 }

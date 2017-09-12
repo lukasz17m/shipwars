@@ -28,15 +28,6 @@ const factors = {
   repairRatio: 0.5
 }
 
-const minmax = {
-  min: {
-    speed: CONFIG.MIN_SPEED
-  },
-  max: {
-    speed: CONFIG.MAX_SPEED
-  }
-}
-
 const frame = {
   ships: {},
   cannonballs: {}
@@ -56,12 +47,12 @@ if (colors.length < CONFIG.MAX_PLAYERS) {
 // Redis connection
 client.on('connect', () => client.del('ranking', (error, response) => {
   if (error) log.error('REDIS:DEL', error)
-  log.info('REDIS:DEL', response)
+  log.info('REDIS:DEL', response ? 'Ranking deleted' : 'Nothing to delete')
 }))
 
 // Socket.io connection
 io.on('connection', (socket) => {
-  log.info('CONNECT', 'User connected. ID: %s', socket.id)
+  // log.info('CONNECT', 'User connected. ID: %s', socket.id)
 
   // Try login
   socket.on('login', (name, callback) => {
@@ -81,7 +72,7 @@ io.on('connection', (socket) => {
         return false
     }
     // Login user
-    log.info('LOGIN', 'User %s logged in.', name)
+    // log.info('LOGIN', 'User %s logged in.', name)
     // Join spectators
     spectators.push({ id: socket.id, name })
     callback(true)
@@ -106,6 +97,9 @@ io.on('connection', (socket) => {
 
   // Joining the game
   socket.on('join', (callback) => {
+    if (typeof spectators[Object.keys(spectators).find((key) => { return spectators[key].id === socket.id })] == 'undefined') {
+      return false
+    }
     // Checks if there’s slot available for another player
     if (Object.keys(frame.ships).length === CONFIG.MAX_PLAYERS) {
       callback(false)
@@ -261,7 +255,7 @@ io.on('connection', (socket) => {
 
   // Disconnect
   socket.on('disconnect', () => {
-    log.info('DISCONNECT', 'User disconnected. ID: %s', socket.id)
+    // log.info('DISCONNECT', 'User disconnected. ID: %s', socket.id)
     // Init name variable
     let name = null
     // Remove player from game or spectators
@@ -298,7 +292,6 @@ io.on('connection', (socket) => {
   for (let id in frame.cannonballs) {
     items.push(frame.cannonballs[id])
   }
-  // log.info('ITEMS', items)
   // Respawns sunken ships
   for (let i = 0; i < items.length; i++) {
     if (!items[i].sunken) continue
@@ -318,6 +311,7 @@ io.on('connection', (socket) => {
         }
       }
     } while (repeat)
+    frame.ships[items[i].id].factors.angle = Math.floor(Math.random() * 359)
     frame.ships[items[i].id].coords.x = items[i].coords.x
     frame.ships[items[i].id].coords.y = items[i].coords.y
     frame.ships[items[i].id].sunken = items[i].sunken = false
@@ -340,7 +334,6 @@ io.on('connection', (socket) => {
       ) {
         destroyShip(items[i].id)
         client.zincrby(['ranking', -1, frame.ships[items[i].id].name], redisCallback)
-        // io.emit('console', 'Zero condition : COLLISION')
       }
     } else {
       if (
@@ -350,7 +343,6 @@ io.on('connection', (socket) => {
         items[i].coords.y - items[i].diameter / 2 < 0
       ) {
         destroyCannonball(items[i].id)
-        // io.emit('console', 'Zero condition : COLLISION')
       }
     }
     // Collision between objects
@@ -363,7 +355,6 @@ io.on('connection', (socket) => {
         distance(items[i].coords, items[j].coords)
         < items[i].diameter / 2 + items[j].diameter / 2
       ) {
-        io.emit('console', 'First condition : INITIAL')
         if (
           !(items[i].hasOwnProperty('name') || items[j].hasOwnProperty('name')) &&
           distance(items[i].coords, items[j].coords) < items[i].diameter
@@ -383,7 +374,6 @@ io.on('connection', (socket) => {
               destroyShip(items[i].id)
             }
             destroyCannonball(items[j].id)
-            // io.emit('console', 'Second condition : COLLISION')
           } else if (triangleArea(items[i], items[j]) < minTriangleArea(items[j].diameter)) {
             items[i].hp -= items[j].power
             if (items[i].hp <= CONFIG.MIN_HP) {
@@ -391,7 +381,6 @@ io.on('connection', (socket) => {
               destroyShip(items[i].id)
             }
             destroyCannonball(items[j].id)
-            // io.emit('console', 'Third condition : COLLISION')
           }
         } else if (!items[i].hasOwnProperty('name') && items[j].hasOwnProperty('name')) { // Cannonball & ship
           if (items[i].owner === items[j].name) continue
@@ -407,7 +396,6 @@ io.on('connection', (socket) => {
               destroyShip(items[j].id)
             }
             destroyCannonball(items[i].id)
-            // io.emit('console', 'Second condition : COLLISION')
           } else if (triangleArea(items[j], items[i]) < minTriangleArea(items[i].diameter)) {
             items[j].hp -= items[i].power
             if (items[j].hp <= CONFIG.MIN_HP) {
@@ -415,7 +403,6 @@ io.on('connection', (socket) => {
               destroyShip(items[j].id)
             }
             destroyCannonball(items[i].id)
-            // io.emit('console', 'Third condition : COLLISION')
           }
         } else { // Two ships
           if (
@@ -431,7 +418,6 @@ io.on('connection', (socket) => {
             client.zincrby(['ranking', -1, items[i].name], redisCallback)
             client.zincrby(['ranking', -1, items[j].name], redisCallback)
             destroyShip(items[i].id, items[j].id)
-            io.emit('console', 'Second condition : COLLISION')
           } else { // Front and rear as cannonballs
             if (
               (
@@ -458,7 +444,6 @@ io.on('connection', (socket) => {
               client.zincrby(['ranking', -1, items[i].name], redisCallback)
               client.zincrby(['ranking', -1, items[j].name], redisCallback)
               destroyShip(items[i].id, items[j].id)
-              io.emit('console', 'Third condition : COLLISION')
             }
           }
         }
@@ -477,12 +462,12 @@ io.on('connection', (socket) => {
     if (frame.ships[id].steerage.accelerate === frame.ships[id].steerage.decelerate) {
       // Do nothing
     } else if (frame.ships[id].steerage.accelerate) {
-      if ((frame.ships[id].factors.speed += factors.acceleration) > minmax.max.speed) {
-        frame.ships[id].factors.speed = minmax.max.speed
+      if ((frame.ships[id].factors.speed += factors.acceleration) > CONFIG.MAX_SPEED) {
+        frame.ships[id].factors.speed = CONFIG.MAX_SPEED
       }
     } else if (frame.ships[id].steerage.decelerate) {
-      if ((frame.ships[id].factors.speed -= factors.acceleration) < minmax.min.speed) {
-        frame.ships[id].factors.speed = minmax.min.speed
+      if ((frame.ships[id].factors.speed -= factors.acceleration) < CONFIG.MIN_SPEED) {
+        frame.ships[id].factors.speed = CONFIG.MIN_SPEED
       }
     }
     // Turn left / right
@@ -568,6 +553,7 @@ io.on('connection', (socket) => {
     frame.ships[id].coords.y -= Math.sin((Math.PI / 180) * frame.ships[id].factors.angle) * frame.ships[id].factors.speed
     // Update truncated frame
     truncFrame.ships[id] = {
+      name: frame.ships[id].name,
       color: frame.ships[id].color,
       x: frame.ships[id].coords.x,
       y: frame.ships[id].coords.y,
@@ -602,8 +588,7 @@ http.listen(PORT, () => log.http('OK', 'App listening on %i', PORT))
 function getRanking(emiter = io) {
   client.zrevrange(['ranking', 0, -1, 'WITHSCORES'], (error, response) => {
     if (error) log.error('REDIS', error)
-    // log.info('REDIS', response)
-    // EMIT
+    // Emit
     emiter.emit('ranking', response)
   })
 }
@@ -716,6 +701,5 @@ function triangleArea(ship, cannonball) {
 
 function redisCallback(error, response) {
   if (error) log.error('REDIS', error)
-  // log.info('REDIS', response)
   getRanking()
 }
